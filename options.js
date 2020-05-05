@@ -14,7 +14,7 @@ function save_options() {
       }, 750);
     });
   }
-  
+
   // Restores select box and checkbox state using the preferences
   // stored in chrome.storage.
   function restore_options() {
