@@ -12,7 +12,7 @@
         "webNavigation"
     ],
     "background" : {
-        "scripts" : ["background.js"]
+        "scripts" : ["js/background.js"]
     },
     "icons" : {
         "16" : "icons/logo_16x16.png",
@@ -20,9 +20,9 @@
         "128" : "icons/logo_128x128.png"
     },
     "browser_action" : {
-        "default_popup" : "popup.html",
+        "default_popup" : "html/popup.html",
         "default_icon" : "icons/logo_128x128.png"
     },
-    "options_page": "options.html",
+    "options_page": "html/options.html",
     "manifest_version": 2
 }

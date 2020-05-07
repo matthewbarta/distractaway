@@ -7,7 +7,7 @@ blockButton.onclick = function() {
         var bkg = chrome.extension.getBackgroundPage();
         //bkg.console.log(tabs[0].url)
         alert(tabs[0].url)
-        chrome.storage.sync.get({blockList}, function(items) {
+        chrome.storage.sync.get(['blockList'], function(items) {
             let blockList = items.blockList;
             blockList.push(tabs[0].url)
             chrome.storage.sync.set({blockList: blockList}, function() {
@@ -20,7 +20,7 @@ blockButton.onclick = function() {
             chrome.runtime.openOptionsPage();
         }
         else {
-            window.open(chrome.runtime.getURL('options.html'));
+            window.open(chrome.runtime.getURL('../html/options.html'));
         }
     })
 }
