@@ -4,12 +4,22 @@ $(function() {
     //Puts in the current url.
     chrome.storage.sync.get({current_url: ""}, function(url) {
         if(url.current_url != "") {
-            let re = /[^(http)?(s)?(:\/\/)?](\w+\.)*\w+/;
+            //Regex to trim internet urls.
+            let re = /[^(http)?(s)?(:\/\/)?](\w*\.)+\w*/;
             let old_url = url.current_url;
-            let trimmed_url = re.exec(old_url)[0];
-            $('#block-site').val(trimmed_url);
-            $("#url").text('*' + $('#block-site').val() + '*');
+            let trimmed_url = re.exec(old_url);
+            //If it is a trimmable url, trim it.
+            if(trimmed_url != undefined) {
+                $('#block-site').val(trimmed_url[0]);
+                $("#url").text('*' + $('#block-site').val() + '*');
+            }
+            //Otherwise use the raw url.
+            else {
+                $('#block-site').val(old_url);
+                $("#url").text('*' + $('#block-site').val() + '*');
+            }
         }
+        //If there isn't a current url set the text to be blank.
         else {
             $("#url").text('');
         }
