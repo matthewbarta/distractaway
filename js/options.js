@@ -35,15 +35,34 @@ $(function() {
     });
     //On submission
     $('#submit-button').click(function() {
-        bkg.console.log("Something was submitted.")
-        let val = $('#block-site').val();
-        if(val) {
+        let url = $('#block-site').val();
+        if(url) {
             $('#block-site').val('');
             $("#url").text($('#block-site').val());
-
+            //Store the given url if it is not a duplicated.
+            chrome.storage.sync.get(['blockList'], function(items) {
+                let list = items.blockList;
+                bkg.console.log(list);
+                storeBlocked(list, url, bkg);
+            })
         }
         else {
             bkg.console.log("Empty url.")
         }
     })
 });
+
+//Checks for a duplicate link, if none exists, add the site to the blocked list.
+function storeBlocked(array, url_to_add) {
+    //If the link is a duplicate.
+    if(array.includes(url_to_add)) {
+        alert('ERROR: This link has already been added to the site list!')
+    }
+    //If it's a unique URL add it to the blocklist.
+    else {
+        array.push(url_to_add);
+        chrome.storage.sync.set({blockList: array}, function() {
+            //Do something after set.
+        });
+    }
+}
