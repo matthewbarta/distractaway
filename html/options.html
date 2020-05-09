@@ -1,24 +1,50 @@
 <!DOCTYPE html>
 <html>
-<head><title>Distractaway Options</title></head>
+<head>
+  <title>Distractaway Options</title>
+  <!--Bootstrap and Dependencies-->
+  <script src="../js/jquery-3.5.1.min.js"></script>
+  <script src="../js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+
+    <!-- Options Script-->
+    <script src="../js/options.js"></script>
+
+  <!--Custom Styles-->
+  <link rel="stylesheet" href="../css/option.styles.css">
+</head>
 <body>
 
-<div>
-  <div>
-
+<div class="main">
+  <ul>
+    <li>
+      <h4>Distractaway</h4>
+    </li>
+    <li>
+      <a href="">Stats</a>
+    </li>
+    <li>
+      <a href="">Add Site</a>
+    </li>
+    <li>
+      <a href="">Site List</a>
+    </li>
+    <li>
+      <a href="">Options</a>
+    </li>
+  </ul>
+  <div class="header">
+    <h1>Add Site</h1>
+  </div>
+  <div class="page-content">
+    <div class="add-site">
+      <p id="url"></p>
+      <input type="text" id="block-site" name="" value=""><br>
+      <input type="submit" name="submit" id="submit-button">
+    </div>
   </div>
 </div>
 
-<!-- Options Script-->
-<script src="../js/options.js"></script>
-
-<!--Bootstrap and Dependencies-->
-<script src="../js/jquery-3.5.1.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="../css/bootstrap.min.css">
-
-<!--Custom Styles-->
-<link rel="stylesheet" href="../css/option.styles.css">
 
 </body>
 </html>
