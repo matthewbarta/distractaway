@@ -1,6 +1,6 @@
 //Initializes extension.
 chrome.runtime.onInstalled.addListener(function() {
-    chrome.storage.sync.set({blockList: []}, function() {
+    chrome.storage.sync.set({blockList: [], current_url: ""}, function() {
       console.log("Initialized extension.");
     });
   });
