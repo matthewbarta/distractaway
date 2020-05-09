@@ -4,7 +4,10 @@ $(function() {
     //Puts in the current url.
     chrome.storage.sync.get({current_url: ""}, function(url) {
         if(url.current_url != "") {
-            $('#block-site').val(url.current_url);
+            let re = /[^(http)?(s)?(:\/\/)?](\w+\.)*\w+/;
+            let old_url = url.current_url;
+            let trimmed_url = re.exec(old_url)[0];
+            $('#block-site').val(trimmed_url);
             $("#url").text('*' + $('#block-site').val() + '*');
         }
         else {
