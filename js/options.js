@@ -1,4 +1,4 @@
-var bkg = chrome.extension.getBackgroundPage();
+const bkg = chrome.extension.getBackgroundPage();
 
 $(function() {
     //Puts in the current url.
@@ -41,10 +41,9 @@ $(function() {
             $("#url").text($('#block-site').val());
             url = '*://' + url + '/*';
             //Store the given url if it is not a duplicated.
-            chrome.storage.sync.get(['blockList'], function(items) {
-                let list = items.blockList;
-                bkg.console.log(list);
-                storeBlocked(list, url, bkg);
+            chrome.storage.sync.get(['timeList'], function(items) {
+                let list = items.timeList;
+                storeTimeList(list, url, bkg);
             })
         }
         else {
@@ -54,16 +53,22 @@ $(function() {
 });
 
 //Checks for a duplicate link, if none exists, add the site to the blocked list.
-function storeBlocked(array, url_to_add) {
+function storeTimeList(urlTimeArray, url) {
     //If the link is a duplicate.
-    if(array.includes(url_to_add)) {
+    if(isDuplicateURL(urlTimeArray, url)) {
         alert('ERROR: This link has already been added to the site list!')
     }
-    //If it's a unique URL add it to the blocklist.
+    //If it's a unique URL add it to the timelist, with a default time of 15 seconds.
     else {
-        array.push(url_to_add);
-        chrome.storage.sync.set({blockList: array}, function() {
+        urlTimeArray.push({url: url, time: 15});
+        chrome.storage.sync.set({timeList: urlTimeArray}, function() {
             //Do something after set.
         });
     }
+}
+
+//Checks for duplicate url in the urlTimeArray.
+function isDuplicateURL(urlTimeArray, url) {
+    const isDuplicate = (item) => item.url == url;
+    return urlTimeArray.some(isDuplicate);
 }

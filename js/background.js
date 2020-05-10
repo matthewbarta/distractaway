@@ -9,29 +9,34 @@ chrome.runtime.onInstalled.addListener(function () {
 });
 
 //Update the currentList variable.
+// chrome.storage.onChanged.addListener(function (changes) {
+//   if (changes.blockList != undefined) {
+//     blockList = changes.blockList.newValue;
+//   }
+// });
+
 chrome.storage.onChanged.addListener(function (changes) {
-  if (changes.blockList != undefined) {
-    blockList = changes.blockList.newValue;
-  } else {
-    // Do nothing.
+  if (changes.timeList != undefined) {
+    timeList = changes.timeList.newValue;
   }
+  console.log(timeList);
 });
 
 //Currently this blocks the added urls.
-chrome.webRequest.onBeforeRequest.addListener(
-    function() {
-        if(blockList.length > 0) {
-          chrome.webRequest.onBeforeRequest.addListener(
-            function() {
-              return {cancel: true};
-            }, {urls: blockList}, ["blocking"]
-          );
-        }
-        else {
-          return {cancel: false};
-        }
-    }, {urls: []}
-);
+// chrome.webRequest.onBeforeRequest.addListener(
+//     function() {
+//         if(blockList.length > 0) {
+//           chrome.webRequest.onBeforeRequest.addListener(
+//             function() {
+//               return {cancel: true};
+//             }, {urls: blockList}, ["blocking"]
+//           );
+//         }
+//         else {
+//           return {cancel: false};
+//         }
+//     }, {urls: []}
+// );
 
 //When the tab changes, get the active tab and check if it's in the blocklist.
 chrome.tabs.onActivated.addListener(function(activeInfo) {
