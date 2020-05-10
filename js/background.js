@@ -17,11 +17,10 @@ chrome.storage.onChanged.addListener(function (changes, areaName) {
   console.log(currentList);
 });
 
-//! Blocking Example
+//Currently this blocks the added urls.
 chrome.webRequest.onBeforeRequest.addListener(
     function(details) {
         if(currentList.length > 0) {
-          console.log(currentList);
           chrome.webRequest.onBeforeRequest.addListener(
             function(details) {
               return {cancel: true};
