@@ -1,6 +1,18 @@
 #popup-window {
     width: 200px;
-    height: 0px;
+    height: 140px;
+}
+
+#popup-not-blocked {
+    display: block;
+}
+
+#popup-blocked {
+    display: none;
+}
+
+#popup-timer {
+    display: none;
 }
 
 #button-div {

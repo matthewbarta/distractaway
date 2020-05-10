@@ -1,28 +1,66 @@
 <html>
+  <body id="popup-window">
+    <div class="container">
 
-    <body id="popup-window">
-        <div class="container">
-            <div class="row">
-                <div class="blocked-state-text">
-                    <h5 class="text-info">This page is currently not blocked.</h5>
-                </div>
-            </div>
-            <div class="row">
-                <div id="button-div">
-                    <button id="block-button" class="btn btn-danger btn-large">Block</button>
-                </div>
-            </div>
+
+      <div id="popup-not-blocked">
+        <div class="row">
+          <div class="blocked-state-text">
+            <h5 class="text-info">This page is currently not blocked.</h5>
+          </div>
         </div>
-    </body>
+        <div class="row">
+          <div id="button-div">
+            <button id="block-button" class="btn btn-danger btn-large">
+              Block
+            </button>
+          </div>
+        </div>
+      </div>
 
-<!--Popup Script-->
-<script src="../js/popup.js"></script>
 
-<!--Bootstrap and Dependencies-->
-<script src="../js/jquery-3.5.1.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="../css/bootstrap.min.css">
+      <div id="popup-timer" style="display: none">
+        <div class="row">
+          <div class="blocked-state-text">
+            <h5 class="text-info">This page is being timed.</h5>
+          </div>
+        </div>
+        <div class="row">
+          <div id="button-div">
+            <button id="block-button" class="btn btn-danger btn-large">
+              Block
+            </button>
+          </div>
+        </div>
+      </div>
 
-<!--Custom Styles-->
-<link rel="stylesheet" href="../css/popup.styles.css">
+
+      <div id="popup-blocked" style="display: none">
+        <div class="row">
+          <div class="blocked-state-text">
+            <h5 class="text-info">This page is BLOCKED for the remainder of the day.</h5>
+          </div>
+        </div>
+        <div class="row">
+          <div id="button-div">
+            <button id="block-button" class="btn btn-danger btn-large">
+              Block
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </body>
+
+  <!--Popup Script-->
+  <script src="../js/popup.js"></script>
+
+  <!--Bootstrap and Dependencies-->
+  <script src="../js/jquery-3.5.1.min.js"></script>
+  <script src="../js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="../css/bootstrap.min.css" />
+
+  <!--Custom Styles-->
+  <link rel="stylesheet" href="../css/popup.styles.css" />
 </html>

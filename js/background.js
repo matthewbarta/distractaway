@@ -7,14 +7,13 @@ chrome.runtime.onInstalled.addListener(function () {
   });
 });
 
-//
+//Update the currentList variable.
 chrome.storage.onChanged.addListener(function (changes, areaName) {
   if (changes.blockList != undefined) {
     currentList = changes.blockList.newValue;
   } else {
-    console.log("ignore");
+    // Do nothing.
   }
-  console.log(currentList);
 });
 
 //Currently this blocks the added urls.
@@ -32,9 +31,3 @@ chrome.webRequest.onBeforeRequest.addListener(
         }
     }, {urls: []}
 );
-
-
-//! Another option to consider.
-// chrome.webNavigation.onCompleted.addListener(function() {
-//   alert("This is my favorite website!");
-// }, {url: [{urlMatches : 'https://www.youtube.com/'}]});

@@ -5,7 +5,7 @@ $(function() {
     chrome.storage.sync.get({current_url: ""}, function(url) {
         if(url.current_url != "") {
             //Regex to trim internet urls.
-            let re = /([a-zA-Z-]*\.)+\w*/;
+            let re = /([a-zA-Z0-9-]*\.)+\w*/;
             let old_url = url.current_url;
             let trimmed_url = re.exec(old_url);
             //If it is a trimmable url, trim it.
