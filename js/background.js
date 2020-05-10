@@ -1,16 +1,39 @@
+let currentList = [];
+
 //Initializes extension.
-chrome.runtime.onInstalled.addListener(function() {
-    chrome.storage.sync.set({blockList: [], current_url: ""}, function() {
-      console.log("Initialized extension.");
-    });
+chrome.runtime.onInstalled.addListener(function () {
+  chrome.storage.sync.set({ blockList: [], current_url: "" }, function () {
+    console.log("Initialized extension.");
   });
+});
+
+//
+chrome.storage.onChanged.addListener(function (changes, areaName) {
+  if (changes.blockList != undefined) {
+    currentList = changes.blockList.newValue;
+  } else {
+    console.log("ignore");
+  }
+  console.log(currentList);
+});
 
 //! Blocking Example
-// chrome.webRequest.onBeforeRequest.addListener(
-//     function(details) {return { cancel:true }},
-//     {urls: ["*://*.zedo.com/*"]},
-//     ["blocking"]
-// );
+chrome.webRequest.onBeforeRequest.addListener(
+    function(details) {
+        if(currentList.length > 0) {
+          console.log(currentList);
+          chrome.webRequest.onBeforeRequest.addListener(
+            function(details) {
+              return {cancel: true};
+            }, {urls: currentList}, ["blocking"]
+          );
+        }
+        else {
+          return {cancel: false};
+        }
+    }, {urls: []}
+);
+
 
 //! Another option to consider.
 // chrome.webNavigation.onCompleted.addListener(function() {

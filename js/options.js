@@ -5,7 +5,7 @@ $(function() {
     chrome.storage.sync.get({current_url: ""}, function(url) {
         if(url.current_url != "") {
             //Regex to trim internet urls.
-            let re = /[^(http)?(s)?(:\/\/)?](\w*\.)+\w*/;
+            let re = /([a-zA-Z-]*\.)+\w*/;
             let old_url = url.current_url;
             let trimmed_url = re.exec(old_url);
             //If it is a trimmable url, trim it.
@@ -39,6 +39,7 @@ $(function() {
         if(url) {
             $('#block-site').val('');
             $("#url").text($('#block-site').val());
+            url = '*://' + url + '/*';
             //Store the given url if it is not a duplicated.
             chrome.storage.sync.get(['blockList'], function(items) {
                 let list = items.blockList;
