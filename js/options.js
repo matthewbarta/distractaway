@@ -48,7 +48,7 @@ $(function() {
             })
         }
         else {
-            bkg.console.log("Empty url.")
+            alert('ERROR: No URL submitted!')
         }
     })
 });
