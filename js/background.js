@@ -4,9 +4,11 @@ let blockList = [];
 let activeIndex = -1;
 let timer;
 
+//TODO Set up messaging channels to popup.js to send over: blocklist, timeList, activeTab, activeTabTime remaining.
+
 //Initializes extension.
 chrome.runtime.onInstalled.addListener(function () {
-  chrome.storage.sync.set({timeList: [], blockList: [], current_url: "" }, function () {
+  chrome.storage.sync.set({timeList: [], currentURL: "" }, function () {
     console.log("Initialized extension.");
   });
 });
@@ -14,7 +16,8 @@ chrome.runtime.onInstalled.addListener(function () {
 //Countdown method for when tabs are opened.
 const reduceTime = (index) => {
   timeList[index].time--;
-  console.log(timeList[index].time);
+  //! FOR DEBUGGING PURPOSES
+  if(time >= 0) console.log(timeList[index].time);
   //When time runs out.
   if(timeList[index].time == 0) timeExceeded(index);
 };
