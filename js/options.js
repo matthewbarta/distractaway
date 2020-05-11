@@ -39,11 +39,10 @@ $(function() {
         if(url) {
             $('#block-site').val('');
             $("#url").text($('#block-site').val());
-            url = '*://' + url + '/*';
             //Store the given url if it is not a duplicated.
             chrome.storage.sync.get(['timeList'], function(items) {
                 let list = items.timeList;
-                storeTimeList(list, url, bkg);
+                storeTimeList(list, url);
             })
         }
         else {
@@ -55,8 +54,8 @@ $(function() {
 //Checks for a duplicate link, if none exists, add the site to the blocked list.
 function storeTimeList(urlTimeArray, url) {
     //If the link is a duplicate.
-    if(isDuplicateURL(urlTimeArray, url)) {
-        alert('ERROR: This link has already been added to the site list!')
+    if(isInTimeList(urlTimeArray, url)) {
+        alert('This link has already been added to the site list!')
     }
     //If it's a unique URL add it to the timelist, with a default time of 15 seconds.
     else {
@@ -68,7 +67,7 @@ function storeTimeList(urlTimeArray, url) {
 }
 
 //Checks for duplicate url in the urlTimeArray.
-function isDuplicateURL(urlTimeArray, url) {
+function isInTimeList(urlTimeArray, url) {
     const isDuplicate = (item) => item.url == url;
     return urlTimeArray.some(isDuplicate);
 }
