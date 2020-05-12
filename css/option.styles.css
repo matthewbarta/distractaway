@@ -5,18 +5,12 @@ html {
 body {
     height: 100%;
     margin: 0;
-    font-family: 'Ope';
-}
-/*
-.container {
-    height: 100%;
 }
 
 .left-navbar {
     float: left;
     width: 20%;
     height: 100%;
-    background-color: #0bafd4;
 }
 
 .main {
@@ -29,4 +23,3 @@ body {
     padding: 50px 100px;
     height: 100%;
 }
-*/
