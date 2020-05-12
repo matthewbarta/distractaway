@@ -1,9 +1,9 @@
-#popup-window {
+.popup-window {
     width: 200px;
     height: 140px;
 }
 
-#button-div {
+.button-div {
     margin: 0;
     margin-top: 10px;
     position: relative;

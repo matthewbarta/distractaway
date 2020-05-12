@@ -44,46 +44,80 @@ chrome.storage.onChanged.addListener(function (changes) {
 //When the tab changes, get the active tab and check if it's in the blocklist.
 chrome.tabs.onActivated.addListener(function(activeInfo) {
   chrome.tabs.get(activeInfo.tabId, function(tab) {
-    timeActiveTab(tab.url, activeInfo.tabId);
+    let timeState = getTabChangeState(tab.url);
+    timeActiveTab(timeState);
+    changePopup(timeState);
   });
 });
 
 //Current active tab is updated.
 chrome.tabs.onUpdated.addListener(function(id, info, tab) {
-  timeActiveTab(tab.url, id);
+  let timeState = getTabChangeState(tab.url);
+  timeActiveTab(timeState);
+  changePopup(timeState);
 });
 
 //Checks if active tab is on the timed list, if so time it.
-function timeActiveTab(url) {
+function timeActiveTab(timeState) {
+  //If we change state to a blocked or untimed tab.
+  if(timeState == 'blocked' || timeState == 'untimed') {
+    if(timer != undefined) {
+      stopCountdown(timer);
+    }
+  }
+  //Swaps from an unlisted tab to a listed tab.
+  else if(timeState == 'untimedToTimed') {
+    timer = setInterval(reduceTime, 1000, activeIndex);
+  }
+  else if(timeState == 'changedTimedUrl') {
+    stopCountdown(timer);
+    //One second countdown timer on active tab.
+    timer = setInterval(reduceTime,1000, activeIndex);
+  }
+}
+
+//Changes the current popup.
+function changePopup(state) {
+  if(state == 'untimed') {
+    chrome.browserAction.setPopup({popup: 'chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/popup.html'}, function(){});
+  }
+  else if(state == 'blocked') {
+    chrome.browserAction.setPopup({popup: 'chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/blocked.html'}, function(){});
+  }
+  else {
+    chrome.browserAction.setPopup({popup: 'chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/timer.html'}, function(){});
+  }
+}
+
+function getTabChangeState(url) {
+  //Loop over block list to see if the url is one that has been blocked.
+  for(let index = 0; index < blockList.length; index++) {
+    if(url.includes(blockList[index].substring(4, blockList[index].length - 2))) {
+      return changeState = 'blocked';
+    }
+  }
+  //Loop over timed list to see if it one that is being timed still.
   for(let index = 0; index < timeList.length; index++) {
     if(url.includes(timeList[index].url)) {
+      //Wasn't a blacklisted tab before.
       if(activeIndex == -1) {
-        //Start a timer.
-        timer = setInterval(reduceTime, 1000, index);
-        chrome.browserAction.setPopup({popup: 'chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/timer.html'}, function(){});
         activeIndex = index;
-        return;
+        return 'untimedToTimed';
       }
       //Same URL as before, keep the timer running.
       else if(activeIndex == index) {
-        chrome.browserAction.setPopup({popup: 'chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/timer.html'}, function(){});
-        return;
+        return 'sameTimedUrl';
       }
       //Stop an existing timer on a previous tab, start a new one on a current tab.
       else {
-        stopCountdown(timer);
         activeIndex = index;
-        //One second countdown timer on active tab.
-        timer = setInterval(reduceTime,1000, index);
-        chrome.browserAction.setPopup({popup: 'chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/timer.html'}, function(){});
-        return;
+        return 'changedTimedUrl'
       }
     }
   }
-  //If the item isn't on the blocklist and there is an active timer, shut it off.
-  if(timer != undefined) stopCountdown(timer);
-  chrome.browserAction.setPopup({popup: 'chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/popup.html'}, function(){});
+  //The item isn't on either list.
   activeIndex = -1;
+  return 'untimed';
 }
 
 //Blocks sites whose time has run out.
@@ -92,8 +126,7 @@ chrome.webRequest.onBeforeRequest.addListener(
         if(blockList.length > 0) {
           chrome.webRequest.onBeforeRequest.addListener(
             function() {
-              //TODO change redirect URL to a specific area on Options.
-              return {redirectUrl: "chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/options.html"};
+              return {cancel: true};
             }, {urls: blockList}, ["blocking"]
           );
         }

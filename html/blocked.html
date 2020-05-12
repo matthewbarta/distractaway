@@ -12,14 +12,19 @@
     <link rel="stylesheet" href="../css/popup.styles.css" />
   </head>
 
-  <body id="popup-window">
+  <body class="popup-window">
     <div class="container">
-      <div id="popup-blocked">
+      <div id="popup-not-blocked">
         <div class="row">
           <div class="blocked-state-text">
-            <h5 class="text-danger">
-              This page is BLOCKED for the remainder of the day.
-            </h5>
+            <h5 class="text-danger" id="blocked-text">This page is currently not blocked.</h5>
+          </div>
+        </div>
+        <div class="row">
+          <div class="button-div">
+            <button id="settings-button" class="btn btn-danger btn-large">
+              Site Settings
+            </button>
           </div>
         </div>
       </div>
