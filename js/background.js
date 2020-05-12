@@ -45,6 +45,7 @@ chrome.storage.onChanged.addListener(function (changes) {
   }
 });
 
+//TODO Open correct popup window for each situation. .
 //When the tab changes, get the active tab and check if it's in the blocklist.
 chrome.tabs.onActivated.addListener(function(activeInfo) {
   chrome.tabs.get(activeInfo.tabId, function(tab) {
@@ -92,7 +93,8 @@ chrome.webRequest.onBeforeRequest.addListener(
         if(blockList.length > 0) {
           chrome.webRequest.onBeforeRequest.addListener(
             function() {
-              return {cancel: true};
+              //TODO change redirect URL to a specific area on Options.
+              return {redirectUrl: "chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/options.html"};
             }, {urls: blockList}, ["blocking"]
           );
         }
