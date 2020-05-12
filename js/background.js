@@ -5,10 +5,6 @@ let activeIndex = -1;
 let timer;
 
 //TODO Set up messaging channels to popup.js to send over: blocklist, timeList, activeTab, activeTabTime remaining.
-//TODO LOOK INTO SETPOPUP
-// chrome.browserAction.setPopup({popup: 'chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/blocked.html'}, function(){
-//   console.log('set');
-// });
 
 //Initializes extension.
 chrome.runtime.onInstalled.addListener(function () {
@@ -45,17 +41,16 @@ chrome.storage.onChanged.addListener(function (changes) {
   }
 });
 
-//TODO Open correct popup window for each situation. .
 //When the tab changes, get the active tab and check if it's in the blocklist.
 chrome.tabs.onActivated.addListener(function(activeInfo) {
   chrome.tabs.get(activeInfo.tabId, function(tab) {
-    timeActiveTab(tab.url);
+    timeActiveTab(tab.url, activeInfo.tabId);
   });
 });
 
 //Current active tab is updated.
 chrome.tabs.onUpdated.addListener(function(id, info, tab) {
-  timeActiveTab(tab.url);
+  timeActiveTab(tab.url, id);
 });
 
 //Checks if active tab is on the timed list, if so time it.
@@ -65,11 +60,13 @@ function timeActiveTab(url) {
       if(activeIndex == -1) {
         //Start a timer.
         timer = setInterval(reduceTime, 1000, index);
+        chrome.browserAction.setPopup({popup: 'chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/timer.html'}, function(){});
         activeIndex = index;
         return;
       }
       //Same URL as before, keep the timer running.
       else if(activeIndex == index) {
+        chrome.browserAction.setPopup({popup: 'chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/timer.html'}, function(){});
         return;
       }
       //Stop an existing timer on a previous tab, start a new one on a current tab.
@@ -78,12 +75,14 @@ function timeActiveTab(url) {
         activeIndex = index;
         //One second countdown timer on active tab.
         timer = setInterval(reduceTime,1000, index);
+        chrome.browserAction.setPopup({popup: 'chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/timer.html'}, function(){});
         return;
       }
     }
   }
   //If the item isn't on the blocklist and there is an active timer, shut it off.
   if(timer != undefined) stopCountdown(timer);
+  chrome.browserAction.setPopup({popup: 'chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/popup.html'}, function(){});
   activeIndex = -1;
 }
 
