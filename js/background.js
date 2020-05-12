@@ -5,6 +5,10 @@ let activeIndex = -1;
 let timer;
 
 //TODO Set up messaging channels to popup.js to send over: blocklist, timeList, activeTab, activeTabTime remaining.
+//TODO LOOK INTO SETPOPUP
+// chrome.browserAction.setPopup({popup: 'chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/blocked.html'}, function(){
+//   console.log('set');
+// });
 
 //Initializes extension.
 chrome.runtime.onInstalled.addListener(function () {

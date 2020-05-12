@@ -6,19 +6,6 @@ $(function () {
     if (url.currentURL != "") {
         let trimmedURL = trimURL(url.currentURL);
         $("#block-site").val(trimmedURL);
-        $("#url").text("*" + $("#block-site").val() + "*");
-    }
-    //If there isn't a current url set the text to be blank.
-    else {
-      $("#url").text("");
-    }
-  });
-  //When modifying the url.
-  $("#block-site").keyup(function () {
-    if ($("#block-site").val() != "") {
-      $("#url").text("*" + $("#block-site").val() + "*");
-    } else {
-      $("#url").text($("#block-site").val());
     }
   });
   //On submission
@@ -26,7 +13,6 @@ $(function () {
     let url = $("#block-site").val();
     if (url) {
       $("#block-site").val("");
-      $("#url").text($("#block-site").val());
       //Store the given url if it is not a duplicated.
       chrome.storage.sync.get(["timeList"], function (items) {
         let list = items.timeList;
@@ -78,6 +64,5 @@ chrome.storage.onChanged.addListener(function (changes) {
   if (changes.currentURL != undefined) {
     //Trim the new url and change the DOM to reflect.
     $("#block-site").val(trimURL(changes.currentURL.newValue));
-    $("#url").text("*" + $("#block-site").val() + "*");
   }
 });

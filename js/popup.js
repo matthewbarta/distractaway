@@ -16,11 +16,4 @@ $(function () {
       });
     });
   });
-
-  //Test to toggle divs.
-  $("#not-blocked-text").click(function() {
-    $("#popup-not-blocked").hide();
-    $("#popup-timer").show();
-  });
-
 });
