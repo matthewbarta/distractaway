@@ -17,7 +17,7 @@ chrome.runtime.onInstalled.addListener(function () {
 const reduceTime = (index) => {
   timeList[index].time--;
   //! FOR DEBUGGING PURPOSES
-  if(time >= 0) console.log(timeList[index].time);
+  if(timeList[index].time >= 0) console.log(timeList[index].time);
   //When time runs out.
   if(timeList[index].time == 0) timeExceeded(index);
 };
