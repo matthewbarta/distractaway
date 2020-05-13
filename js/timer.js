@@ -1,7 +1,6 @@
-const bkg = chrome.extension.getBackgroundPage();
+let myPort = chrome.runtime.connect();
 
-var myPort = chrome.runtime.connect({name:"port-from-cs"});
-
+//Controls the time display.
 $(function() {
     myPort.onMessage.addListener(function(message) {
         let time = message.time;
@@ -15,6 +14,7 @@ $(function() {
     });
 });
 
+//For formatting the time.
 function makeDoubleDigits(time) {
     if(time < 10) return '0' + time.toString();
     return time;

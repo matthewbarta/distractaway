@@ -109,6 +109,9 @@ function changePopup(state) {
   else if(state == 'blocked') {
     chrome.browserAction.setPopup({popup: 'chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/blocked.html'}, function(){});
   }
+  else if(state == 'options') {
+    chrome.browserAction.setPopup({popup: 'chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/options-popup.html'}, function(){});
+  }
   else {
     chrome.browserAction.setPopup({popup: 'chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/timer.html'}, function(){});
   }
@@ -118,7 +121,7 @@ function getTabChangeState(url) {
   //Loop over block list to see if the url is one that has been blocked.
   for(let index = 0; index < blockList.length; index++) {
     if(url.includes(blockList[index].substring(4, blockList[index].length - 2))) {
-      return changeState = 'blocked';
+      return 'blocked';
     }
   }
   //Loop over timed list to see if it one that is being timed still.
@@ -142,6 +145,7 @@ function getTabChangeState(url) {
   }
   //The item isn't on either list.
   activeIndex = -1;
+  if(url == 'chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/options.html') return 'options';
   return 'untimed';
 }
 
