@@ -7,23 +7,35 @@ body {
     margin: 0;
 }
 
+.page-content {
+    float: right;
+    width: 80%;
+    height: 100%;
+    margin: 0;
+}
+
 #left-navbar {
     float: left;
     width: 20%;
     height: 100%;
 }
 
-#site-list {
-    display: none;
+.weekday-text {
+    margin-top: 20px;
 }
 
-.main {
-    width: 80%;
-    height: 100%;
-    background-color: white;
-    float: right;
+.checkbox-label {
+    margin: 0px 10px;
 }
-.content {
-    padding: 50px 100px;
-    height: 100%;
+
+.input-time {
+    margin: 0px 10px;
+}
+
+.weekday-checkbox {
+    margin: 0px 10px;
+}
+
+#site-list {
+    display: none;
 }
