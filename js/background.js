@@ -3,8 +3,14 @@ let timeList = [];
 let blockList = [];
 let activeIndex = -1;
 let timer;
+let port;
 
-//TODO Set up messaging channels to popup.js to send over: blocklist, timeList, activeTab, activeTabTime remaining.
+//Connect the content script.
+chrome.runtime.onConnect.addListener((p) => {
+  port = p;
+});
+
+//TODO Set up messaging channels to popup.js to send over: activeTabTime remaining.
 
 //Initializes extension.
 chrome.runtime.onInstalled.addListener(function () {
@@ -15,17 +21,30 @@ chrome.runtime.onInstalled.addListener(function () {
 
 //Countdown method for when tabs are opened.
 const reduceTime = (index) => {
-  timeList[index].time--;
+  let time = timeList[index].time--;
   //! FOR DEBUGGING PURPOSES
-  if(timeList[index].time >= 0) console.log(timeList[index].time);
+  console.log(time);
+  //if(time <= 1)console.log(port);
+  if(time >= 0) {
+    if(port != undefined) {
+      port.onDisconnect.addListener((p) => {
+        if(p.error) {
+          console.log(`There was a port error: ${p.error}`);
+        }
+        port = undefined;
+      });
+      port.postMessage({time: time});
+    }
+  }
   //When time runs out.
-  if(timeList[index].time == 0) timeExceeded(index);
+  if(time == 0) timeExceeded(index);
 };
 
 //When time runs out - stop the timer and push the url to blocklist.
 function timeExceeded(index) {
   stopCountdown(timer);
-  alert(`You have reached your daily limit on ${timeList[index].url}`);
+  alert(`You have reached your daily limit on ${timeList[index].url}!`);
+  chrome.browserAction.setPopup({popup: 'chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/blocked.html'}, function(){});
   blockList.push(`*://${timeList[index].url}/*`);
 }
 
