@@ -3,18 +3,38 @@ let timeList = [];
 let blockList = [];
 let activeIndex = -1;
 let timer;
+let midnightTimer;
 let port;
-
-//TODO set up days
-let day = 0;
+let today;
 
 //TODO popup for when the site is blocked, but just not on that specific day - links to sitelist, also a blocked all day popup redirects to BLOCKED.
+//TODO CLOSE POPUP ON MIDNIGHT
+//TODO Timer for midnight!
 
 //Initializes extension.
 chrome.runtime.onInstalled.addListener(function () {
-  chrome.storage.sync.set({timeList: [], currentURL: "" }, function () {
+  today = new Date().getDay();
+  chrome.storage.sync.set({timeList: [], currentURL: "", date: new Date()}, function () {
     console.log("Initialized extension.");
+    console.log(timeTillMidnight());
   });
+});
+
+chrome.runtime.onStartup.addListener(function() {
+  const currentDate = new Date();
+  today = currentDate.getDay();
+  chrome.storage.sync.get(['date'], function(items) {
+    const lastDate = items.date;
+    //If it is no longer the same day as the last time the extension was used.
+    if(lastDate.getDay() != currentDate.getDay() || lastDate.getDate() != currentDate.getDate() || lastDate.getMonth() != currentDate.getMonth() || lastDate.getFullYear() != currentDate.getFullYear()) {
+      resetDailyLimits(lastDate.getDay());
+    }
+    chrome.storage.sync.set({date: currentDate}, function() {
+      console.log('NEW DATE SET to ');
+      console.log(currentDate);
+    })
+  })
+
 });
 
 //Connect the timer.js script.
@@ -24,7 +44,7 @@ chrome.runtime.onConnect.addListener((p) => {
 
 //Countdown method for when tabs are opened.
 const reduceTime = (index) => {
-  let time = timeList[index].time[day].dayLimit - timeList[index].time[day].dailyTime++;
+  let time = timeList[index].time[today].dayLimit - timeList[index].time[today].dailyTime++;
   //For the countdown - sends a message to the timer script.
   if(time >= 0) {
     //When time runs out.
@@ -48,17 +68,41 @@ const reduceTime = (index) => {
   }
 };
 
+function onMidnight() {
+  chrome.storage.sync.set({date: new Date()}, function() {
+    console.log('NEW DATE SET by a midnight lapse to  ');
+    console.log(currentDate);
+  });
+  resetDailyLimits(today);
+  today = new Date().getDate();
+  //RESET TAB INFO
+  chrome.tabs.get(activeInfo.tabId, function(tab) {
+    let timeState = getTabChangeState(tab.url);
+    timeActiveTab(timeState);
+    changePopup(timeState);
+  });
+}
+
 //When time runs out - stop the timer and push the url to blocklist.
 function timeExceeded(index) {
   stopCountdown(timer);
-  //! DEBUG
-  console.log(timeList[index]);
   blockList.push(`*://${timeList[index].url}/*`);
   chrome.browserAction.setPopup({popup: 'chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/blocked.html'}, function(){});
   //Set a timeout on the alert for good measure.
   setTimeout(() => {
     alert(`You have reached your daily limit on ${timeList[index].url}!`);
   }, 1000);
+}
+
+//Resets the daily time limits for the last used day.
+function resetDailyLimits(day) {
+  for(let index = 0; index < timeList.length; index++) {
+    timeList[index].time[day].dayLimit = 0;
+  }
+  chrome.storage.sync.set({timeList: timeList}, function() {
+    console.log('RESET LIMITS')
+    console.log(timeList);
+  });
 }
 
 //Function to stop the countdown.
@@ -158,6 +202,14 @@ function getTabChangeState(url) {
   activeIndex = -1;
   if(url == 'chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/options.html') return 'options';
   return 'untimed';
+}
+
+function timeTillMidnight() {
+  let now = new Date();
+  let midnight = new Date();
+  midnight.setHours(24, 0, 0, 0);
+  const timeDifference = now.getTime() - midnight.getTime();
+  return Math.abs(Math.round(timeDifference / 1000));
 }
 
 //Blocks sites whose time has run out.

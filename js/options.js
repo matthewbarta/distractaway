@@ -40,7 +40,7 @@ $(function () {
     });
     $(`#${WEEKDAYS[day]}-hr`).keyup(function () {
       // Check correct, else revert back to old value.
-      if (!$(this).val() || (parseInt($(this).val()) <= 59 && parseInt($(this).val()) >= 0))
+      if (!$(this).val() || (parseInt($(this).val()) <= 23 && parseInt($(this).val()) >= 0))
         ;
       else
         $(this).val($(this).data("old-hr"));
@@ -50,7 +50,7 @@ $(function () {
       $(this).data("old-min", $(this).val());
     });
     $(`#${WEEKDAYS[day]}-min`).keyup(function () {
-      if (!$(this).val() || (parseInt($(this).val()) <= 23 && parseInt($(this).val()) >= 0))
+      if (!$(this).val() || (parseInt($(this).val()) <= 59 && parseInt($(this).val()) >= 0))
         ;
       else
         $(this).val($(this).data("old-min"));
