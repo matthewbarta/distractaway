@@ -30,6 +30,7 @@ $(function () {
     }
   });
 
+  //Handles incorrect min/max on inputs.
   for(let day = 0; day < WEEKDAYS.length; day++) {
     //Code from stack overflow to handle incorrectly min/max on inputs.
     $(`#${WEEKDAYS[day]}-hr`).keydown(function () {
@@ -39,13 +40,13 @@ $(function () {
     });
     $(`#${WEEKDAYS[day]}-hr`).keyup(function () {
       // Check correct, else revert back to old value.
-      if (!$(this).val() || (parseInt($(this).val()) <= 23 && parseInt($(this).val()) >= 0))
+      if (!$(this).val() || (parseInt($(this).val()) <= 59 && parseInt($(this).val()) >= 0))
         ;
       else
         $(this).val($(this).data("old-hr"));
     });
     $(`#${WEEKDAYS[day]}-min`).keydown(function () {
-      if (!$(this).val() || (parseInt($(this).val()) <= 23 && parseInt($(this).val()) >= 0))
+      if (!$(this).val() || (parseInt($(this).val()) <= 59 && parseInt($(this).val()) >= 0))
       $(this).data("old-min", $(this).val());
     });
     $(`#${WEEKDAYS[day]}-min`).keyup(function () {
@@ -79,11 +80,10 @@ function storeTimeList(urlTimeArray, url) {
 }
 
 function getTimesByWeekday() {
-
   let weekdayTimes = [];
   for(let day = 0; day < WEEKDAYS.length; day++) {
-    const hours = $(`#${WEEKDAYS[day]}-hr`).val();
-    const minutes = $(`#${WEEKDAYS[day]}-min`).val();
+    const hours = parseInt($(`#${WEEKDAYS[day]}-hr`).val());
+    const minutes = parseInt($(`#${WEEKDAYS[day]}-min`).val());
     weekdayTimes.push({dailyTime: 0, dayLimit: convertToSeconds(hours, minutes)});
   }
   return weekdayTimes;
