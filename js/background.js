@@ -8,11 +8,9 @@ let port;
 //TODO set up days
 
 //TODO Doesn't clear form on submission.
-
-//TODO ERROR where adding a new site resets the previous sites daily times.
 let day = 0;
 
-//TODO popup for when the site is blocked, but just not on that specific day - links to sitelist, also a blocked all day popup.
+//TODO popup for when the site is blocked, but just not on that specific day - links to sitelist, also a blocked all day popup redirects to BLOCKED.
 
 //Initializes extension.
 chrome.runtime.onInstalled.addListener(function () {
@@ -28,7 +26,7 @@ chrome.runtime.onConnect.addListener((p) => {
 
 //Countdown method for when tabs are opened.
 const reduceTime = (index) => {
-  let time = timeList[index].time[day]--;
+  let time = timeList[index].time[day].dayLimit - timeList[index].time[day].dailyTime++;
   //For the countdown - sends a message to the timer script.
   if(time >= 0) {
     //When time runs out.
@@ -66,6 +64,8 @@ function timeExceeded(index) {
 //Function to stop the countdown.
 const stopCountdown = (timer) => {
   clearInterval(timer);
+  //Store the updated daily time used.
+  chrome.storage.sync.set({timeList: timeList}, function() {});
 };
 
 //Whenever the timeList gets a new component added update it on this script.

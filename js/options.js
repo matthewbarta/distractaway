@@ -47,13 +47,11 @@ function storeTimeList(urlTimeArray, url) {
 function getTimesByWeekday() {
   const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
   let weekdayTimes = [];
-
   for(let day = 0; day < weekdays.length; day++) {
     const hours = $(`#${weekdays[day]}-hr`).val();
     const minutes = $(`#${weekdays[day]}-min`).val();
-    weekdayTimes.push(convertToSeconds(hours, minutes));
+    weekdayTimes.push({dailyTime: 0, dayLimit: convertToSeconds(hours, minutes)});
   }
-
   return weekdayTimes;
 }
 
