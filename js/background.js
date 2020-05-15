@@ -6,8 +6,6 @@ let timer;
 let port;
 
 //TODO set up days
-
-//TODO Doesn't clear form on submission.
 let day = 0;
 
 //TODO popup for when the site is blocked, but just not on that specific day - links to sitelist, also a blocked all day popup redirects to BLOCKED.
@@ -53,6 +51,8 @@ const reduceTime = (index) => {
 //When time runs out - stop the timer and push the url to blocklist.
 function timeExceeded(index) {
   stopCountdown(timer);
+  //! DEBUG
+  console.log(timeList[index]);
   blockList.push(`*://${timeList[index].url}/*`);
   chrome.browserAction.setPopup({popup: 'chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/blocked.html'}, function(){});
   //Set a timeout on the alert for good measure.

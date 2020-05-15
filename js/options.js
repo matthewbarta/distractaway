@@ -1,3 +1,6 @@
+const WEEKDAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+
+//! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();
 
 $(function () {
@@ -12,19 +15,24 @@ $(function () {
         $("#block-site").val(trimmedURL);
     }
   });
-  //On submission
+  //On submission, reset the form and send the data to the background script.
   $("#submit-button").click(function () {
     let url = $("#block-site").val();
     if (url) {
-      $("#block-site").val("");
       //Store the given url if it is not a duplicated.
       chrome.storage.sync.get(["timeList"], function (items) {
         let list = items.timeList;
         storeTimeList(list, url);
+        resetForm();
       });
     } else {
       alert("No URL submitted!");
     }
+  });
+
+  //Reset the form
+  $("#reset-button").click(function() {
+    resetForm();
   });
 });
 
@@ -45,11 +53,11 @@ function storeTimeList(urlTimeArray, url) {
 }
 
 function getTimesByWeekday() {
-  const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+
   let weekdayTimes = [];
-  for(let day = 0; day < weekdays.length; day++) {
-    const hours = $(`#${weekdays[day]}-hr`).val();
-    const minutes = $(`#${weekdays[day]}-min`).val();
+  for(let day = 0; day < WEEKDAYS.length; day++) {
+    const hours = $(`#${WEEKDAYS[day]}-hr`).val();
+    const minutes = $(`#${WEEKDAYS[day]}-min`).val();
     weekdayTimes.push({dailyTime: 0, dayLimit: convertToSeconds(hours, minutes)});
   }
   return weekdayTimes;
@@ -90,9 +98,8 @@ chrome.storage.onChanged.addListener(function (changes) {
 
 //I put it into a function for if I want to make it so that users can individually select days, rather than see a whole form at once.
 function createWeek() {
-  const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-  for(let day = 0; day < weekdays.length; day++) {
-    createWeekday(weekdays[day]);
+  for(let day = 0; day < WEEKDAYS.length; day++) {
+    createWeekday(WEEKDAYS[day]);
   }
 }
 
@@ -150,4 +157,15 @@ function createInputElement(parentId="", type="", name="", value="", classTag=""
 //Capitalize the first letter.
 function capitalize(word) {
   return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
+//Clears the form data.
+function resetForm() {
+  $("#block-site").val("");
+  for(let day = 0; day < WEEKDAYS.length; day++) {
+    $(`#${WEEKDAYS[day]}-hr`).val(0);
+    $(`#${WEEKDAYS[day]}-min`).val(0);
+    $(`#${WEEKDAYS[day]}-blocked`).prop("checked", false);
+    $(`#${WEEKDAYS[day]}-unrestricted`).prop("checked", false);
+  }
 }

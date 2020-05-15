@@ -5,8 +5,9 @@ $(function() {
     myPort.onMessage.addListener(function(message) {
         let time = message.time;
         let seconds = time % 60;
-        let minutes = Math.floor(seconds / 60);
-        let hours = Math.floor(minutes / 60);
+        let hours = Math.floor(time / 3600);
+        let minutes = Math.floor((time % 3600) / 60);
+
         $('#time').text(`${makeDoubleDigits(hours)}:${makeDoubleDigits(minutes)}:${makeDoubleDigits(seconds)}`);
         if(time == 0) {
             window.close();
