@@ -23,7 +23,7 @@ $(function () {
         storeTimeList(list, url);
       });
     } else {
-      alert("ERROR: No URL submitted!");
+      alert("No URL submitted!");
     }
   });
 });
@@ -32,15 +32,33 @@ $(function () {
 function storeTimeList(urlTimeArray, url) {
   //If the link is a duplicate.
   if (isInTimeList(urlTimeArray, url)) {
-    alert("This link has already been added to the site list!");
+    alert("This link has already been added to the site list, if you want to modify it, go to the site list.");
   }
   //If it's a unique URL add it to the timelist, with a default time of 15 seconds.
   else {
-    urlTimeArray.push({ url: url, time: 15 });
+    const times = getTimesByWeekday();
+    urlTimeArray.push({ url: url, time: times});
     chrome.storage.sync.set({ timeList: urlTimeArray }, function () {
       //Do something after set.
     });
   }
+}
+
+function getTimesByWeekday() {
+  const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+  let weekdayTimes = [];
+
+  for(let day = 0; day < weekdays.length; day++) {
+    const hours = $(`#${weekdays[day]}-hr`).val();
+    const minutes = $(`#${weekdays[day]}-min`).val();
+    weekdayTimes.push(convertToSeconds(hours, minutes));
+  }
+
+  return weekdayTimes;
+}
+
+function convertToSeconds(hours, minutes) {
+  return hours * 3600 + minutes * 60;
 }
 
 //Checks for duplicate url in the urlTimeArray.
@@ -49,8 +67,9 @@ function isInTimeList(urlTimeArray, url) {
   return urlTimeArray.some(isDuplicate);
 }
 
+//Trims the url to a reasonable setup - e.g. https://facebook.com/GV9?utB_eg2j to www.facebook.com
 function trimURL(url) {
-  //Regex to trim internet urls.
+  //Regex to trim urls.
   let re = /([a-zA-Z0-9-]*\.)+\w*/;
   let trimmed = re.exec(url);
   //If it is a trimmable url, trim it.
@@ -73,7 +92,7 @@ chrome.storage.onChanged.addListener(function (changes) {
 
 //I put it into a function for if I want to make it so that users can individually select days, rather than see a whole form at once.
 function createWeek() {
-  const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+  const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
   for(let day = 0; day < weekdays.length; day++) {
     createWeekday(weekdays[day]);
   }

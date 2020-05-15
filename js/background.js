@@ -5,10 +5,10 @@ let activeIndex = -1;
 let timer;
 let port;
 
-//Connect the content script.
-chrome.runtime.onConnect.addListener((p) => {
-  port = p;
-});
+//TODO set up days
+let day = 0;
+
+//TODO popup for when the site is blocked, but just not on that specific day - links to sitelist, also a blocked all day popup.
 
 //Initializes extension.
 chrome.runtime.onInstalled.addListener(function () {
@@ -17,9 +17,14 @@ chrome.runtime.onInstalled.addListener(function () {
   });
 });
 
+//Connect the timer.js script.
+chrome.runtime.onConnect.addListener((p) => {
+  port = p;
+});
+
 //Countdown method for when tabs are opened.
 const reduceTime = (index) => {
-  let time = timeList[index].time--;
+  let time = timeList[index].time[day]--;
   //For the countdown - sends a message to the timer script.
   if(time >= 0) {
     //When time runs out.
@@ -117,6 +122,7 @@ function changePopup(state) {
   }
 }
 
+//Gets the state of the tab which has been swapped to or updated.
 function getTabChangeState(url) {
   //Loop over block list to see if the url is one that has been blocked.
   for(let index = 0; index < blockList.length; index++) {
