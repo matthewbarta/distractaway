@@ -6,14 +6,13 @@ let timer;
 let midnightTimer;
 let port;
 let today;
-
 //TODO popup for when the site is blocked, but just not on that specific day - links to sitelist, also a blocked all day popup redirects to BLOCKED.
-//TODO Timer for midnight!
 
 //Initializes extension.
 chrome.runtime.onInstalled.addListener(function () {
   today = new Date().getDay();
-  chrome.storage.sync.set({timeList: [], currentURL: "", date: new Date()}, function () {
+  const date = new Date();
+  chrome.storage.sync.set({timeList: [], currentURL: "", date: date.toJSON()}, function () {
     console.log("Initialized extension.");
     midnightTimer = setTimeout(onMidnight, timeTillMidnight());
   });
@@ -24,13 +23,13 @@ chrome.runtime.onStartup.addListener(function() {
   //Compare date since last startup.
   const currentDate = new Date();
   today = currentDate.getDay();
-  chrome.storage.sync.get(['date'], function(items) {
-    const lastDate = items.date;
+  chrome.storage.sync.get('date', function(items) {
+    const lastDate = new Date(items.date);
     //If it is no longer the same day as the last time the extension was used.
     if(lastDate.getDay() != currentDate.getDay() || lastDate.getDate() != currentDate.getDate() || lastDate.getMonth() != currentDate.getMonth() || lastDate.getFullYear() != currentDate.getFullYear()) {
       resetDailyLimits(lastDate.getDay());
     }
-    chrome.storage.sync.set({date: currentDate}, function() {
+    chrome.storage.sync.set({date: currentDate.toJSON()}, function() {
       console.log('NEW DATE SET to ');
       console.log(currentDate);
     });
@@ -71,21 +70,22 @@ const reduceTime = (index) => {
 
 function onMidnight() {
   //Set the new date.
-  chrome.storage.sync.set({date: new Date()}, function() {
-    console.log('NEW DATE SET by a midnight lapse to  ');
-    console.log(currentDate);
+  chrome.storage.sync.set({date: new Date().toJSON()}, function() {
+    console.log('NEW DATE SET by a midnight lapse');
   });
   //Reset daily limit.
   resetDailyLimits(today);
   today = new Date().getDay();
   //RESET TAB INFO
   chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+    console.log('TABS');
+    console.log(tabs);
     let timeState = getTabChangeState(tabs[0].url);
     timeActiveTab(timeState);
     changePopup(timeState);
   });
-  //TODO CLOSE POPUP ON MIDNIGHT
-  midnightTimer = setTimeout(onMidnight, timeTillMidnight);
+  // //TODO CLOSE POPUP ON MIDNIGHT
+  setTimeout(onMidnight, timeTillMidnight());
 }
 
 //When time runs out - stop the timer and push the url to blocklist.
@@ -215,11 +215,12 @@ function getTabChangeState(url) {
 }
 
 function timeTillMidnight() {
-  let now = new Date();
-  let midnight = new Date();
-  midnight.setHours(24, 0, 0, 0);
-  const timeDifference = now.getTime() - midnight.getTime();
-  return Math.abs(timeDifference);
+  // let now = new Date();
+  // let midnight = new Date();
+  // midnight.setHours(24, 0, 0, 0);
+  // const timeDifference = now.getTime() - midnight.getTime();
+  // return Math.abs(timeDifference);
+  return 60 * 1000;
 }
 
 //Blocks sites whose time has run out.

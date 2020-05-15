@@ -1,5 +1,7 @@
 const WEEKDAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
+//TODO Checkbox stuff - disable other options when checkbox selected.
+
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();
 
