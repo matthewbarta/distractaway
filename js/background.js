@@ -35,8 +35,7 @@ chrome.runtime.onStartup.addListener(function() {
       console.log(currentDate);
     });
     midnightTimer = setTimeout(onMidnight, timeTillMidnight());
-  })
-
+  });
 });
 
 //Connect the timer.js script.
@@ -78,10 +77,10 @@ function onMidnight() {
   });
   //Reset daily limit.
   resetDailyLimits(today);
-  today = new Date().getDate();
+  today = new Date().getDay();
   //RESET TAB INFO
-  chrome.tabs.get(activeInfo.tabId, function(tab) {
-    let timeState = getTabChangeState(tab.url);
+  chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+    let timeState = getTabChangeState(tabs[0].url);
     timeActiveTab(timeState);
     changePopup(timeState);
   });
