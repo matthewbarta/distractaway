@@ -91,6 +91,7 @@ const reduceTime = (index) => {
 */
 
 function onMidnight() {
+  activeIndex = -1;
   //Reset blockist.
   blockList = [];
   //Clear timers.
@@ -144,7 +145,7 @@ function timeExceeded(index) {
 //Resets the daily time limits for the last used day.
 function resetDailyLimits(day) {
   for (let index = 0; index < timeList.length; index++) {
-    timeList[index].time[day].dayLimit = 0;
+    timeList[index].time[day].dailyTime = 0;
   }
   chrome.storage.sync.set({ timeList: timeList }, function () {});
 }
@@ -294,9 +295,16 @@ function timeTillMidnight() {
 
 //Blocks sites whose time has run out.
 chrome.webRequest.onBeforeRequest.addListener(
-  function () {
-    if (blockList.length > 0) return { cancel: true };
-  },
-  { urls: blockList },
-  ["blocking"]
+  function() {
+      if(blockList.length > 0) {
+        chrome.webRequest.onBeforeRequest.addListener(
+          function() {
+            if(blockList.length > 0 )return {cancel: true};
+          }, {urls: blockList}, ["blocking"]
+        );
+      }
+      else {
+        return {cancel: false};
+      }
+  }, {urls: []}
 );
