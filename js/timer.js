@@ -7,7 +7,6 @@ $(function() {
         let seconds = time % 60;
         let hours = Math.floor(time / 3600);
         let minutes = Math.floor((time % 3600) / 60);
-
         $('#time').text(`${makeDoubleDigits(hours)}:${makeDoubleDigits(minutes)}:${makeDoubleDigits(seconds)}`);
         if(time == 0) {
             window.close();

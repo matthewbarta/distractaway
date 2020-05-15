@@ -30,6 +30,32 @@ $(function () {
     }
   });
 
+  for(let day = 0; day < WEEKDAYS.length; day++) {
+    //Code from stack overflow to handle incorrectly min/max on inputs.
+    $(`#${WEEKDAYS[day]}-hr`).keydown(function () {
+      // Save old value.
+      if (!$(this).val() || (parseInt($(this).val()) <= 23 && parseInt($(this).val()) >= 0))
+      $(this).data("old-hr", $(this).val());
+    });
+    $(`#${WEEKDAYS[day]}-hr`).keyup(function () {
+      // Check correct, else revert back to old value.
+      if (!$(this).val() || (parseInt($(this).val()) <= 23 && parseInt($(this).val()) >= 0))
+        ;
+      else
+        $(this).val($(this).data("old-hr"));
+    });
+    $(`#${WEEKDAYS[day]}-min`).keydown(function () {
+      if (!$(this).val() || (parseInt($(this).val()) <= 23 && parseInt($(this).val()) >= 0))
+      $(this).data("old-min", $(this).val());
+    });
+    $(`#${WEEKDAYS[day]}-min`).keyup(function () {
+      if (!$(this).val() || (parseInt($(this).val()) <= 23 && parseInt($(this).val()) >= 0))
+        ;
+      else
+        $(this).val($(this).data("old-min"));
+    });
+  }
+
   //Reset the form
   $("#reset-button").click(function() {
     resetForm();
