@@ -8,7 +8,6 @@ let port;
 let today;
 
 //TODO popup for when the site is blocked, but just not on that specific day - links to sitelist, also a blocked all day popup redirects to BLOCKED.
-//TODO CLOSE POPUP ON MIDNIGHT
 //TODO Timer for midnight!
 
 //Initializes extension.
@@ -16,11 +15,13 @@ chrome.runtime.onInstalled.addListener(function () {
   today = new Date().getDay();
   chrome.storage.sync.set({timeList: [], currentURL: "", date: new Date()}, function () {
     console.log("Initialized extension.");
-    console.log(timeTillMidnight());
+    midnightTimer = setTimeout(onMidnight, timeTillMidnight());
   });
 });
 
 chrome.runtime.onStartup.addListener(function() {
+  if(midnightTimer != undefined) stopTimeout(midnightTimer);
+  //Compare date since last startup.
   const currentDate = new Date();
   today = currentDate.getDay();
   chrome.storage.sync.get(['date'], function(items) {
@@ -32,7 +33,8 @@ chrome.runtime.onStartup.addListener(function() {
     chrome.storage.sync.set({date: currentDate}, function() {
       console.log('NEW DATE SET to ');
       console.log(currentDate);
-    })
+    });
+    midnightTimer = setTimeout(onMidnight, timeTillMidnight());
   })
 
 });
@@ -69,10 +71,12 @@ const reduceTime = (index) => {
 };
 
 function onMidnight() {
+  //Set the new date.
   chrome.storage.sync.set({date: new Date()}, function() {
     console.log('NEW DATE SET by a midnight lapse to  ');
     console.log(currentDate);
   });
+  //Reset daily limit.
   resetDailyLimits(today);
   today = new Date().getDate();
   //RESET TAB INFO
@@ -81,6 +85,8 @@ function onMidnight() {
     timeActiveTab(timeState);
     changePopup(timeState);
   });
+  //TODO CLOSE POPUP ON MIDNIGHT
+  midnightTimer = setTimeout(onMidnight, timeTillMidnight);
 }
 
 //When time runs out - stop the timer and push the url to blocklist.
@@ -103,6 +109,11 @@ function resetDailyLimits(day) {
     console.log('RESET LIMITS')
     console.log(timeList);
   });
+}
+
+//Stop the midnight timeout.
+const stopTimeout = (timeout) => {
+  clearInterval(timeout);
 }
 
 //Function to stop the countdown.
@@ -209,7 +220,7 @@ function timeTillMidnight() {
   let midnight = new Date();
   midnight.setHours(24, 0, 0, 0);
   const timeDifference = now.getTime() - midnight.getTime();
-  return Math.abs(Math.round(timeDifference / 1000));
+  return Math.abs(timeDifference);
 }
 
 //Blocks sites whose time has run out.
