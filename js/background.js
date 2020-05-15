@@ -6,6 +6,10 @@ let timer;
 let port;
 
 //TODO set up days
+
+//TODO Doesn't clear form on submission.
+
+//TODO ERROR where adding a new site resets the previous sites daily times.
 let day = 0;
 
 //TODO popup for when the site is blocked, but just not on that specific day - links to sitelist, also a blocked all day popup.
@@ -90,7 +94,7 @@ chrome.tabs.onUpdated.addListener(function(id, info, tab) {
 //Checks if active tab is on the timed list, if so time it.
 function timeActiveTab(timeState) {
   //If we change state to a blocked or untimed tab.
-  if(timeState == 'blocked' || timeState == 'untimed') {
+  if(timeState == 'blocked' || timeState == 'untimed' || timeState == 'options') {
     if(timer != undefined) {
       stopCountdown(timer);
     }
@@ -127,6 +131,7 @@ function getTabChangeState(url) {
   //Loop over block list to see if the url is one that has been blocked.
   for(let index = 0; index < blockList.length; index++) {
     if(url.includes(blockList[index].substring(4, blockList[index].length - 2))) {
+      activeIndex = - 1;
       return 'blocked';
     }
   }
