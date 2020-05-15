@@ -1,4 +1,5 @@
 let myPort = chrome.runtime.connect();
+const bkg = chrome.extension.getBackgroundPage();
 
 //Controls the time display.
 $(function() {
@@ -11,6 +12,9 @@ $(function() {
         if(time == 0) {
             window.close();
         }
+        // if(message.midnight != undefined) {
+        //     window.close();
+        // }
     });
 });
 
@@ -19,3 +23,4 @@ function makeDoubleDigits(time) {
     if(time < 10) return '0' + time.toString();
     return time;
 }
+
