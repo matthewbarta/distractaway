@@ -9,6 +9,7 @@ let today;
 
 //TODO popup for when the site is blocked, but just not on that specific day - links to sitelist, also a blocked all day popup redirects to BLOCKED.
 //TODO popup is messed up for a date switch.
+//TODO check dates for states.
 
 //Initializes extension.
 chrome.runtime.onInstalled.addListener(function () {
@@ -103,25 +104,24 @@ function onMidnight() {
   today = new Date().getDay();
   console.log("Midnight");
   //RESET TAB INFO
-  // let time = 60;
-  // if (port != undefined) {
-  //   port.onDisconnect.addListener((p) => {
-  //     if (p.error) {
-  //       console.log(`There was a port error: ${p.error}`);
-  //     }
-  //     port = undefined;
-  //     return;
-  //   });
-  //   //Failsafe, because the port can disconnect between the time the last statment is read and now.
-  //   try {
-  //     port.postMessage({ time: time, midnight: "midnight" });
-  //   } catch (error) {
-  //     console.log(error.message);
-  //   }
-  //   // timeActiveTab(timeState);
-  //   // changePopup(timeState);
-  //   // //TODO CLOSE POPUP ON MIDNIGHT
-  // }
+  if (port != undefined) {
+    port.onDisconnect.addListener((p) => {
+      if (p.error) {
+        console.log(`There was a port error: ${p.error}`);
+      }
+      port = undefined;
+      return;
+    });
+    //Failsafe, because the port can disconnect between the time the last statment is read and now.
+    try {
+      port.postMessage({ midnight: "midnight" });
+    } catch (error) {
+      console.log(error.message);
+    }
+    // //TODO CHANGE POPUP ON MIDNIGHT
+    // timeActiveTab(timeState);
+    // changePopup(timeState);
+  }
   setTimeout(onMidnight, timeTillMidnight());
 }
 
