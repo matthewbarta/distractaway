@@ -104,24 +104,10 @@ function onMidnight() {
   today = new Date().getDay();
   console.log("Midnight");
   //RESET TAB INFO
-  if (port != undefined) {
-    port.onDisconnect.addListener((p) => {
-      if (p.error) {
-        console.log(`There was a port error: ${p.error}`);
-      }
-      port = undefined;
-      return;
-    });
-    //Failsafe, because the port can disconnect between the time the last statment is read and now.
-    try {
-      port.postMessage({ midnight: "midnight" });
-    } catch (error) {
-      console.log(error.message);
-    }
+  chrome.runtime.sendMessage({ midnight: "midnight" });
     // //TODO CHANGE POPUP ON MIDNIGHT
     // timeActiveTab(timeState);
     // changePopup(timeState);
-  }
   setTimeout(onMidnight, timeTillMidnight());
 }
 
