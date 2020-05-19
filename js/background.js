@@ -7,6 +7,9 @@ let midnightTimer;
 let port;
 let today;
 
+//TODO Tab alignment checks (for example switching between tabs when still another is updating)
+//TODO Ensure window is still active.
+
 //Initializes extension.
 chrome.runtime.onInstalled.addListener(function () {
   today = new Date().getDay();
@@ -97,6 +100,7 @@ function onMidnight() {
   //Reset daily limit.
   resetDailyLimits(today);
   today = new Date().getDay();
+  setDailyBlockList(today);
   //! Debugging.
   console.log("Midnight");
   //This should send a message to close the current popup.
@@ -137,9 +141,10 @@ function resetDailyLimits(day) {
   chrome.storage.sync.set({ timeList: timeList }, function () {});
 }
 
-function setDailyBlockList(day){
+//Sets block list at midnight.
+function setDailyBlockList(day) {
   for (let index = 0; index < timeList.length; index++) {
-    if(timeList[index].time[day].dayLimit == 0) {
+    if (timeList[index].time[day].dayLimit == 0) {
       blockList.push(`*://${timeList[index].url}/*`);
     }
   }
@@ -266,9 +271,7 @@ function getTabChangeState(url, day) {
       //Wasn't a blacklisted tab before.
       if (timeList[index].time[day].dayLimit == -1) {
         return "unrestricted";
-      }
-      //TODO Think about if it's a good idea to have blocked days set as 0.
-      else if (timeList[index].time[day].dayLimit == 0) {
+      } else if (timeList[index].time[day].dayLimit == 0) {
         blockList.push(`*://${timeList[index].url}/*`);
         return "blocked";
       } else if (activeIndex == -1) {
