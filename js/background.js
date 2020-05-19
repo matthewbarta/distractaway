@@ -55,7 +55,7 @@ chrome.runtime.onConnect.addListener((p) => {
 const reduceTime = (index) => {
   let time =
     timeList[index].time[today].dayLimit -
-    timeList[index].time[today].dailyTime++;
+    timeList[index].time[today].timeUsed++;
 
   //! DEBUG
   console.log(time);
@@ -132,7 +132,7 @@ function timeExceeded(index) {
 //Resets the daily time limits for the last used day.
 function resetDailyLimits(day) {
   for (let index = 0; index < timeList.length; index++) {
-    timeList[index].time[day].dailyTime = 0;
+    timeList[index].time[day].timeUsed = 0;
   }
   chrome.storage.sync.set({ timeList: timeList }, function () {});
 }
@@ -254,11 +254,11 @@ function getTabChangeState(url, day) {
   for (let index = 0; index < timeList.length; index++) {
     if (url.includes(timeList[index].url)) {
       //Wasn't a blacklisted tab before.
-      if (timeList[index].time[day] == -1) {
+      if (timeList[index].time[day].dayLimit == -1) {
         return "unrestricted";
       }
       //TODO Think about if it's a good idea to have blocked days set as 0.
-      else if (timeList[index].time[day] == 0) {
+      else if (timeList[index].time[day].dayLimit == 0) {
         return "blocked";
       } else if (activeIndex == -1) {
         activeIndex = index;

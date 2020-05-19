@@ -84,9 +84,19 @@ function storeTimeList(urlTimeArray, url) {
 function getTimesByWeekday() {
   let weekdayTimes = [];
   for(let day = 0; day < WEEKDAYS.length; day++) {
-    const hours = parseInt($(`#${WEEKDAYS[day]}-hr`).val());
-    const minutes = parseInt($(`#${WEEKDAYS[day]}-min`).val());
-    weekdayTimes.push({dailyTime: 0, dayLimit: convertToSeconds(hours, minutes)});
+    if($(`#${WEEKDAYS[day]}-unrestricted`).is(':checked')) {
+      bkg.console.log(`#${WEEKDAYS[day]}-unrestricted`);
+      weekdayTimes.push({timeUsed: 0, dayLimit: -1});
+    }
+    else if($(`#${WEEKDAYS[day]}-blocked`).is(':checked')) {
+      bkg.console.log(`#${WEEKDAYS[day]}-blocked`);
+      weekdayTimes.push({timeUsed: 0, dayLimit: 0});
+    }
+    else {
+      const hours = parseInt($(`#${WEEKDAYS[day]}-hr`).val());
+      const minutes = parseInt($(`#${WEEKDAYS[day]}-min`).val());
+      weekdayTimes.push({timeUsed: 0, dayLimit: convertToSeconds(hours, minutes)});
+    }
   }
   return weekdayTimes;
 }
