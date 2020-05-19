@@ -20,6 +20,7 @@ chrome.runtime.onInstalled.addListener(function () {
   );
 });
 
+//Checks to perform when chrome is reopened.
 chrome.runtime.onStartup.addListener(function () {
   if (midnightTimer != undefined) stopTimeout(midnightTimer);
   //Compare date since last startup.
@@ -35,11 +36,11 @@ chrome.runtime.onStartup.addListener(function () {
       lastDate.getFullYear() != currentDate.getFullYear()
     ) {
       resetDailyLimits(lastDate.getDay());
+      chrome.storage.sync.set({ date: currentDate.toJSON() }, function () {
+        console.log("NEW DATE SET to ");
+        console.log(currentDate);
+      });
     }
-    chrome.storage.sync.set({ date: currentDate.toJSON() }, function () {
-      console.log("NEW DATE SET to ");
-      console.log(currentDate);
-    });
     //Set the midnight timer.
     midnightTimer = setTimeout(onMidnight, timeTillMidnight());
   });
@@ -83,10 +84,9 @@ const reduceTime = (index) => {
 /* At midnight we want:
   -All blocked sites to be reset
   -Reset weekly day time for all apps.
-  -Switch to next week's stuff.
+  -Switch to the next day's popup/timers.
   -Clear timers.
 */
-
 function onMidnight() {
   //Set the new date.
   chrome.storage.sync.set({ date: new Date().toJSON() }, function () {});
@@ -102,7 +102,7 @@ function onMidnight() {
   //This should send a message to close the current popup.
   //TODO Close other window popups.
   chrome.runtime.sendMessage({ midnight: "midnight" });
-  if(timeList.length > 0 && activeIndex >= 0) {
+  if (timeList.length > 0 && activeIndex >= 0) {
     const url = timeList[activeIndex].url;
     activeIndex = -1;
     const timeState = getTabChangeState(url, today);
@@ -254,14 +254,13 @@ function getTabChangeState(url, day) {
   for (let index = 0; index < timeList.length; index++) {
     if (url.includes(timeList[index].url)) {
       //Wasn't a blacklisted tab before.
-      if(timeList[index].time[day] == -1) {
+      if (timeList[index].time[day] == -1) {
         return "unrestricted";
       }
       //TODO Think about if it's a good idea to have blocked days set as 0.
-      else if(timeList[index].time[day] == 0) {
+      else if (timeList[index].time[day] == 0) {
         return "blocked";
-      }
-      else if (activeIndex == -1) {
+      } else if (activeIndex == -1) {
         activeIndex = index;
         return "untimedToTimed";
       }
@@ -286,27 +285,30 @@ function getTabChangeState(url, day) {
   return "untimed";
 }
 
+//Returns the milliseconds till midnight.
 function timeTillMidnight() {
-  // let now = new Date();
-  // let midnight = new Date();
-  // midnight.setHours(24, 0, 0, 0);
-  // const timeDifference = now.getTime() - midnight.getTime();
-  // return Math.abs(timeDifference);
-  return 10 * 1000;
+  let now = new Date();
+  let midnight = new Date();
+  midnight.setHours(24, 0, 0, 0);
+  const timeDifference = now.getTime() - midnight.getTime();
+  return Math.abs(timeDifference);
+  //return 10 * 1000;
 }
 
 //Blocks sites whose time has run out.
 chrome.webRequest.onBeforeRequest.addListener(
-  function() {
-      if(blockList.length > 0) {
-        chrome.webRequest.onBeforeRequest.addListener(
-          function() {
-            if(blockList.length > 0 )return {cancel: true};
-          }, {urls: blockList}, ["blocking"]
-        );
-      }
-      else {
-        return {cancel: false};
-      }
-  }, {urls: []}
+  function () {
+    if (blockList.length > 0) {
+      chrome.webRequest.onBeforeRequest.addListener(
+        function () {
+          if (blockList.length > 0) return { cancel: true };
+        },
+        { urls: blockList },
+        ["blocking"]
+      );
+    } else {
+      return { cancel: false };
+    }
+  },
+  { urls: [] }
 );
