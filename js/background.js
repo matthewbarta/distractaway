@@ -102,11 +102,13 @@ function onMidnight() {
   //This should send a message to close the current popup.
   //TODO Close other window popups.
   chrome.runtime.sendMessage({ midnight: "midnight" });
-  //TODO CHANGE POPUP ON MIDNIGHT
-  const timeState = getTabChangeState(timeList[activeIndex].url, today);
-  activeIndex = -1;
-  timeActiveTab(timeState);
-  changePopup(timeState);
+  if(timeList.length > 0 && activeIndex >= 0) {
+    const url = timeList[activeIndex].url;
+    activeIndex = -1;
+    const timeState = getTabChangeState(url, today);
+    timeActiveTab(timeState);
+    changePopup(timeState);
+  }
   setTimeout(onMidnight, timeTillMidnight());
 }
 
