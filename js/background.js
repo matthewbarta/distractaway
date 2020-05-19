@@ -126,7 +126,7 @@ function timeExceeded(index) {
   //Set a timeout on the alert for good measure.
   setTimeout(() => {
     alert(`You have reached your daily limit on ${timeList[index].url}!`);
-  }, 1000);
+  }, 500);
 }
 
 //Resets the daily time limits for the last used day.
@@ -135,6 +135,14 @@ function resetDailyLimits(day) {
     timeList[index].time[day].timeUsed = 0;
   }
   chrome.storage.sync.set({ timeList: timeList }, function () {});
+}
+
+function setDailyBlockList(day){
+  for (let index = 0; index < timeList.length; index++) {
+    if(timeList[index].time[day].dayLimit == 0) {
+      blockList.push(`*://${timeList[index].url}/*`);
+    }
+  }
 }
 
 //Stop the midnight timeout.
@@ -242,6 +250,7 @@ function changePopup(state) {
 //Gets the state of the tab which has been swapped to or updated.
 function getTabChangeState(url, day) {
   //Loop over block list to see if the url is one that has been blocked.
+
   for (let index = 0; index < blockList.length; index++) {
     if (
       url.includes(blockList[index].substring(4, blockList[index].length - 2))
@@ -250,6 +259,7 @@ function getTabChangeState(url, day) {
       return "blocked";
     }
   }
+
   //Loop over timed list to see if it one that is being timed still.
   for (let index = 0; index < timeList.length; index++) {
     if (url.includes(timeList[index].url)) {
@@ -259,6 +269,7 @@ function getTabChangeState(url, day) {
       }
       //TODO Think about if it's a good idea to have blocked days set as 0.
       else if (timeList[index].time[day].dayLimit == 0) {
+        blockList.push(`*://${timeList[index].url}/*`);
         return "blocked";
       } else if (activeIndex == -1) {
         activeIndex = index;
