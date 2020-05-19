@@ -7,10 +7,6 @@ let midnightTimer;
 let port;
 let today;
 
-//TODO popup for when the site is blocked, but just not on that specific day - links to sitelist, also a blocked all day popup redirects to BLOCKED.
-//TODO popup is messed up for a date switch.
-//TODO check dates for states.
-
 //Initializes extension.
 chrome.runtime.onInstalled.addListener(function () {
   today = new Date().getDay();
@@ -92,22 +88,25 @@ const reduceTime = (index) => {
 */
 
 function onMidnight() {
-  activeIndex = -1;
+  //Set the new date.
+  chrome.storage.sync.set({ date: new Date().toJSON() }, function () {});
   //Reset blockist.
   blockList = [];
   //Clear timers.
   if (timer != undefined) clearInterval(timer);
-  //Set the new date.
-  chrome.storage.sync.set({ date: new Date().toJSON() }, function () {});
   //Reset daily limit.
   resetDailyLimits(today);
   today = new Date().getDay();
+  //! Debugging.
   console.log("Midnight");
-  //RESET TAB INFO
+  //This should send a message to close the current popup.
+  //TODO Close other window popups.
   chrome.runtime.sendMessage({ midnight: "midnight" });
-    // //TODO CHANGE POPUP ON MIDNIGHT
-    // timeActiveTab(timeState);
-    // changePopup(timeState);
+  //TODO CHANGE POPUP ON MIDNIGHT
+  const timeState = getTabChangeState(timeList[activeIndex].url, today);
+  activeIndex = -1;
+  timeActiveTab(timeState);
+  changePopup(timeState);
   setTimeout(onMidnight, timeTillMidnight());
 }
 
@@ -158,7 +157,7 @@ chrome.storage.onChanged.addListener(function (changes) {
 //When the tab changes, get the active tab and check if it's in the blocklist.
 chrome.tabs.onActivated.addListener(function (activeInfo) {
   chrome.tabs.get(activeInfo.tabId, function (tab) {
-    let timeState = getTabChangeState(tab.url);
+    let timeState = getTabChangeState(tab.url, today);
     timeActiveTab(timeState);
     changePopup(timeState);
   });
@@ -166,7 +165,7 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
 
 //Current active tab is updated.
 chrome.tabs.onUpdated.addListener(function (id, info, tab) {
-  let timeState = getTabChangeState(tab.url);
+  let timeState = getTabChangeState(tab.url, today);
   timeActiveTab(timeState);
   changePopup(timeState);
 });
@@ -219,6 +218,14 @@ function changePopup(state) {
       },
       function () {}
     );
+  } else if (state == "unrestricted") {
+    chrome.browserAction.setPopup(
+      {
+        popup:
+          "chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/unrestricted.html",
+      },
+      function () {}
+    );
   } else {
     chrome.browserAction.setPopup(
       {
@@ -231,7 +238,7 @@ function changePopup(state) {
 }
 
 //Gets the state of the tab which has been swapped to or updated.
-function getTabChangeState(url) {
+function getTabChangeState(url, day) {
   //Loop over block list to see if the url is one that has been blocked.
   for (let index = 0; index < blockList.length; index++) {
     if (
@@ -245,7 +252,14 @@ function getTabChangeState(url) {
   for (let index = 0; index < timeList.length; index++) {
     if (url.includes(timeList[index].url)) {
       //Wasn't a blacklisted tab before.
-      if (activeIndex == -1) {
+      if(timeList[index].time[day] == -1) {
+        return "unrestricted";
+      }
+      //TODO Think about if it's a good idea to have blocked days set as 0.
+      else if(timeList[index].time[day] == 0) {
+        return "blocked";
+      }
+      else if (activeIndex == -1) {
         activeIndex = index;
         return "untimedToTimed";
       }
