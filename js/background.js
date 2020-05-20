@@ -65,7 +65,7 @@ const reduceTime = (index) => {
   //For the countdown - sends a message to the timer script.
   if (time >= 0) {
     //When time runs out.
-    if (time == 0) timeExceeded(index);
+    if (time <= 0) timeExceeded(index);
     if (port != undefined) {
       port.onDisconnect.addListener((p) => {
         if (p.error) {
@@ -104,7 +104,6 @@ function onMidnight() {
   //! Debugging.
   console.log("Midnight");
   //This should send a message to close the current popup.
-  //TODO Close other window popups.
   chrome.runtime.sendMessage({ midnight: "midnight" });
   if (timeList.length > 0 && activeIndex >= 0) {
     const url = timeList[activeIndex].url;

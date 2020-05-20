@@ -9,6 +9,8 @@ const WEEKDAYS = [
 ];
 
 //TODO Checkbox stuff - disable other options when checkbox selected.
+//TODO Site list
+//TODO Editting daily information, block attempts to edit current day limit.
 
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();
@@ -40,7 +42,9 @@ $(function () {
   });
 
   //Handles incorrect min/max on inputs.
+  //Also handles the checkbox graphics.
   for (let day = 0; day < WEEKDAYS.length; day++) {
+
     //Code from stack overflow to handle incorrectly min/max on inputs.
     $(`#${WEEKDAYS[day]}-hr`).keydown(function () {
       // Save old value.
@@ -71,6 +75,33 @@ $(function () {
         (parseInt($(this).val()) <= 59 && parseInt($(this).val()) >= 0)
       );
       else $(this).val($(this).data("old-min"));
+    });
+
+    //Checkbox details.
+    $(`#${WEEKDAYS[day]}-unrestricted`).click(function() {
+      //If it is checked.
+      if($(`#${WEEKDAYS[day]}-unrestricted`).is(':checked')) {
+        $(`#${WEEKDAYS[day]}-blocked`).prop("checked", false);
+        $(`#${WEEKDAYS[day]}-hr`).prop("disabled", true);
+        $(`#${WEEKDAYS[day]}-min`).prop("disabled", true);
+      }
+      //It is unchecked.
+      else {
+        $(`#${WEEKDAYS[day]}-hr`).prop("disabled", false);
+        $(`#${WEEKDAYS[day]}-min`).prop("disabled", false);
+      }
+    });
+    //Repeat with blocked checkbox.
+    $(`#${WEEKDAYS[day]}-blocked`).click(function() {
+      if($(`#${WEEKDAYS[day]}-blocked`).is(':checked')) {
+        $(`#${WEEKDAYS[day]}-unrestricted`).prop("checked", false);
+        $(`#${WEEKDAYS[day]}-hr`).prop("disabled", true);
+        $(`#${WEEKDAYS[day]}-min`).prop("disabled", true);
+      }
+      else {
+        $(`#${WEEKDAYS[day]}-hr`).prop("disabled", false);
+        $(`#${WEEKDAYS[day]}-min`).prop("disabled", false);
+      }
     });
   }
 

@@ -14,7 +14,7 @@ $(function () {
         minutes
       )}:${makeDoubleDigits(seconds)}`
     );
-    if (time == 0) {
+    if (time <= 0) {
       window.close();
     }
   });
