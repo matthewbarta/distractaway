@@ -18,6 +18,12 @@ $(function () {
   //Creates the week elements.
   createWeek();
 
+  //Creates the site elements.
+  chrome.storage.sync.get("timeList", function (items) {
+    const siteList = items.timeList;
+    createSiteList(siteList);
+  });
+
   //Puts in the current url.
   chrome.storage.sync.get({ currentURL: "" }, function (url) {
     if (url.currentURL != "") {
@@ -41,22 +47,20 @@ $(function () {
   });
 
   //Hides the other page divs, shows the add site.
-  $("#add-tag").click(function() {
+  $("#add-tag").click(function () {
     $("#site-list").hide();
     $("#add-site").show();
   });
 
   //Hides the other page divs, shows the site-list.
-  $("#site-tag").click(function() {
+  $("#site-tag").click(function () {
     $("#add-site").hide();
     $("#site-list").show();
-    createSiteList();
   });
 
   //Handles incorrect min/max on inputs.
   //Also handles the checkbox graphics.
   for (let day = 0; day < WEEKDAYS.length; day++) {
-
     //Code from stack overflow to handle incorrectly min/max on inputs.
     $(`#${WEEKDAYS[day]}-hr`).keydown(function () {
       // Save old value.
@@ -90,9 +94,9 @@ $(function () {
     });
 
     //Checkbox details.
-    $(`#${WEEKDAYS[day]}-unrestricted`).click(function() {
+    $(`#${WEEKDAYS[day]}-unrestricted`).click(function () {
       //If it is checked.
-      if($(`#${WEEKDAYS[day]}-unrestricted`).is(':checked')) {
+      if ($(`#${WEEKDAYS[day]}-unrestricted`).is(":checked")) {
         $(`#${WEEKDAYS[day]}-blocked`).prop("checked", false);
         $(`#${WEEKDAYS[day]}-hr`).prop("disabled", true);
         $(`#${WEEKDAYS[day]}-min`).prop("disabled", true);
@@ -104,13 +108,12 @@ $(function () {
       }
     });
     //Repeat with blocked checkbox.
-    $(`#${WEEKDAYS[day]}-blocked`).click(function() {
-      if($(`#${WEEKDAYS[day]}-blocked`).is(':checked')) {
+    $(`#${WEEKDAYS[day]}-blocked`).click(function () {
+      if ($(`#${WEEKDAYS[day]}-blocked`).is(":checked")) {
         $(`#${WEEKDAYS[day]}-unrestricted`).prop("checked", false);
         $(`#${WEEKDAYS[day]}-hr`).prop("disabled", true);
         $(`#${WEEKDAYS[day]}-min`).prop("disabled", true);
-      }
-      else {
+      } else {
         $(`#${WEEKDAYS[day]}-hr`).prop("disabled", false);
         $(`#${WEEKDAYS[day]}-min`).prop("disabled", false);
       }
@@ -262,20 +265,17 @@ function createWeekday(weekday) {
 }
 
 //Creates the whole sitelist.
-function createSiteList() {
-  chrome.storage.sync.get('timeList', function(items) {
-    const timeList = items.timeList;
-    for(let index = 0; index < timeList.length; index++) {
-      createSite(timeList[index], index);
-    }
-  });
+function createSiteList(siteList) {
+  for (let index = 0; index < siteList.length; index++) {
+    createSite(siteList[index], index);
+  }
 }
 
+//Creates an individual site.
 function createSite(site, id) {
-  bkg.console.log(site);
-  createParagraphElement('sites', site.url, 'site-names', `site-p${id}`);
-  createButtonElement('sites', 'Edit', 'edit-buttons', `site-edit-${id}`);
-  createButtonElement('sites', 'Remove', 'remove-buttons', `site-remove-${id}`);
+  createParagraphElement("sites", site.url, "site-names", `site-p${id}`);
+  createButtonElement("sites", "Edit", "edit-buttons", `site-edit-${id}`);
+  createButtonElement("sites", "Remove", "remove-buttons", `site-remove-${id}`);
 }
 
 //Creates a text paragraph element.
