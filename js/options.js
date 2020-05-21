@@ -8,7 +8,6 @@ const WEEKDAYS = [
   "saturday",
 ];
 
-//TODO Checkbox stuff - disable other options when checkbox selected.
 //TODO Site list
 //TODO Editting daily information, block attempts to edit current day limit.
 
@@ -39,6 +38,18 @@ $(function () {
     } else {
       alert("No URL submitted!");
     }
+  });
+
+  //Hides the other page divs, shows the add site.
+  $("#add-tag").click(function() {
+    $("#site-list").hide();
+    $("#add-site").show();
+  });
+
+  //Hides the other page divs, shows the site-list.
+  $("#site-tag").click(function() {
+    $("#add-site").hide();
+    $("#site-list").show();
   });
 
   //Handles incorrect min/max on inputs.
@@ -129,6 +140,7 @@ function storeTimeList(urlTimeArray, url) {
   }
 }
 
+//Returns a formatted version of the form information for the inputs regarding the block time per day.
 function getTimesByWeekday() {
   let weekdayTimes = [];
   for (let day = 0; day < WEEKDAYS.length; day++) {
@@ -148,6 +160,7 @@ function getTimesByWeekday() {
   return weekdayTimes;
 }
 
+//Converts hours and minutes to seconds.
 function convertToSeconds(hours, minutes) {
   return hours * 3600 + minutes * 60;
 }
@@ -245,6 +258,15 @@ function createWeekday(weekday) {
     "weekday-checkbox",
     `${weekday}-unrestricted`
   );
+}
+
+//Creates the whole sitelist.
+function createSiteList(siteList) {
+
+}
+
+function createSite(site) {
+
 }
 
 //Creates a text paragraph element.
