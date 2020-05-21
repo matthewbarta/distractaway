@@ -50,6 +50,7 @@ $(function () {
   $("#site-tag").click(function() {
     $("#add-site").hide();
     $("#site-list").show();
+    createSiteList();
   });
 
   //Handles incorrect min/max on inputs.
@@ -261,12 +262,20 @@ function createWeekday(weekday) {
 }
 
 //Creates the whole sitelist.
-function createSiteList(siteList) {
-
+function createSiteList() {
+  chrome.storage.sync.get('timeList', function(items) {
+    const timeList = items.timeList;
+    for(let index = 0; index < timeList.length; index++) {
+      createSite(timeList[index], index);
+    }
+  });
 }
 
-function createSite(site) {
-
+function createSite(site, id) {
+  bkg.console.log(site);
+  createParagraphElement('sites', site.url, 'site-names', `site-p${id}`);
+  createButtonElement('sites', 'Edit', 'edit-buttons', `site-edit-${id}`);
+  createButtonElement('sites', 'Remove', 'remove-buttons', `site-remove-${id}`);
 }
 
 //Creates a text paragraph element.
@@ -283,6 +292,21 @@ function createParagraphElement(
   if (classTag != "") paragraph.className = classTag;
   if (idTag != "") paragraph.id = idTag;
   parent.appendChild(paragraph);
+}
+
+function createButtonElement(
+  parentId = "",
+  innerHTML = "",
+  classTag = "",
+  idTag = ""
+) {
+  const parent = document.getElementById(parentId);
+  let button = document.createElement("button");
+  button.innerHTML = innerHTML;
+  //Optional parameters.
+  if (classTag != "") button.className = classTag;
+  if (idTag != "") button.id = idTag;
+  parent.appendChild(button);
 }
 
 //Create the necessary label elements.
