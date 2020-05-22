@@ -8,6 +8,11 @@ const WEEKDAYS = [
   "saturday",
 ];
 
+const DIVS = [
+  "add-site",
+  "site-list"
+];
+
 //TODO Editting daily information, block attempts to edit current day limit.
 
 //! FOR DEBUGGING
@@ -49,14 +54,12 @@ $(function () {
 
   //Hides the other page divs, shows the add site.
   $("#add-tag").click(function () {
-    $("#site-list").hide();
-    $("#add-site").show();
+    showDiv('add-site');
   });
 
   //Hides the other page divs, shows the site-list.
   $("#site-tag").click(function () {
-    $("#add-site").hide();
-    $("#site-list").show();
+    showDiv('site-list');
   });
 
   //Handles incorrect min/max on inputs.
@@ -127,6 +130,15 @@ $(function () {
   });
 });
 
+//Show this div, hide the others.
+//TODO FIX WRONG HREF.
+function showDiv(id) {
+  for(let index = 0; index < DIVS.length; index++) {
+    if(DIVS[index] == id) continue;
+    $(`#${DIVS[index]}`).hide();
+  }
+  $(`#${id}`).show();
+}
 //Checks for a duplicate link, if none exists, add the site to the blocked list.
 function storeTimeList(urlTimeArray, url) {
   //If the link is a duplicate.
@@ -197,6 +209,7 @@ chrome.storage.onChanged.addListener(function (changes) {
   if (changes.currentURL != undefined) {
     //Trim the new url and change the DOM to reflect.
     $("#block-site").val(trimURL(changes.currentURL.newValue));
+    showDiv('add-site');
   }
 });
 
