@@ -54,6 +54,19 @@ chrome.runtime.onConnect.addListener((p) => {
   port = p;
 });
 
+//Removes the blocked site from the blockList.
+chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+  if (message.unblock != undefined) {
+    const unblockIndex = blockList.indexOf(`*://${message.unblock}/*`);
+    if (unblockIndex != -1) {
+      console.log(`Removing blocked url!: ${message.unblock}`);
+      blockList.splice(unblockIndex, 1);
+      console.log(blockList);
+    }
+    return;
+  }
+});
+
 //Countdown method for when tabs are opened.
 const reduceTime = (index) => {
   let time =
@@ -312,6 +325,7 @@ function timeTillMidnight() {
 chrome.webRequest.onBeforeRequest.addListener(
   function () {
     if (blockList.length > 0) {
+      console.log(blockList);
       chrome.webRequest.onBeforeRequest.addListener(
         function () {
           if (blockList.length > 0) return { cancel: true };

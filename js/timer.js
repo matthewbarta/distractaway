@@ -1,6 +1,8 @@
 let myPort = chrome.runtime.connect();
 const bkg = chrome.extension.getBackgroundPage();
 
+//TODO Switch to the proper options page.
+
 //Controls the time display.
 $(function () {
   myPort.onMessage.addListener(function (message) {

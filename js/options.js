@@ -9,7 +9,6 @@ const WEEKDAYS = [
 ];
 
 //TODO Editting daily information, block attempts to edit current day limit.
-//TODO When removing sites from the sitelist - account for the daily block.
 
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();
@@ -384,6 +383,7 @@ function createSiteButtonResponse(siteList) {
     });
     $(`#site-remove-${index}`).click(function() {
       bkg.console.log('REMOVING');
+      chrome.runtime.sendMessage({ unblock: siteList[index].url});
       siteList.splice(index, 1);
       bkg.console.log(siteList);
       chrome.storage.sync.set({timeList: siteList}, function(){
