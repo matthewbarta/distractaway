@@ -8,8 +8,8 @@ const WEEKDAYS = [
   "saturday",
 ];
 
-//TODO Site list
 //TODO Editting daily information, block attempts to edit current day limit.
+//TODO When removing sites from the sitelist - account for the daily block.
 
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();
@@ -18,10 +18,12 @@ $(function () {
   //Creates the week elements.
   createWeek();
 
+  let siteList = [];
+
   //Creates the site elements.
   chrome.storage.sync.get("timeList", function (items) {
-    const siteList = items.timeList;
-    createSiteList(siteList);
+    siteList = items.timeList;
+    updateSiteList(siteList);
   });
 
   //Puts in the current url.
@@ -138,8 +140,9 @@ function storeTimeList(urlTimeArray, url) {
   else {
     const times = getTimesByWeekday();
     urlTimeArray.push({ url: url, time: times });
+    siteList = urlTimeArray;
     chrome.storage.sync.set({ timeList: urlTimeArray }, function () {
-      //Do something after set.
+      updateSiteList(siteList);
     });
   }
 }
@@ -278,6 +281,12 @@ function createSite(site, id) {
   createButtonElement("sites", "Remove", "remove-buttons", `site-remove-${id}`);
 }
 
+function updateSiteList(siteList) {
+  $('#sites').empty();
+  createSiteList(siteList);
+  createSiteButtonResponse(siteList);
+}
+
 //Creates a text paragraph element.
 function createParagraphElement(
   parentId = "",
@@ -364,5 +373,23 @@ function resetForm() {
     $(`#${WEEKDAYS[day]}-min`).val(0);
     $(`#${WEEKDAYS[day]}-blocked`).prop("checked", false);
     $(`#${WEEKDAYS[day]}-unrestricted`).prop("checked", false);
+  }
+}
+
+//Creates actionable items on siteList
+function createSiteButtonResponse(siteList) {
+  for(let index = 0; index < siteList.length; index++) {
+    $(`#site-edit-${index}`).click(function() {
+
+    });
+    $(`#site-remove-${index}`).click(function() {
+      bkg.console.log('REMOVING');
+      siteList.splice(index, 1);
+      bkg.console.log(siteList);
+      chrome.storage.sync.set({timeList: siteList}, function(){
+        updateSiteList(siteList);
+        bkg.console.log('Updated!');
+      });
+    });
   }
 }
