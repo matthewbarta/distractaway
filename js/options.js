@@ -8,10 +8,7 @@ const WEEKDAYS = [
   "saturday",
 ];
 
-const DIVS = [
-  "add-site",
-  "site-list"
-];
+const DIVS = ["add-site", "site-list"];
 
 //TODO Editting daily information, block attempts to edit current day limit.
 
@@ -20,7 +17,7 @@ const bkg = chrome.extension.getBackgroundPage();
 
 $(function () {
   //Creates the week elements.
-  createWeek();
+  createWeek('weekday-input');
 
   let siteList = [];
 
@@ -54,12 +51,12 @@ $(function () {
 
   //Hides the other page divs, shows the add site.
   $("#add-tag").click(function () {
-    showDiv('add-site');
+    showDiv("add-site");
   });
 
   //Hides the other page divs, shows the site-list.
   $("#site-tag").click(function () {
-    showDiv('site-list');
+    showDiv("site-list");
   });
 
   //Handles incorrect min/max on inputs.
@@ -133,8 +130,8 @@ $(function () {
 //Show this div, hide the others.
 //TODO FIX WRONG HREF.
 function showDiv(id) {
-  for(let index = 0; index < DIVS.length; index++) {
-    if(DIVS[index] == id) continue;
+  for (let index = 0; index < DIVS.length; index++) {
+    if (DIVS[index] == id) continue;
     $(`#${DIVS[index]}`).hide();
   }
   $(`#${id}`).show();
@@ -209,27 +206,27 @@ chrome.storage.onChanged.addListener(function (changes) {
   if (changes.currentURL != undefined) {
     //Trim the new url and change the DOM to reflect.
     $("#block-site").val(trimURL(changes.currentURL.newValue));
-    showDiv('add-site');
+    showDiv("add-site");
   }
 });
 
 //I put it into a function for if I want to make it so that users can individually select days, rather than see a whole form at once.
-function createWeek() {
+function createWeek(parentElement) {
   for (let day = 0; day < WEEKDAYS.length; day++) {
-    createWeekday(WEEKDAYS[day]);
+    createWeekday(WEEKDAYS[day], parentElement);
   }
 }
 
 //Create individual days.
-function createWeekday(weekday) {
+function createWeekday(weekday, parentElement) {
   createParagraphElement(
-    "weekday-input",
+    parentElement,
     `${capitalize(weekday)}`,
     "weekday-text"
   );
-  createLabelElement("weekday-input", `${weekday}-hr`, "Hours", "hr-label");
+  createLabelElement(parentElement, `${weekday}-hr`, "Hours", "hr-label");
   createInputElement(
-    "weekday-input",
+    parentElement,
     "number",
     `${weekday}-hr`,
     "0",
@@ -238,9 +235,9 @@ function createWeekday(weekday) {
     "0",
     "23"
   );
-  createLabelElement("weekday-input", `${weekday}-min`, "Minutes", "min-label");
+  createLabelElement(parentElement, `${weekday}-min`, "Minutes", "min-label");
   createInputElement(
-    "weekday-input",
+    parentElement,
     "number",
     `${weekday}-min`,
     "0",
@@ -250,13 +247,13 @@ function createWeekday(weekday) {
     "59"
   );
   createLabelElement(
-    "weekday-input",
+    parentElement,
     `${weekday}-blocked`,
     "Block All Day",
     "checkbox-label"
   );
   createInputElement(
-    "weekday-input",
+    parentElement,
     "checkbox",
     `${weekday}-blocked`,
     "",
@@ -264,13 +261,13 @@ function createWeekday(weekday) {
     `${weekday}-blocked`
   );
   createLabelElement(
-    "weekday-input",
+    parentElement,
     `${weekday}-unrestricted`,
     "Unrestricted",
     "checkbox-label"
   );
   createInputElement(
-    "weekday-input",
+    parentElement,
     "checkbox",
     `${weekday}-unrestricted`,
     "",
@@ -294,7 +291,7 @@ function createSite(site, id) {
 }
 
 function updateSiteList(siteList) {
-  $('#sites').empty();
+  $("#sites").empty();
   createSiteList(siteList);
   createSiteButtonResponse(siteList);
 }
@@ -390,18 +387,16 @@ function resetForm() {
 
 //Creates actionable items on siteList
 function createSiteButtonResponse(siteList) {
-  for(let index = 0; index < siteList.length; index++) {
-    $(`#site-edit-${index}`).click(function() {
-
-    });
-    $(`#site-remove-${index}`).click(function() {
-      bkg.console.log('REMOVING');
-      chrome.runtime.sendMessage({ unblock: siteList[index].url});
+  for (let index = 0; index < siteList.length; index++) {
+    $(`#site-edit-${index}`).click(function () {});
+    $(`#site-remove-${index}`).click(function () {
+      bkg.console.log("REMOVING");
+      chrome.runtime.sendMessage({ unblock: siteList[index].url });
       siteList.splice(index, 1);
       bkg.console.log(siteList);
-      chrome.storage.sync.set({timeList: siteList}, function(){
+      chrome.storage.sync.set({ timeList: siteList }, function () {
         updateSiteList(siteList);
-        bkg.console.log('Updated!');
+        bkg.console.log("Updated!");
       });
     });
   }
