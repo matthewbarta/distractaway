@@ -285,16 +285,29 @@ function createSiteList(siteList) {
 
 //Creates an individual site.
 function createSite(site, id) {
-  createParagraphElement("sites", site.url, "site-names", `site-p${id}`);
-  createButtonElement("sites", "Edit", "edit-buttons", `site-edit-${id}`);
-  createButtonElement("sites", "Remove", "remove-buttons", `site-remove-${id}`);
-  createWeek("sites");
+  //TODO Create a div to hold all this, then append the sites to the unique div.
+  createDiv("sites", 'site-div', `site-div-${id}`);
+  createParagraphElement(`site-div-${id}`, site.url, "site-names", `site-p${id}`);
+  createButtonElement(`site-div-${id}`, "Edit", "edit-buttons", `site-edit-${id}`);
+  createButtonElement(`site-div-${id}`, "Remove", "remove-buttons", `site-remove-${id}`);
+  //TODO Add unique ids for sites.
+  createWeek(`site-div-${id}`);
 }
 
 function updateSiteList(siteList) {
   $("#sites").empty();
   createSiteList(siteList);
   createSiteButtonResponse(siteList);
+}
+
+//Creates a div.
+function createDiv(parentId = "", classTag = "", idTag = "") {
+  const parent = document.getElementById(parentId);
+  let div = document.createElement("div");
+  //Optional parameters.
+  if (classTag != "") div.className = classTag;
+  if (idTag != "") div.id = idTag;
+  parent.appendChild(div);
 }
 
 //Creates a text paragraph element.
@@ -389,7 +402,9 @@ function resetForm() {
 //Creates actionable items on siteList
 function createSiteButtonResponse(siteList) {
   for (let index = 0; index < siteList.length; index++) {
-    $(`#site-edit-${index}`).click(function () {});
+    $(`#site-edit-${index}`).click(function () {
+
+    });
     $(`#site-remove-${index}`).click(function () {
       bkg.console.log("REMOVING");
       chrome.runtime.sendMessage({ unblock: siteList[index].url });
