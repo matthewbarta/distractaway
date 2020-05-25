@@ -288,6 +288,7 @@ function createSite(site, id) {
   createParagraphElement("sites", site.url, "site-names", `site-p${id}`);
   createButtonElement("sites", "Edit", "edit-buttons", `site-edit-${id}`);
   createButtonElement("sites", "Remove", "remove-buttons", `site-remove-${id}`);
+  createWeek("sites");
 }
 
 function updateSiteList(siteList) {
