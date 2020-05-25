@@ -211,14 +211,14 @@ chrome.storage.onChanged.addListener(function (changes) {
 });
 
 //I put it into a function for if I want to make it so that users can individually select days, rather than see a whole form at once.
-function createWeek(parentElement) {
+function createWeek(parentElement, id) {
   for (let day = 0; day < WEEKDAYS.length; day++) {
-    createWeekday(WEEKDAYS[day], parentElement);
+    createWeekday(WEEKDAYS[day], parentElement, id);
   }
 }
 
 //Create individual days.
-function createWeekday(weekday, parentElement) {
+function createWeekday(weekday, parentElement, id = "") {
   createParagraphElement(
     parentElement,
     `${capitalize(weekday)}`,
@@ -228,10 +228,10 @@ function createWeekday(weekday, parentElement) {
   createInputElement(
     parentElement,
     "number",
-    `${weekday}-hr`,
+    `${weekday}-hr-${id}`,
     "0",
     "input-time",
-    `${weekday}-hr`,
+    `${weekday}-hr-${id}`,
     "0",
     "23"
   );
@@ -239,10 +239,10 @@ function createWeekday(weekday, parentElement) {
   createInputElement(
     parentElement,
     "number",
-    `${weekday}-min`,
+    `${weekday}-min-${id}`,
     "0",
     "input-time",
-    `${weekday}-min`,
+    `${weekday}-min-${id}`,
     "0",
     "59"
   );
@@ -255,10 +255,10 @@ function createWeekday(weekday, parentElement) {
   createInputElement(
     parentElement,
     "checkbox",
-    `${weekday}-blocked`,
+    `${weekday}-blocked-${id}`,
     "",
     "weekday-checkbox",
-    `${weekday}-blocked`
+    `${weekday}-blocked-${id}`
   );
   createLabelElement(
     parentElement,
@@ -285,13 +285,12 @@ function createSiteList(siteList) {
 
 //Creates an individual site.
 function createSite(site, id) {
-  //TODO Create a div to hold all this, then append the sites to the unique div.
   createDiv("sites", 'site-div', `site-div-${id}`);
   createParagraphElement(`site-div-${id}`, site.url, "site-names", `site-p${id}`);
   createButtonElement(`site-div-${id}`, "Edit", "edit-buttons", `site-edit-${id}`);
   createButtonElement(`site-div-${id}`, "Remove", "remove-buttons", `site-remove-${id}`);
   //TODO Add unique ids for sites.
-  createWeek(`site-div-${id}`);
+  createWeek(`site-div-${id}`, id);
 }
 
 function updateSiteList(siteList) {
