@@ -60,67 +60,8 @@ $(function () {
     showDiv("site-list");
   });
 
-  //Handles incorrect min/max on inputs.
-  //Also handles the checkbox graphics.
-  for (let day = 0; day < WEEKDAYS.length; day++) {
-    //Code from stack overflow to handle incorrectly min/max on inputs.
-    $(`#${WEEKDAYS[day]}-hr-`).keydown(function () {
-      // Save old value.
-      if (
-        !$(this).val() ||
-        (parseInt($(this).val()) <= 23 && parseInt($(this).val()) >= 0)
-      )
-        $(this).data("old-hr", $(this).val());
-    });
-    $(`#${WEEKDAYS[day]}-hr-`).keyup(function () {
-      // Check correct, else revert back to old value.
-      if (
-        !$(this).val() ||
-        (parseInt($(this).val()) <= 23 && parseInt($(this).val()) >= 0)
-      );
-      else $(this).val($(this).data("old-hr"));
-    });
-    $(`#${WEEKDAYS[day]}-min-`).keydown(function () {
-      if (
-        !$(this).val() ||
-        (parseInt($(this).val()) <= 59 && parseInt($(this).val()) >= 0)
-      )
-        $(this).data("old-min", $(this).val());
-    });
-    $(`#${WEEKDAYS[day]}-min-`).keyup(function () {
-      if (
-        !$(this).val() ||
-        (parseInt($(this).val()) <= 59 && parseInt($(this).val()) >= 0)
-      );
-      else $(this).val($(this).data("old-min"));
-    });
-
-    //Checkbox details.
-    $(`#${WEEKDAYS[day]}-unrestricted-`).click(function () {
-      //If it is checked.
-      if ($(`#${WEEKDAYS[day]}-unrestricted-`).is(":checked")) {
-        $(`#${WEEKDAYS[day]}-blocked-`).prop("checked", false);
-        $(`#${WEEKDAYS[day]}-hr-`).prop("disabled", true);
-        $(`#${WEEKDAYS[day]}-min-`).prop("disabled", true);
-      }
-      //It is unchecked.
-      else {
-        $(`#${WEEKDAYS[day]}-hr-`).prop("disabled", false);
-        $(`#${WEEKDAYS[day]}-min-`).prop("disabled", false);
-      }
-    });
-    //Repeat with blocked checkbox.
-    $(`#${WEEKDAYS[day]}-blocked-`).click(function () {
-      if ($(`#${WEEKDAYS[day]}-blocked-`).is(":checked")) {
-        $(`#${WEEKDAYS[day]}-unrestricted-`).prop("checked", false);
-        $(`#${WEEKDAYS[day]}-hr-`).prop("disabled", true);
-        $(`#${WEEKDAYS[day]}-min-`).prop("disabled", true);
-      } else {
-        $(`#${WEEKDAYS[day]}-hr-`).prop("disabled", false);
-        $(`#${WEEKDAYS[day]}-min-`).prop("disabled", false);
-      }
-    });
-  }
+  //Handles input validation on checkboxes and number inputs.
+  validateForm();
 
   //Reset the form
   $("#reset-button").click(function () {
@@ -158,16 +99,16 @@ function storeTimeList(urlTimeArray, url) {
 }
 
 //Returns a formatted version of the form information for the inputs regarding the block time per day.
-function getTimesByWeekday() {
+function getTimesByWeekday(id = "") {
   let weekdayTimes = [];
   for (let day = 0; day < WEEKDAYS.length; day++) {
-    if ($(`#${WEEKDAYS[day]}-unrestricted-`).is(":checked")) {
+    if ($(`#${WEEKDAYS[day]}-unrestricted-${id}`).is(":checked")) {
       weekdayTimes.push({ timeUsed: 0, dayLimit: -1 });
-    } else if ($(`#${WEEKDAYS[day]}-blocked-`).is(":checked")) {
+    } else if ($(`#${WEEKDAYS[day]}-blocked-${id}`).is(":checked")) {
       weekdayTimes.push({ timeUsed: 0, dayLimit: 0 });
     } else {
-      const hours = parseInt($(`#${WEEKDAYS[day]}-hr-`).val());
-      const minutes = parseInt($(`#${WEEKDAYS[day]}-min-`).val());
+      const hours = parseInt($(`#${WEEKDAYS[day]}-hr-${id}`).val());
+      const minutes = parseInt($(`#${WEEKDAYS[day]}-min-${id}`).val());
       weekdayTimes.push({
         timeUsed: 0,
         dayLimit: convertToSeconds(hours, minutes),
@@ -390,13 +331,77 @@ function capitalize(word) {
 }
 
 //Clears the form data.
-function resetForm() {
+function resetForm(id = "") {
   $("#block-site").val("");
   for (let day = 0; day < WEEKDAYS.length; day++) {
-    $(`#${WEEKDAYS[day]}-hr-`).val(0);
-    $(`#${WEEKDAYS[day]}-min-`).val(0);
-    $(`#${WEEKDAYS[day]}-blocked-`).prop("checked", false);
-    $(`#${WEEKDAYS[day]}-unrestricted-`).prop("checked", false);
+    $(`#${WEEKDAYS[day]}-hr-${id}`).val(0);
+    $(`#${WEEKDAYS[day]}-min-${id}`).val(0);
+    $(`#${WEEKDAYS[day]}-blocked-${id}`).prop("checked", false);
+    $(`#${WEEKDAYS[day]}-unrestricted-${id}`).prop("checked", false);
+  }
+}
+
+//Handles incorrect min/max on inputs.
+//Also handles the checkbox graphics.
+function validateForm(id = "") {
+  for (let day = 0; day < WEEKDAYS.length; day++) {
+    //Code from stack overflow to handle incorrectly min/max on inputs.
+    $(`#${WEEKDAYS[day]}-hr-${id}`).keydown(function () {
+      // Save old value.
+      if (
+        !$(this).val() ||
+        (parseInt($(this).val()) <= 23 && parseInt($(this).val()) >= 0)
+      )
+        $(this).data(`old-hr-${id}`, $(this).val());
+    });
+    $(`#${WEEKDAYS[day]}-hr-${id}`).keyup(function () {
+      // Check correct, else revert back to old value.
+      if (
+        !$(this).val() ||
+        (parseInt($(this).val()) <= 23 && parseInt($(this).val()) >= 0)
+      );
+      else $(this).val($(this).data(`old-hr-${id}`));
+    });
+    $(`#${WEEKDAYS[day]}-min-${id}`).keydown(function () {
+      if (
+        !$(this).val() ||
+        (parseInt($(this).val()) <= 59 && parseInt($(this).val()) >= 0)
+      )
+        $(this).data(`old-min-${id}`, $(this).val());
+    });
+    $(`#${WEEKDAYS[day]}-min-${id}`).keyup(function () {
+      if (
+        !$(this).val() ||
+        (parseInt($(this).val()) <= 59 && parseInt($(this).val()) >= 0)
+      );
+      else $(this).val($(this).data(`old-min-${id}`));
+    });
+
+    //Checkbox details.
+    $(`#${WEEKDAYS[day]}-unrestricted-${id}`).click(function () {
+      //If it is checked.
+      if ($(`#${WEEKDAYS[day]}-unrestricted-${id}`).is(":checked")) {
+        $(`#${WEEKDAYS[day]}-blocked-${id}`).prop("checked", false);
+        $(`#${WEEKDAYS[day]}-hr-${id}`).prop("disabled", true);
+        $(`#${WEEKDAYS[day]}-min-${id}`).prop("disabled", true);
+      }
+      //It is unchecked.
+      else {
+        $(`#${WEEKDAYS[day]}-hr-${id}`).prop("disabled", false);
+        $(`#${WEEKDAYS[day]}-min-${id}`).prop("disabled", false);
+      }
+    });
+    //Repeat with blocked checkbox.
+    $(`#${WEEKDAYS[day]}-blocked-${id}`).click(function () {
+      if ($(`#${WEEKDAYS[day]}-blocked-${id}`).is(":checked")) {
+        $(`#${WEEKDAYS[day]}-unrestricted-${id}`).prop("checked", false);
+        $(`#${WEEKDAYS[day]}-hr-${id}`).prop("disabled", true);
+        $(`#${WEEKDAYS[day]}-min-${id}`).prop("disabled", true);
+      } else {
+        $(`#${WEEKDAYS[day]}-hr-${id}`).prop("disabled", false);
+        $(`#${WEEKDAYS[day]}-min-${id}`).prop("disabled", false);
+      }
+    });
   }
 }
 
