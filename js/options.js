@@ -11,6 +11,7 @@ const WEEKDAYS = [
 const DIVS = ["add-site", "site-list"];
 
 //TODO Editting daily information, block attempts to edit current day limit.
+//TODO Cleaner interface for adding block information.
 
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();
@@ -166,6 +167,7 @@ function getTimesByWeekday() {
     } else {
       const hours = parseInt($(`#${WEEKDAYS[day]}-hr`).val());
       const minutes = parseInt($(`#${WEEKDAYS[day]}-min`).val());
+      bkg.console.log(`Adding ${convertToSeconds(hours, minutes)} seconds. ${hours}, ${minutes}`);
       weekdayTimes.push({
         timeUsed: 0,
         dayLimit: convertToSeconds(hours, minutes),
@@ -402,7 +404,8 @@ function resetForm() {
 function createSiteButtonResponse(siteList) {
   for (let index = 0; index < siteList.length; index++) {
     $(`#site-edit-${index}`).click(function () {
-
+      bkg.console.log(`Edit: ${index}`);
+      //chrome.runtime.sendMessage({edit});
     });
     $(`#site-remove-${index}`).click(function () {
       bkg.console.log("REMOVING");

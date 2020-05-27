@@ -178,6 +178,7 @@ const stopCountdown = (timer) => {
 chrome.storage.onChanged.addListener(function (changes) {
   if (changes.timeList != undefined) {
     timeList = changes.timeList.newValue;
+    console.log(timeList);
   }
 });
 
