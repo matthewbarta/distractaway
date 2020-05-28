@@ -80,6 +80,7 @@ function showDiv(id) {
   }
   $(`#${id}`).show();
 }
+
 //Checks for a duplicate link, if none exists, add the site to the blocked list.
 function storeTimeList(urlTimeArray, url) {
   //If the link is a duplicate.
@@ -120,32 +121,6 @@ function getTimesByWeekday(id = "") {
   return weekdayTimes;
 }
 
-//Converts hours and minutes to seconds.
-function convertToSeconds(hours, minutes) {
-  return hours * 3600 + minutes * 60;
-}
-
-//Checks for duplicate url in the urlTimeArray.
-function isInTimeList(urlTimeArray, url) {
-  const isDuplicate = (item) => item.url == url;
-  return urlTimeArray.some(isDuplicate);
-}
-
-//Trims the url to a reasonable setup - e.g. https://facebook.com/GV9?utB_eg2j to www.facebook.com
-function trimURL(url) {
-  //Regex to trim urls.
-  let re = /([a-zA-Z0-9-]*\.)+\w*/;
-  let trimmed = re.exec(url);
-  //If it is a trimmable url, trim it.
-  if (trimmed != undefined) {
-    return trimmed[0];
-  }
-  //Otherwise use the raw url.
-  else {
-    return url;
-  }
-}
-
 //For updating the url in the input box even if options page is already open or has input.
 chrome.storage.onChanged.addListener(function (changes) {
   if (changes.currentURL != undefined) {
@@ -161,6 +136,10 @@ function createWeek(parentElement, id) {
     createWeekday(day, parentElement, id);
   }
 }
+
+// function createWeekDropdown(parentElement, id) {
+
+// }
 
 //Create individual days.
 function createWeekday(day, parentElement, id = "") {
@@ -463,4 +442,30 @@ function createSiteButtonResponse(siteList) {
       });
     });
   }
+}
+
+//Checks for duplicate url in the urlTimeArray.
+function isInTimeList(urlTimeArray, url) {
+  const isDuplicate = (item) => item.url == url;
+  return urlTimeArray.some(isDuplicate);
+}
+
+//Trims the url to a reasonable setup - e.g. https://facebook.com/GV9?utB_eg2j to www.facebook.com
+function trimURL(url) {
+  //Regex to trim urls.
+  let re = /([a-zA-Z0-9-]*\.)+\w*/;
+  let trimmed = re.exec(url);
+  //If it is a trimmable url, trim it.
+  if (trimmed != undefined) {
+    return trimmed[0];
+  }
+  //Otherwise use the raw url.
+  else {
+    return url;
+  }
+}
+
+//Converts hours and minutes to seconds.
+function convertToSeconds(hours, minutes) {
+  return hours * 3600 + minutes * 60;
 }
