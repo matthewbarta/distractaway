@@ -164,14 +164,16 @@ function createWeek(parentElement, id) {
 
 //Create individual days.
 function createWeekday(day, parentElement, id = "") {
+
+  //Needed for editting forms.
   const weekday = WEEKDAYS[day];
   let minutes = "0";
   let hours = "0";
   let unrestricted = false;
   let blocked = false;
 
+  //Checks if edit forms have information already.
   if(siteList[id] != undefined) {
-    bkg.console.log(siteList[id]);
     seconds = siteList[id].time[day].dayLimit;
     hours = Math.floor(seconds / 3600).toString();
     minutes = Math.floor((seconds % 3600) / 60).toString();
@@ -180,7 +182,8 @@ function createWeekday(day, parentElement, id = "") {
     }
     else if(seconds == -1) {
       unrestricted = true;
-      hours, minutes = "0";
+      hours = "0";
+      minutes = "0";
     }
   }
   createParagraphElement(
@@ -241,12 +244,12 @@ function createWeekday(day, parentElement, id = "") {
 
   //Adds checks for the unrestricted/blocked box.
   if(unrestricted) {
-    $(`${weekday}-unrestricted-${id}`).prop("checked", true);
+    $(`#${weekday}-unrestricted-${id}`).prop("checked", true);
     $(`#${weekday}-hr-${id}`).prop("disabled", true);
     $(`#${weekday}-min-${id}`).prop("disabled", true);
   }
   else if(blocked) {
-    $(`${weekday}-blocked-${id}`).prop("checked", true);
+    $(`#${weekday}-blocked-${id}`).prop("checked", true);
     $(`#${weekday}-hr-${id}`).prop("disabled", true);
     $(`#${weekday}-min-${id}`).prop("disabled", true);
   }
@@ -266,7 +269,6 @@ function createSite(site, id) {
   createParagraphElement(`site-div-${id}`, site.url, "site-names", `site-p${id}`);
   createButtonElement(`site-div-${id}`, "Edit", "edit-buttons", `site-edit-${id}`);
   createButtonElement(`site-div-${id}`, "Remove", "remove-buttons", `site-remove-${id}`);
-  //TODO Add unique ids for sites.
   createWeek(`site-div-${id}`, id);
 }
 
