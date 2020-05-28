@@ -10,23 +10,25 @@ const WEEKDAYS = [
 
 const DIVS = ["add-site", "site-list"];
 
+let siteList = [];
+
 //TODO Editting daily information, block attempts to edit current day limit.
 //TODO Cleaner interface for adding block information.
+//TODO Get rid of the 0 on forms when a new number is typed in, or get rid of it altogether.
 
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();
 
 $(function () {
-  //Creates the week elements.
-  createWeek('weekday-input');
-
-  let siteList = [];
 
   //Creates the site elements.
   chrome.storage.sync.get("timeList", function (items) {
     siteList = items.timeList;
     updateSiteList(siteList);
   });
+
+  //Creates the week elements.
+  createWeek('weekday-input');
 
   //Puts in the current url.
   chrome.storage.sync.get({ currentURL: "" }, function (url) {
@@ -156,12 +158,31 @@ chrome.storage.onChanged.addListener(function (changes) {
 //I put it into a function for if I want to make it so that users can individually select days, rather than see a whole form at once.
 function createWeek(parentElement, id) {
   for (let day = 0; day < WEEKDAYS.length; day++) {
-    createWeekday(WEEKDAYS[day], parentElement, id);
+    createWeekday(day, parentElement, id);
   }
 }
 
 //Create individual days.
-function createWeekday(weekday, parentElement, id = "") {
+function createWeekday(day, parentElement, id = "") {
+  const weekday = WEEKDAYS[day];
+  let minutes = "0";
+  let hours = "0";
+  let unrestricted = false;
+  let blocked = false;
+
+  if(siteList[id] != undefined) {
+    bkg.console.log(siteList[id]);
+    seconds = siteList[id].time[day].dayLimit;
+    hours = Math.floor(seconds / 3600).toString();
+    minutes = Math.floor((seconds % 3600) / 60).toString();
+    if(seconds == 0) {
+      blocked = true;
+    }
+    else if(seconds == -1) {
+      unrestricted = true;
+      hours, minutes = "0";
+    }
+  }
   createParagraphElement(
     parentElement,
     `${capitalize(weekday)}`,
@@ -172,7 +193,7 @@ function createWeekday(weekday, parentElement, id = "") {
     parentElement,
     "number",
     `${weekday}-hr-${id}`,
-    "0",
+    hours,
     "input-time",
     `${weekday}-hr-${id}`,
     "0",
@@ -183,7 +204,7 @@ function createWeekday(weekday, parentElement, id = "") {
     parentElement,
     "number",
     `${weekday}-min-${id}`,
-    "0",
+    minutes,
     "input-time",
     `${weekday}-min-${id}`,
     "0",
@@ -217,6 +238,18 @@ function createWeekday(weekday, parentElement, id = "") {
     "weekday-checkbox",
     `${weekday}-unrestricted-${id}`
   );
+
+  //Adds checks for the unrestricted/blocked box.
+  if(unrestricted) {
+    $(`${weekday}-unrestricted-${id}`).prop("checked", true);
+    $(`#${weekday}-hr-${id}`).prop("disabled", true);
+    $(`#${weekday}-min-${id}`).prop("disabled", true);
+  }
+  else if(blocked) {
+    $(`${weekday}-blocked-${id}`).prop("checked", true);
+    $(`#${weekday}-hr-${id}`).prop("disabled", true);
+    $(`#${weekday}-min-${id}`).prop("disabled", true);
+  }
 }
 
 //Creates the whole sitelist.
