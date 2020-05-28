@@ -14,6 +14,7 @@ let today;
 chrome.runtime.onInstalled.addListener(function () {
   today = new Date().getDay();
   const date = new Date();
+  //Set basic information.
   chrome.storage.sync.set(
     { timeList: [], currentURL: "", date: date.toJSON() },
     function () {

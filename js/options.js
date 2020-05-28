@@ -223,6 +223,7 @@ function createWeekday(weekday, parentElement, id = "") {
 function createSiteList(siteList) {
   for (let index = 0; index < siteList.length; index++) {
     createSite(siteList[index], index);
+    validateForm(index);
   }
 }
 
@@ -410,16 +411,20 @@ function createSiteButtonResponse(siteList) {
   for (let index = 0; index < siteList.length; index++) {
     $(`#site-edit-${index}`).click(function () {
       bkg.console.log(`Edit: ${index}`);
+      siteList[index].time = getTimesByWeekday(index);
+      chrome.storage.sync.set({timeList: siteList}, function() {
+        bkg.console.log('SiteList Set');
+      });
       //chrome.runtime.sendMessage({edit});
+      resetForm(index);
     });
     $(`#site-remove-${index}`).click(function () {
-      bkg.console.log("REMOVING");
       chrome.runtime.sendMessage({ unblock: siteList[index].url });
       siteList.splice(index, 1);
       bkg.console.log(siteList);
       chrome.storage.sync.set({ timeList: siteList }, function () {
         updateSiteList(siteList);
-        bkg.console.log("Updated!");
+        bkg.console.log("Removal complete");
       });
     });
   }
