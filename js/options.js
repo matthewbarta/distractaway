@@ -28,7 +28,7 @@ $(function () {
   });
 
   //Creates the week elements.
-  createWeek('weekday-input');
+  createWeekDropdown('weekday-input');
 
   //Puts in the current url.
   chrome.storage.sync.get({ currentURL: "" }, function (url) {
@@ -137,9 +137,17 @@ function createWeek(parentElement, id) {
   }
 }
 
-// function createWeekDropdown(parentElement, id) {
+function createWeekDropdown(parentElement, id) {
+  dropdownProperties = [{property: 'data-toggle', value: 'dropdown'}, {property: 'aria-haspopup', value: 'true'}, {property: 'aria-expanded', value: 'false'}];
+  createButtonElement('weekday-input', 'Edit', "btn btn-secondary btn-lg dropdown-toggle", "add-site-button", dropdownProperties);
+}
 
-// }
+{/* <button class="btn btn-secondary btn-lg dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+Large button
+</button>
+<div class="dropdown-menu">
+...
+</div> */}
 
 //Create individual days.
 function createWeekday(day, parentElement, id = "") {
@@ -287,7 +295,8 @@ function createButtonElement(
   parentId = "",
   innerHTML = "",
   classTag = "",
-  idTag = ""
+  idTag = "",
+  additionalAttributes = []
 ) {
   const parent = document.getElementById(parentId);
   let button = document.createElement("button");
@@ -295,6 +304,11 @@ function createButtonElement(
   //Optional parameters.
   if (classTag != "") button.className = classTag;
   if (idTag != "") button.id = idTag;
+  if (additionalAttributes.length > 0) {
+    for(let index = 0; index < additionalAttributes.length; index++) {
+      button.setAttribute(additionalAttributes[index].property, additionalAttributes[index].value);
+    }
+  }
   parent.appendChild(button);
 }
 
