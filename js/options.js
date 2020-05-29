@@ -141,16 +141,11 @@ function createWeekDropdown(parentElement, id) {
   dropdownProperties = [{property: 'data-toggle', value: 'dropdown'}, {property: 'aria-haspopup', value: 'true'}, {property: 'aria-expanded', value: 'false'}];
   createButtonElement(parentElement, 'Edit', "btn btn-secondary btn-lg dropdown-toggle", `add-site-button-${id}`, dropdownProperties);
   createDiv(parentElement, 'dropdown-menu', `dropdown-menu-${id}`);
-  //TODO Add weekdays.
-  createButtonElement(`dropdown-menu-${id}`, 'Monday', `btn`, `weekday-${id}`)
+  //Adds weekdays.
+  for(let index = 0; index < WEEKDAYS.length; index++) {
+    createButtonElement(`dropdown-menu-${id}`, `${capitalize(WEEKDAYS[index])}`, `btn`, `${WEEKDAYS[index]}-${id}`)
+  }
 }
-
-{/* <button class="btn btn-secondary btn-lg dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-Large button
-</button>
-<div class="dropdown-menu">
-...
-</div> */}
 
 //Create individual days.
 function createWeekday(day, parentElement, id = "") {
