@@ -15,6 +15,9 @@ let siteList = [];
 //TODO Editting daily information, block attempts to edit current day limit.
 //TODO Cleaner interface for adding block information.
 //TODO Get rid of the 0 on forms when a new number is typed in, or get rid of it altogether.
+//TODO Only allow one of each day instance to be created.
+//TODO Allow days to be removed.
+//TODO Reset button clears all days.
 
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();
@@ -62,6 +65,8 @@ $(function () {
     showDiv("site-list");
   });
 
+
+  //TODO Modify to validate new form.
   //Handles input validation on checkboxes and number inputs.
   validateForm();
 
@@ -144,7 +149,11 @@ function createWeekDropdown(parentElement, id) {
   createDiv(`dropdown-${id}`, 'dropdown-menu', `dropdown-menu-${id}`);
   //Adds weekdays.
   for(let index = 0; index < WEEKDAYS.length; index++) {
-    createButtonElement(`dropdown-menu-${id}`, `${capitalize(WEEKDAYS[index])}`, `dropdown-item`, `${WEEKDAYS[index]}-${id}`)
+    createButtonElement(`dropdown-menu-${id}`, `${capitalize(WEEKDAYS[index])}`, `dropdown-item`, `${WEEKDAYS[index]}-${id}`);
+    $(`#${WEEKDAYS[index]}-${id}`).click(function () {
+      bkg.console.log(`#${WEEKDAYS[index]}-${id} clicked!`)
+      createWeekday(index, parentElement, id);
+    });
   }
 }
 
