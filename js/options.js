@@ -15,10 +15,11 @@ let siteList = [];
 //TODO Editting daily information, block attempts to edit current day limit.
 //TODO Cleaner interface for adding block information.
 //TODO Get rid of the 0 on forms when a new number is typed in, or get rid of it altogether.
-//TODO Only allow one of each day instance to be created.
 //TODO Allow days to be removed.
 //TODO Reset button clears all days.
 //TODO Only allow specific types of URLs
+//TODO Puts the weekdays in order.
+//TODO Remove all the days after a form submission.
 
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();
@@ -79,7 +80,7 @@ $(function () {
 
 //Show this div, hide the others.
 //TODO FIX WRONG HREF.
-function showDiv(id) {
+function showDiv(id = "") {
   for (let index = 0; index < DIVS.length; index++) {
     if (DIVS[index] == id) continue;
     $(`#${DIVS[index]}`).hide();
@@ -137,13 +138,13 @@ chrome.storage.onChanged.addListener(function (changes) {
 });
 
 //I put it into a function for if I want to make it so that users can individually select days, rather than see a whole form at once.
-function createWeek(parentElement, id) {
+function createWeek(parentElement, id = "") {
   for (let day = 0; day < WEEKDAYS.length; day++) {
     createWeekday(day, parentElement, id);
   }
 }
 
-function createWeekDropdown(parentElement, id) {
+function createWeekDropdown(parentElement, id = "") {
   createDiv(parentElement, 'dropdown', `dropdown-${id}`);
   dropdownProperties = [{property: 'data-toggle', value: 'dropdown'}, {property: 'aria-haspopup', value: 'true'}, {property: 'aria-expanded', value: 'false'}];
   createButtonElement(`dropdown-${id}`, 'Edit', "btn btn-secondary btn-lg dropdown-toggle", `add-site-button-${id}`, dropdownProperties);
@@ -152,8 +153,8 @@ function createWeekDropdown(parentElement, id) {
   for(let index = 0; index < WEEKDAYS.length; index++) {
     createButtonElement(`dropdown-menu-${id}`, `${capitalize(WEEKDAYS[index])}`, `dropdown-item`, `${WEEKDAYS[index]}-${id}`);
     $(`#${WEEKDAYS[index]}-${id}`).click(function () {
-      bkg.console.log()
-      createWeekday(index, parentElement, id);
+      if(document.getElementById(`${WEEKDAYS[index]}-div-${id}`) == null)
+        createWeekday(index, parentElement, id);
     });
   }
 }
@@ -261,7 +262,7 @@ function createSiteList(siteList) {
 }
 
 //Creates an individual site.
-function createSite(site, id) {
+function createSite(site, id = "") {
   createDiv("sites", 'site-div', `site-div-${id}`);
   createParagraphElement(`site-div-${id}`, site.url, "site-names", `site-p${id}`);
   createButtonElement(`site-div-${id}`, "Edit", "edit-buttons", `site-edit-${id}`);
