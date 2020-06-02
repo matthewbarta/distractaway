@@ -18,6 +18,7 @@ let siteList = [];
 //TODO Only allow one of each day instance to be created.
 //TODO Allow days to be removed.
 //TODO Reset button clears all days.
+//TODO Only allow specific types of URLs
 
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();
@@ -151,7 +152,7 @@ function createWeekDropdown(parentElement, id) {
   for(let index = 0; index < WEEKDAYS.length; index++) {
     createButtonElement(`dropdown-menu-${id}`, `${capitalize(WEEKDAYS[index])}`, `dropdown-item`, `${WEEKDAYS[index]}-${id}`);
     $(`#${WEEKDAYS[index]}-${id}`).click(function () {
-      bkg.console.log(`#${WEEKDAYS[index]}-${id} clicked!`)
+      bkg.console.log()
       createWeekday(index, parentElement, id);
     });
   }
@@ -181,14 +182,15 @@ function createWeekday(day, parentElement, id = "") {
       minutes = "0";
     }
   }
+  createDiv(parentElement, `weekday-div`, `${weekday}-div-${id}`)
   createParagraphElement(
-    parentElement,
+    `${weekday}-div-${id}`,
     `${capitalize(weekday)}`,
     "weekday-text"
   );
-  createLabelElement(parentElement, `${weekday}-hr`, "Hours", "hr-label");
+  createLabelElement(`${weekday}-div-${id}`, `${weekday}-hr`, "Hours", "hr-label");
   createInputElement(
-    parentElement,
+    `${weekday}-div-${id}`,
     "number",
     `${weekday}-hr-${id}`,
     hours,
@@ -197,9 +199,9 @@ function createWeekday(day, parentElement, id = "") {
     "0",
     "23"
   );
-  createLabelElement(parentElement, `${weekday}-min`, "Minutes", "min-label");
+  createLabelElement(`${weekday}-div-${id}`, `${weekday}-min`, "Minutes", "min-label");
   createInputElement(
-    parentElement,
+    `${weekday}-div-${id}`,
     "number",
     `${weekday}-min-${id}`,
     minutes,
@@ -209,13 +211,13 @@ function createWeekday(day, parentElement, id = "") {
     "59"
   );
   createLabelElement(
-    parentElement,
+    `${weekday}-div-${id}`,
     `${weekday}-blocked`,
     "Block All Day",
     "checkbox-label"
   );
   createInputElement(
-    parentElement,
+    `${weekday}-div-${id}`,
     "checkbox",
     `${weekday}-blocked-${id}`,
     "",
@@ -223,13 +225,13 @@ function createWeekday(day, parentElement, id = "") {
     `${weekday}-blocked-${id}`
   );
   createLabelElement(
-    parentElement,
+    `${weekday}-div-${id}`,
     `${weekday}-unrestricted`,
     "Unrestricted",
     "checkbox-label"
   );
   createInputElement(
-    parentElement,
+    `${weekday}-div-${id}`,
     "checkbox",
     `${weekday}-unrestricted-${id}`,
     "",
