@@ -242,8 +242,11 @@ function createWeekday(day, parentElement, id = "") {
     `${weekday}-div-${id}`,
     'X',
     'remove-weekday-button',
-    `remove-div-${id}`
+    `remove-${weekday}-${id}`
   );
+
+  //Creates the behavior to remove a weekday.
+  createRemoveButtonResponse(weekday, id);
 
   //Adds checks for the unrestricted/blocked box.
   if(unrestricted) {
@@ -472,6 +475,13 @@ function createSiteButtonResponse(siteList) {
       });
     });
   }
+}
+
+//Creates the remove response for removal buttons.
+function createRemoveButtonResponse(weekday, id = "") {
+  $(`#remove-${weekday}-${id}`).click(function () {
+    bkg.console.log(`Clicked remove! on #remove-${weekday}-${id}`);
+  });
 }
 
 //Checks for duplicate url in the urlTimeArray.
