@@ -13,11 +13,12 @@ const DIVS = ["add-site", "site-list"];
 let siteList = [];
 
 //TODO Editting daily information, block attempts to edit current day limit.
-//TODO Cleaner interface for adding block information.
 //TODO Get rid of the 0 on forms when a new number is typed in, or get rid of it altogether.
 //TODO Reset button gets rid of any disabled states.
 //TODO Only allow specific types of URLs
 //TODO Puts the weekdays in order.
+//TODO Missing weekdays are assumed to be unblocked.
+//TODO Fix site list responses.
 
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();
@@ -104,7 +105,9 @@ function storeTimeList(urlTimeArray, url) {
 function getTimesByWeekday(id = "") {
   let weekdayTimes = [];
   for (let day = 0; day < WEEKDAYS.length; day++) {
-    if ($(`#${WEEKDAYS[day]}-unrestricted-${id}`).is(":checked")) {
+    if(document.getElementById(`${WEEKDAYS[day]}-div-${id}`) == null) {
+      weekdayTimes.push({ timeUsed: 0, dayLimit: -1 });
+    } else if ($(`#${WEEKDAYS[day]}-unrestricted-${id}`).is(":checked")) {
       weekdayTimes.push({ timeUsed: 0, dayLimit: -1 });
     } else if ($(`#${WEEKDAYS[day]}-blocked-${id}`).is(":checked")) {
       weekdayTimes.push({ timeUsed: 0, dayLimit: 0 });
