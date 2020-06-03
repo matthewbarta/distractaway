@@ -20,6 +20,7 @@ let siteList = [];
 //TODO Only allow specific types of URLs
 //TODO Puts the weekdays in order.
 //TODO Remove all the days after a form submission.
+//TODO Validate forms with new method of adding forms.
 
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();
@@ -67,8 +68,6 @@ $(function () {
     showDiv("site-list");
   });
 
-
-  //TODO Modify to validate new form.
   //Handles input validation on checkboxes and number inputs.
   validateForm();
 
@@ -238,6 +237,12 @@ function createWeekday(day, parentElement, id = "") {
     "",
     "weekday-checkbox",
     `${weekday}-unrestricted-${id}`
+  );
+  createButtonElement(
+    `${weekday}-div-${id}`,
+    'X',
+    'remove-weekday-button',
+    `remove-div-${id}`
   );
 
   //Adds checks for the unrestricted/blocked box.
