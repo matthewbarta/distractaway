@@ -319,7 +319,7 @@ function timeTillMidnight() {
   midnight.setHours(24, 0, 0, 0);
   const timeDifference = now.getTime() - midnight.getTime();
   return Math.abs(timeDifference);
-  //return 10 * 1000;
+  // return 10 * 1000;
 }
 
 //Blocks sites whose time has run out.
