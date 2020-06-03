@@ -15,18 +15,15 @@ let siteList = [];
 //TODO Editting daily information, block attempts to edit current day limit.
 //TODO Cleaner interface for adding block information.
 //TODO Get rid of the 0 on forms when a new number is typed in, or get rid of it altogether.
-//TODO Allow days to be removed.
 //TODO Reset button clears all days.
+//TODO Reset button gets rid of any disabled states.
 //TODO Only allow specific types of URLs
 //TODO Puts the weekdays in order.
-//TODO Remove all the days after a form submission.
-//TODO Validate forms with new method of adding forms.
 
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();
 
 $(function () {
-
   //Creates the site elements.
   chrome.storage.sync.get("timeList", function (items) {
     siteList = items.timeList;
@@ -34,7 +31,7 @@ $(function () {
   });
 
   //Creates the week elements.
-  createWeekDropdown('weekday-input');
+  createWeekDropdown("weekday-input");
 
   //Puts in the current url.
   chrome.storage.sync.get({ currentURL: "" }, function (url) {
@@ -67,9 +64,6 @@ $(function () {
   $("#site-tag").click(function () {
     showDiv("site-list");
   });
-
-  //Handles input validation on checkboxes and number inputs.
-  validateForm();
 
   //Reset the form
   $("#reset-button").click(function () {
@@ -144,15 +138,30 @@ function createWeek(parentElement, id = "") {
 }
 
 function createWeekDropdown(parentElement, id = "") {
-  createDiv(parentElement, 'dropdown', `dropdown-${id}`);
-  dropdownProperties = [{property: 'data-toggle', value: 'dropdown'}, {property: 'aria-haspopup', value: 'true'}, {property: 'aria-expanded', value: 'false'}];
-  createButtonElement(`dropdown-${id}`, 'Edit', "btn btn-secondary btn-lg dropdown-toggle", `add-site-button-${id}`, dropdownProperties);
-  createDiv(`dropdown-${id}`, 'dropdown-menu', `dropdown-menu-${id}`);
+  createDiv(parentElement, "dropdown", `dropdown-${id}`);
+  dropdownProperties = [
+    { property: "data-toggle", value: "dropdown" },
+    { property: "aria-haspopup", value: "true" },
+    { property: "aria-expanded", value: "false" },
+  ];
+  createButtonElement(
+    `dropdown-${id}`,
+    "Edit",
+    "btn btn-secondary btn-lg dropdown-toggle",
+    `add-site-button-${id}`,
+    dropdownProperties
+  );
+  createDiv(`dropdown-${id}`, "dropdown-menu", `dropdown-menu-${id}`);
   //Adds weekdays.
-  for(let index = 0; index < WEEKDAYS.length; index++) {
-    createButtonElement(`dropdown-menu-${id}`, `${capitalize(WEEKDAYS[index])}`, `dropdown-item`, `${WEEKDAYS[index]}-${id}`);
+  for (let index = 0; index < WEEKDAYS.length; index++) {
+    createButtonElement(
+      `dropdown-menu-${id}`,
+      `${capitalize(WEEKDAYS[index])}`,
+      `dropdown-item`,
+      `${WEEKDAYS[index]}-${id}`
+    );
     $(`#${WEEKDAYS[index]}-${id}`).click(function () {
-      if(document.getElementById(`${WEEKDAYS[index]}-div-${id}`) == null)
+      if (document.getElementById(`${WEEKDAYS[index]}-div-${id}`) == null)
         createWeekday(index, parentElement, id);
     });
   }
@@ -160,7 +169,6 @@ function createWeekDropdown(parentElement, id = "") {
 
 //Create individual days.
 function createWeekday(day, parentElement, id = "") {
-
   //Needed for editting forms.
   const weekday = WEEKDAYS[day];
   let minutes = "0";
@@ -169,26 +177,30 @@ function createWeekday(day, parentElement, id = "") {
   let blocked = false;
 
   //Checks if edit forms have information already.
-  if(siteList[id] != undefined) {
+  if (siteList[id] != undefined) {
     seconds = siteList[id].time[day].dayLimit;
     hours = Math.floor(seconds / 3600).toString();
     minutes = Math.floor((seconds % 3600) / 60).toString();
-    if(seconds == 0) {
+    if (seconds == 0) {
       blocked = true;
-    }
-    else if(seconds == -1) {
+    } else if (seconds == -1) {
       unrestricted = true;
       hours = "0";
       minutes = "0";
     }
   }
-  createDiv(parentElement, `weekday-div`, `${weekday}-div-${id}`)
+  createDiv(parentElement, `weekday-div`, `${weekday}-div-${id}`);
   createParagraphElement(
     `${weekday}-div-${id}`,
     `${capitalize(weekday)}`,
     "weekday-text"
   );
-  createLabelElement(`${weekday}-div-${id}`, `${weekday}-hr`, "Hours", "hr-label");
+  createLabelElement(
+    `${weekday}-div-${id}`,
+    `${weekday}-hr`,
+    "Hours",
+    "hr-label"
+  );
   createInputElement(
     `${weekday}-div-${id}`,
     "number",
@@ -199,7 +211,12 @@ function createWeekday(day, parentElement, id = "") {
     "0",
     "23"
   );
-  createLabelElement(`${weekday}-div-${id}`, `${weekday}-min`, "Minutes", "min-label");
+  createLabelElement(
+    `${weekday}-div-${id}`,
+    `${weekday}-min`,
+    "Minutes",
+    "min-label"
+  );
   createInputElement(
     `${weekday}-div-${id}`,
     "number",
@@ -240,21 +257,23 @@ function createWeekday(day, parentElement, id = "") {
   );
   createButtonElement(
     `${weekday}-div-${id}`,
-    'X',
-    'remove-weekday-button',
+    "X",
+    "remove-weekday-button",
     `remove-${weekday}-${id}`
   );
 
   //Creates the behavior to remove a weekday.
   createRemoveButtonResponse(weekday, id);
 
+  //Validates the new input divs fields.
+  validateWeekdayForm(weekday, id);
+
   //Adds checks for the unrestricted/blocked box.
-  if(unrestricted) {
+  if (unrestricted) {
     $(`#${weekday}-unrestricted-${id}`).prop("checked", true);
     $(`#${weekday}-hr-${id}`).prop("disabled", true);
     $(`#${weekday}-min-${id}`).prop("disabled", true);
-  }
-  else if(blocked) {
+  } else if (blocked) {
     $(`#${weekday}-blocked-${id}`).prop("checked", true);
     $(`#${weekday}-hr-${id}`).prop("disabled", true);
     $(`#${weekday}-min-${id}`).prop("disabled", true);
@@ -265,16 +284,30 @@ function createWeekday(day, parentElement, id = "") {
 function createSiteList(siteList) {
   for (let index = 0; index < siteList.length; index++) {
     createSite(siteList[index], index);
-    validateForm(index);
   }
 }
 
 //Creates an individual site.
 function createSite(site, id = "") {
-  createDiv("sites", 'site-div', `site-div-${id}`);
-  createParagraphElement(`site-div-${id}`, site.url, "site-names", `site-p${id}`);
-  createButtonElement(`site-div-${id}`, "Edit", "edit-buttons", `site-edit-${id}`);
-  createButtonElement(`site-div-${id}`, "Remove", "remove-buttons", `site-remove-${id}`);
+  createDiv("sites", "site-div", `site-div-${id}`);
+  createParagraphElement(
+    `site-div-${id}`,
+    site.url,
+    "site-names",
+    `site-p${id}`
+  );
+  createButtonElement(
+    `site-div-${id}`,
+    "Edit",
+    "edit-buttons",
+    `site-edit-${id}`
+  );
+  createButtonElement(
+    `site-div-${id}`,
+    "Remove",
+    "remove-buttons",
+    `site-remove-${id}`
+  );
   createWeek(`site-div-${id}`, id);
 }
 
@@ -324,8 +357,11 @@ function createButtonElement(
   if (classTag != "") button.className = classTag;
   if (idTag != "") button.id = idTag;
   if (additionalAttributes.length > 0) {
-    for(let index = 0; index < additionalAttributes.length; index++) {
-      button.setAttribute(additionalAttributes[index].property, additionalAttributes[index].value);
+    for (let index = 0; index < additionalAttributes.length; index++) {
+      button.setAttribute(
+        additionalAttributes[index].property,
+        additionalAttributes[index].value
+      );
     }
   }
   parent.appendChild(button);
@@ -391,66 +427,64 @@ function resetForm(id = "") {
 
 //Handles incorrect min/max on inputs.
 //Also handles the checkbox graphics.
-function validateForm(id = "") {
-  for (let day = 0; day < WEEKDAYS.length; day++) {
-    //Code from stack overflow to handle incorrectly min/max on inputs.
-    $(`#${WEEKDAYS[day]}-hr-${id}`).keydown(function () {
-      // Save old value.
-      if (
-        !$(this).val() ||
-        (parseInt($(this).val()) <= 23 && parseInt($(this).val()) >= 0)
-      )
-        $(this).data(`old-hr-${id}`, $(this).val());
-    });
-    $(`#${WEEKDAYS[day]}-hr-${id}`).keyup(function () {
-      // Check correct, else revert back to old value.
-      if (
-        !$(this).val() ||
-        (parseInt($(this).val()) <= 23 && parseInt($(this).val()) >= 0)
-      );
-      else $(this).val($(this).data(`old-hr-${id}`));
-    });
-    $(`#${WEEKDAYS[day]}-min-${id}`).keydown(function () {
-      if (
-        !$(this).val() ||
-        (parseInt($(this).val()) <= 59 && parseInt($(this).val()) >= 0)
-      )
-        $(this).data(`old-min-${id}`, $(this).val());
-    });
-    $(`#${WEEKDAYS[day]}-min-${id}`).keyup(function () {
-      if (
-        !$(this).val() ||
-        (parseInt($(this).val()) <= 59 && parseInt($(this).val()) >= 0)
-      );
-      else $(this).val($(this).data(`old-min-${id}`));
-    });
+function validateWeekdayForm(weekday, id = "") {
+  //Code from stack overflow to handle incorrectly min/max on inputs.
+  $(`#${weekday}-hr-${id}`).keydown(function () {
+    // Save old value.
+    if (
+      !$(this).val() ||
+      (parseInt($(this).val()) <= 23 && parseInt($(this).val()) >= 0)
+    )
+      $(this).data(`old-hr-${id}`, $(this).val());
+  });
+  $(`#${weekday}-hr-${id}`).keyup(function () {
+    // Check correct, else revert back to old value.
+    if (
+      !$(this).val() ||
+      (parseInt($(this).val()) <= 23 && parseInt($(this).val()) >= 0)
+    );
+    else $(this).val($(this).data(`old-hr-${id}`));
+  });
+  $(`#${weekday}-min-${id}`).keydown(function () {
+    if (
+      !$(this).val() ||
+      (parseInt($(this).val()) <= 59 && parseInt($(this).val()) >= 0)
+    )
+      $(this).data(`old-min-${id}`, $(this).val());
+  });
+  $(`#${weekday}-min-${id}`).keyup(function () {
+    if (
+      !$(this).val() ||
+      (parseInt($(this).val()) <= 59 && parseInt($(this).val()) >= 0)
+    );
+    else $(this).val($(this).data(`old-min-${id}`));
+  });
 
-    //Checkbox details.
-    $(`#${WEEKDAYS[day]}-unrestricted-${id}`).click(function () {
-      //If it is checked.
-      if ($(`#${WEEKDAYS[day]}-unrestricted-${id}`).is(":checked")) {
-        $(`#${WEEKDAYS[day]}-blocked-${id}`).prop("checked", false);
-        $(`#${WEEKDAYS[day]}-hr-${id}`).prop("disabled", true);
-        $(`#${WEEKDAYS[day]}-min-${id}`).prop("disabled", true);
-      }
-      //It is unchecked.
-      else {
-        $(`#${WEEKDAYS[day]}-hr-${id}`).prop("disabled", false);
-        $(`#${WEEKDAYS[day]}-min-${id}`).prop("disabled", false);
-      }
-    });
-    //Repeat with blocked checkbox.
-    $(`#${WEEKDAYS[day]}-blocked-${id}`).click(function () {
-      if ($(`#${WEEKDAYS[day]}-blocked-${id}`).is(":checked")) {
-        $(`#${WEEKDAYS[day]}-unrestricted-${id}`).prop("checked", false);
-        $(`#${WEEKDAYS[day]}-hr-${id}`).prop("disabled", true);
-        $(`#${WEEKDAYS[day]}-min-${id}`).prop("disabled", true);
-      } else {
-        $(`#${WEEKDAYS[day]}-hr-${id}`).prop("disabled", false);
-        $(`#${WEEKDAYS[day]}-min-${id}`).prop("disabled", false);
-      }
-    });
-  }
+  //Checkbox details.
+  $(`#${weekday}-unrestricted-${id}`).click(function () {
+    //If it is checked.
+    if ($(`#${weekday}-unrestricted-${id}`).is(":checked")) {
+      $(`#${weekday}-blocked-${id}`).prop("checked", false);
+      $(`#${weekday}-hr-${id}`).prop("disabled", true);
+      $(`#${weekday}-min-${id}`).prop("disabled", true);
+    }
+    //It is unchecked.
+    else {
+      $(`#${weekday}-hr-${id}`).prop("disabled", false);
+      $(`#${weekday}-min-${id}`).prop("disabled", false);
+    }
+  });
+  //Repeat with blocked checkbox.
+  $(`#${weekday}-blocked-${id}`).click(function () {
+    if ($(`#${weekday}-blocked-${id}`).is(":checked")) {
+      $(`#${weekday}-unrestricted-${id}`).prop("checked", false);
+      $(`#${weekday}-hr-${id}`).prop("disabled", true);
+      $(`#${weekday}-min-${id}`).prop("disabled", true);
+    } else {
+      $(`#${weekday}-hr-${id}`).prop("disabled", false);
+      $(`#${weekday}-min-${id}`).prop("disabled", false);
+    }
+  });
 }
 
 //Creates actionable items on siteList
@@ -459,10 +493,9 @@ function createSiteButtonResponse(siteList) {
     $(`#site-edit-${index}`).click(function () {
       bkg.console.log(`Edit: ${index}`);
       siteList[index].time = getTimesByWeekday(index);
-      chrome.storage.sync.set({timeList: siteList}, function() {
-        bkg.console.log('SiteList Set');
+      chrome.storage.sync.set({ timeList: siteList }, function () {
+        bkg.console.log("SiteList Set");
       });
-      //chrome.runtime.sendMessage({edit});
       resetForm(index);
     });
     $(`#site-remove-${index}`).click(function () {
