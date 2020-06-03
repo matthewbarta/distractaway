@@ -480,7 +480,7 @@ function createSiteButtonResponse(siteList) {
 //Creates the remove response for removal buttons.
 function createRemoveButtonResponse(weekday, id = "") {
   $(`#remove-${weekday}-${id}`).click(function () {
-    bkg.console.log(`Clicked remove! on #remove-${weekday}-${id}`);
+    $(`#${weekday}-div-${id}`).remove();
   });
 }
 
