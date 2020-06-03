@@ -15,7 +15,6 @@ let siteList = [];
 //TODO Editting daily information, block attempts to edit current day limit.
 //TODO Cleaner interface for adding block information.
 //TODO Get rid of the 0 on forms when a new number is typed in, or get rid of it altogether.
-//TODO Reset button clears all days.
 //TODO Reset button gets rid of any disabled states.
 //TODO Only allow specific types of URLs
 //TODO Puts the weekdays in order.
@@ -422,6 +421,8 @@ function resetForm(id = "") {
     $(`#${WEEKDAYS[day]}-min-${id}`).val(0);
     $(`#${WEEKDAYS[day]}-blocked-${id}`).prop("checked", false);
     $(`#${WEEKDAYS[day]}-unrestricted-${id}`).prop("checked", false);
+    $(`#${WEEKDAYS[day]}-hr-${id}`).prop("disabled", false);
+    $(`#${WEEKDAYS[day]}-min-${id}`).prop("disabled", false);
   }
 }
 
