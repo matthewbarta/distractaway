@@ -105,7 +105,7 @@ function storeTimeList(urlTimeArray, url) {
 function getTimesByWeekday(id = "") {
   let weekdayTimes = [];
   for (let day = 0; day < WEEKDAYS.length; day++) {
-    if(document.getElementById(`${WEEKDAYS[day]}-div-${id}`) == null) {
+    if (document.getElementById(`${WEEKDAYS[day]}-div-${id}`) == null) {
       weekdayTimes.push({ timeUsed: 0, dayLimit: -1 });
     } else if ($(`#${WEEKDAYS[day]}-unrestricted-${id}`).is(":checked")) {
       weekdayTimes.push({ timeUsed: 0, dayLimit: -1 });
@@ -191,7 +191,7 @@ function createWeekday(day, parentElement, id = "") {
       minutes = "0";
     }
   }
-  createDiv(parentElement, `weekday-div`, `${weekday}-div-${id}`);
+  createWeekdayDiv(parentElement, weekday, id);
   createParagraphElement(
     `${weekday}-div-${id}`,
     `${capitalize(weekday)}`,
@@ -327,6 +327,26 @@ function createDiv(parentId = "", classTag = "", idTag = "") {
   if (classTag != "") div.className = classTag;
   if (idTag != "") div.id = idTag;
   parent.appendChild(div);
+}
+
+//Creates a div.
+function createWeekdayDiv(parentId = "", weekday, id) {
+  const parent = document.getElementById(parentId);
+  let div = document.createElement("div");
+  //Optional parameters.
+  div.className = `weekday-div`;
+  div.id = `${weekday}-div-${id}`;
+  parent.appendChild(div);
+  insertWeekday(parent, div);
+}
+
+//Finds the proper place to insert a weekday div.
+function insertWeekday(parent, weekdayDiv) {
+  const childNodes = Array.apply(null, parent.childNodes);
+  const divRegex = /(\w+)-div-\d*/;
+  const filterNodes = childNodes.filter((node) => divRegex.test(node.id));
+  const childIds = filterNodes.map((node) => divRegex.exec(node.id)[1]);
+  bkg.console.log(childIds);
 }
 
 //Creates a text paragraph element.
@@ -545,4 +565,27 @@ function trimURL(url) {
 //Converts hours and minutes to seconds.
 function convertToSeconds(hours, minutes) {
   return hours * 3600 + minutes * 60;
+}
+
+//Converts the weekday string to an index.
+function weekdayToNumber(weekday) {
+  const day = weekday.toLowerCase();
+  switch (day) {
+    case "sunday":
+      return 0;
+    case "monday":
+      return 1;
+    case "tuesday":
+      return 2;
+    case "wednesday":
+      return 3;
+    case "thursday":
+      return 4;
+    case "friday":
+      return 5;
+    case "saturday":
+      return 6;
+    default:
+      return -1;
+  }
 }

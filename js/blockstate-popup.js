@@ -1,4 +1,6 @@
 $(function () {
+
+  //TODO OPEN TO THE SITE LIST if possible.
   $(`#settings-button`).click(function() {
     window.open(chrome.runtime.getURL("../html/options.html"));
   })
