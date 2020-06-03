@@ -16,9 +16,8 @@ let siteList = [];
 //TODO Get rid of the 0 on forms when a new number is typed in, or get rid of it altogether.
 //TODO Reset button gets rid of any disabled states.
 //TODO Only allow specific types of URLs
-//TODO Puts the weekdays in order.
-//TODO Missing weekdays are assumed to be unblocked.
 //TODO Fix site list responses.
+//TODO Parental locks on edit/remove using a 4 digit PIN.
 
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();
@@ -173,8 +172,8 @@ function createWeekDropdown(parentElement, id = "") {
 function createWeekday(day, parentElement, id = "") {
   //Needed for editting forms.
   const weekday = WEEKDAYS[day];
-  let minutes = "0";
-  let hours = "0";
+  let minutes = "";
+  let hours = "";
   let unrestricted = false;
   let blocked = false;
 
@@ -187,8 +186,8 @@ function createWeekday(day, parentElement, id = "") {
       blocked = true;
     } else if (seconds == -1) {
       unrestricted = true;
-      hours = "0";
-      minutes = "0";
+      hours = "";
+      minutes = "";
     }
   }
   createWeekdayDiv(parentElement, weekday, id);
@@ -333,20 +332,29 @@ function createDiv(parentId = "", classTag = "", idTag = "") {
 function createWeekdayDiv(parentId = "", weekday, id) {
   const parent = document.getElementById(parentId);
   let div = document.createElement("div");
-  //Optional parameters.
   div.className = `weekday-div`;
   div.id = `${weekday}-div-${id}`;
-  parent.appendChild(div);
-  insertWeekday(parent, div);
+  insertWeekday(parent, div, weekdayToNumber(weekday), id);
 }
 
 //Finds the proper place to insert a weekday div.
-function insertWeekday(parent, weekdayDiv) {
+function insertWeekday(parent, weekdayDiv, day, id) {
   const childNodes = Array.apply(null, parent.childNodes);
   const divRegex = /(\w+)-div-\d*/;
   const filterNodes = childNodes.filter((node) => divRegex.test(node.id));
-  const childIds = filterNodes.map((node) => divRegex.exec(node.id)[1]);
-  bkg.console.log(childIds);
+  const childIds = filterNodes.map((node) =>
+    weekdayToNumber(divRegex.exec(node.id)[1])
+  );
+  for (let index = 0; index < childIds.length; index++) {
+    if (day < childIds[index]) {
+      parent.insertBefore(
+        weekdayDiv,
+        document.getElementById(`${WEEKDAYS[childIds[index]]}-div-${id}`)
+      );
+      return;
+    }
+  }
+  parent.appendChild(weekdayDiv);
 }
 
 //Creates a text paragraph element.
@@ -440,8 +448,8 @@ function capitalize(word) {
 function resetForm(id = "") {
   $("#block-site").val("");
   for (let day = 0; day < WEEKDAYS.length; day++) {
-    $(`#${WEEKDAYS[day]}-hr-${id}`).val(0);
-    $(`#${WEEKDAYS[day]}-min-${id}`).val(0);
+    $(`#${WEEKDAYS[day]}-hr-${id}`).val("");
+    $(`#${WEEKDAYS[day]}-min-${id}`).val("");
     $(`#${WEEKDAYS[day]}-blocked-${id}`).prop("checked", false);
     $(`#${WEEKDAYS[day]}-unrestricted-${id}`).prop("checked", false);
     $(`#${WEEKDAYS[day]}-hr-${id}`).prop("disabled", false);
