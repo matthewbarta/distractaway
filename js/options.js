@@ -299,12 +299,6 @@ function createSite(site, id = "") {
   );
   createButtonElement(
     `site-div-${id}`,
-    "Edit",
-    "edit-buttons",
-    `site-edit-${id}`
-  );
-  createButtonElement(
-    `site-div-${id}`,
     "Remove",
     "remove-buttons",
     `site-remove-${id}`
