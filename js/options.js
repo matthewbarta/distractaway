@@ -14,7 +14,6 @@ let siteList = [];
 
 //TODO Editting daily information, block attempts to edit current day limit.
 //TODO Get rid of the 0 on forms when a new number is typed in, or get rid of it altogether.
-//TODO Reset button gets rid of any disabled states.
 //TODO Only allow specific types of URLs
 //TODO Fix site list responses.
 //TODO Parental locks on edit/remove using a 4 digit PIN.
@@ -111,11 +110,12 @@ function getTimesByWeekday(id = "") {
     } else if ($(`#${WEEKDAYS[day]}-blocked-${id}`).is(":checked")) {
       weekdayTimes.push({ timeUsed: 0, dayLimit: 0 });
     } else {
-      const hours = parseInt($(`#${WEEKDAYS[day]}-hr-${id}`).val());
-      const minutes = parseInt($(`#${WEEKDAYS[day]}-min-${id}`).val());
+      const hours = Number.isInteger(parseInt($(`#${WEEKDAYS[day]}-hr-${id}`).val())) ? parseInt($(`#${WEEKDAYS[day]}-hr-${id}`).val()) : 0;
+      const minutes = Number.isInteger(parseInt($(`#${WEEKDAYS[day]}-min-${id}`).val())) ? parseInt($(`#${WEEKDAYS[day]}-min-${id}`).val()) : 0;
+      const seconds = convertToSeconds(hours, minutes) > 0 ? convertToSeconds(hours, minutes) : -1;
       weekdayTimes.push({
         timeUsed: 0,
-        dayLimit: convertToSeconds(hours, minutes),
+        dayLimit: seconds,
       });
     }
   }
@@ -309,7 +309,7 @@ function createSite(site, id = "") {
     "remove-buttons",
     `site-remove-${id}`
   );
-  createWeek(`site-div-${id}`, id);
+  createWeekDropdown(`site-div-${id}`, id);
 }
 
 function updateSiteList(siteList) {
@@ -328,7 +328,7 @@ function createDiv(parentId = "", classTag = "", idTag = "") {
   parent.appendChild(div);
 }
 
-//Creates a div.
+//Creates a div specific to the weekday input forms.
 function createWeekdayDiv(parentId = "", weekday, id) {
   const parent = document.getElementById(parentId);
   let div = document.createElement("div");
