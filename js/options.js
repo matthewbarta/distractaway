@@ -15,7 +15,7 @@ let siteList = [];
 //TODO Editting daily information, block attempts to edit current day limit.
 //TODO Get rid of the 0 on forms when a new number is typed in, or get rid of it altogether.
 //TODO Only allow specific types of URLs
-//TODO Fix site list responses.
+//TODO Fix site list responses - need to add a submit option for when the weekdays start.
 //TODO Parental locks on edit/remove using a 4 digit PIN.
 
 //! FOR DEBUGGING
@@ -304,6 +304,8 @@ function createSite(site, id = "") {
     `site-remove-${id}`
   );
   createWeekDropdown(`site-div-${id}`, id);
+  //Adds submit button.
+  createButtonElement(`dropdown-${id}`, "Submit Changes", "btn btn-secondary btn-lg", `add-site-button-${id}`);
 }
 
 function updateSiteList(siteList) {
