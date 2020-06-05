@@ -476,7 +476,8 @@ function validateWeekdayForm(weekday, id = "") {
     // Save old value.
     if (
       !$(this).val() ||
-      (parseInt($(this).val()) <= 23 && parseInt($(this).val()) >= 0)
+      ((parseInt($(this).val()) <= 23 && parseInt($(this).val()) >= 0) &&
+      $(this).val() != "00")
     )
       $(this).data(`old-hr-${id}`, $(this).val());
   });
@@ -484,21 +485,24 @@ function validateWeekdayForm(weekday, id = "") {
     // Check correct, else revert back to old value.
     if (
       !$(this).val() ||
-      (parseInt($(this).val()) <= 23 && parseInt($(this).val()) >= 0)
+      ((parseInt($(this).val()) <= 23 && parseInt($(this).val()) >= 0) &&
+      $(this).val() != "00")
     );
     else $(this).val($(this).data(`old-hr-${id}`));
   });
   $(`#${weekday}-min-${id}`).keydown(function () {
     if (
       !$(this).val() ||
-      (parseInt($(this).val()) <= 59 && parseInt($(this).val()) >= 0)
+      ((parseInt($(this).val()) <= 59 && parseInt($(this).val()) >= 0) &&
+      $(this).val() != "00")
     )
       $(this).data(`old-min-${id}`, $(this).val());
   });
   $(`#${weekday}-min-${id}`).keyup(function () {
     if (
       !$(this).val() ||
-      (parseInt($(this).val()) <= 59 && parseInt($(this).val()) >= 0)
+      ((parseInt($(this).val()) <= 59 && parseInt($(this).val()) >= 0) &&
+      $(this).val() != "00")
     );
     else $(this).val($(this).data(`old-min-${id}`));
   });
