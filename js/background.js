@@ -26,7 +26,7 @@ chrome.runtime.onInstalled.addListener(function () {
 
 //Checks to perform when chrome is reopened.
 chrome.runtime.onStartup.addListener(function () {
-  if (midnightTimer != undefined) stopTimeout(midnightTimer);
+  if (midnightTimer) stopTimeout(midnightTimer);
   //Compare date since last startup.
   const currentDate = new Date();
   today = currentDate.getDay();
@@ -57,7 +57,7 @@ chrome.runtime.onConnect.addListener((p) => {
 
 //Removes the blocked site from the blockList.
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-  if (message.unblock != undefined) {
+  if (message.unblock) {
     const unblockIndex = blockList.indexOf(`*://${message.unblock}/*`);
     if (unblockIndex != -1) {
       console.log(`Removing blocked url!: ${message.unblock}`);
@@ -80,7 +80,7 @@ const reduceTime = (index) => {
   if (time >= 0) {
     //When time runs out.
     if (time <= 0) timeExceeded(index);
-    if (port != undefined) {
+    if (port) {
       port.onDisconnect.addListener((p) => {
         if (p.error) {
           console.log(`There was a port error: ${p.error}`);
@@ -110,7 +110,7 @@ function onMidnight() {
   //Reset blockist.
   blockList = [];
   //Clear timers.
-  if (timer != undefined) clearInterval(timer);
+  if (timer) clearInterval(timer);
   //Reset daily limit.
   resetDailyLimits(today);
   today = new Date().getDay();
@@ -177,7 +177,7 @@ const stopCountdown = (timer) => {
 
 //Whenever the timeList gets a new component added update it on this script.
 chrome.storage.onChanged.addListener(function (changes) {
-  if (changes.timeList != undefined) {
+  if (changes.timeList) {
     timeList = changes.timeList.newValue;
   }
 });
@@ -206,7 +206,7 @@ function timeActiveTab(timeState) {
     timeState == "untimed" ||
     timeState == "options"
   ) {
-    if (timer != undefined) {
+    if (timer) {
       stopCountdown(timer);
     }
   }

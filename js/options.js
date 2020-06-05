@@ -33,7 +33,7 @@ $(function () {
 
   //Puts in the current url.
   chrome.storage.sync.get({ currentURL: "" }, function (url) {
-    if (url.currentURL != "") {
+    if (url.currentURL) {
       let trimmedURL = trimURL(url.currentURL);
       $("#block-site").val(trimmedURL);
     }
@@ -46,7 +46,7 @@ $(function () {
       chrome.storage.sync.get(["timeList"], function (items) {
         let list = items.timeList;
         storeTimeList(list, url);
-        resetForm('week-form-');
+        resetForm("week-form-");
       });
     } else {
       alert("No URL submitted!");
@@ -65,7 +65,7 @@ $(function () {
 
   //Reset the form
   $("#reset-button").click(function () {
-    resetForm('week-form-');
+    resetForm("week-form-");
   });
 });
 
@@ -109,9 +109,20 @@ function getTimesByWeekday(id = "") {
     } else if ($(`#${WEEKDAYS[day]}-blocked-${id}`).is(":checked")) {
       weekdayTimes.push({ timeUsed: 0, dayLimit: 0 });
     } else {
-      const hours = Number.isInteger(parseInt($(`#${WEEKDAYS[day]}-hr-${id}`).val())) ? parseInt($(`#${WEEKDAYS[day]}-hr-${id}`).val()) : 0;
-      const minutes = Number.isInteger(parseInt($(`#${WEEKDAYS[day]}-min-${id}`).val())) ? parseInt($(`#${WEEKDAYS[day]}-min-${id}`).val()) : 0;
-      const seconds = convertToSeconds(hours, minutes) > 0 ? convertToSeconds(hours, minutes) : -1;
+      const hours = Number.isInteger(
+        parseInt($(`#${WEEKDAYS[day]}-hr-${id}`).val())
+      )
+        ? parseInt($(`#${WEEKDAYS[day]}-hr-${id}`).val())
+        : 0;
+      const minutes = Number.isInteger(
+        parseInt($(`#${WEEKDAYS[day]}-min-${id}`).val())
+      )
+        ? parseInt($(`#${WEEKDAYS[day]}-min-${id}`).val())
+        : 0;
+      const seconds =
+        convertToSeconds(hours, minutes) > 0
+          ? convertToSeconds(hours, minutes)
+          : -1;
       weekdayTimes.push({
         timeUsed: 0,
         dayLimit: seconds,
@@ -123,7 +134,7 @@ function getTimesByWeekday(id = "") {
 
 //For updating the url in the input box even if options page is already open or has input.
 chrome.storage.onChanged.addListener(function (changes) {
-  if (changes.currentURL != undefined) {
+  if (changes.currentURL) {
     //Trim the new url and change the DOM to reflect.
     $("#block-site").val(trimURL(changes.currentURL.newValue));
     showDiv("add-site");
@@ -153,7 +164,7 @@ function createWeekDropdown(parentElement, id = "") {
   );
   createDiv(`dropdown-${id}`, "dropdown-menu", `dropdown-menu-${id}`);
   //Div to hold all the days.
-  createDiv(`dropdown-${id}`, 'week-form', `week-form-${id}`);
+  createDiv(`dropdown-${id}`, "week-form", `week-form-${id}`);
   //Adds weekdays.
   for (let index = 0; index < WEEKDAYS.length; index++) {
     createButtonElement(
@@ -179,7 +190,7 @@ function createWeekday(day, parentElement, id = "") {
   let blocked = false;
 
   //Checks if edit forms have information already.
-  if (siteList[id] != undefined) {
+  if (siteList[id]) {
     seconds = siteList[id].time[day].dayLimit;
     hours = Math.floor(seconds / 3600).toString();
     minutes = Math.floor((seconds % 3600) / 60).toString();
@@ -306,7 +317,12 @@ function createSite(site, id = "") {
   );
   createWeekDropdown(`site-div-${id}`, id);
   //Adds submit button.
-  createButtonElement(`dropdown-${id}`, "Submit Changes", "btn btn-secondary btn-lg", `submit-edit-${id}`);
+  createButtonElement(
+    `dropdown-${id}`,
+    "Submit Changes",
+    "btn btn-secondary btn-lg",
+    `submit-edit-${id}`
+  );
   //Hides the submit button by default.
   $(`#submit-edit-${id}`).hide();
 }
@@ -322,8 +338,8 @@ function createDiv(parentId = "", classTag = "", idTag = "") {
   const parent = document.getElementById(parentId);
   let div = document.createElement("div");
   //Optional parameters.
-  if (classTag != "") div.className = classTag;
-  if (idTag != "") div.id = idTag;
+  if (classTag) div.className = classTag;
+  if (idTag) div.id = idTag;
   parent.appendChild(div);
 }
 
@@ -350,8 +366,8 @@ function insertWeekday(parentId, weekdayDiv, day, id) {
   }
   parent.appendChild(weekdayDiv);
   //Adds the submit button when adding the first element.
-  if(currentWeekdays.length == 0) {
-    if(document.getElementById(`submit-edit-${id}`) != null) {
+  if (currentWeekdays.length == 0) {
+    if (document.getElementById(`submit-edit-${id}`)) {
       $(`#submit-edit-${id}`).show();
     }
   }
@@ -362,9 +378,7 @@ function getCurrentWeekdayArray(parent) {
   const childNodes = Array.apply(null, parent.childNodes);
   const divRegex = /(\w+)-div-\d*/;
   const filterNodes = childNodes.filter((node) => divRegex.test(node.id));
-  return filterNodes.map((node) =>
-    weekdayToNumber(divRegex.exec(node.id)[1])
-  );
+  return filterNodes.map((node) => weekdayToNumber(divRegex.exec(node.id)[1]));
 }
 
 //Creates a text paragraph element.
@@ -378,8 +392,8 @@ function createParagraphElement(
   let paragraph = document.createElement("p");
   paragraph.innerHTML = innerHTML;
   //Optional parameters.
-  if (classTag != "") paragraph.className = classTag;
-  if (idTag != "") paragraph.id = idTag;
+  if (classTag) paragraph.className = classTag;
+  if (idTag) paragraph.id = idTag;
   parent.appendChild(paragraph);
 }
 
@@ -394,8 +408,8 @@ function createButtonElement(
   let button = document.createElement("button");
   button.innerHTML = innerHTML;
   //Optional parameters.
-  if (classTag != "") button.className = classTag;
-  if (idTag != "") button.id = idTag;
+  if (classTag) button.className = classTag;
+  if (idTag) button.id = idTag;
   if (additionalAttributes.length > 0) {
     for (let index = 0; index < additionalAttributes.length; index++) {
       button.setAttribute(
@@ -420,8 +434,8 @@ function createLabelElement(
   label.htmlFor = forTag;
   label.innerHTML = innerHTML;
   //Optional parameters.
-  if (classTag != "") label.className = classTag;
-  if (idTag != "") label.id = idTag;
+  if (classTag) label.className = classTag;
+  if (idTag) label.id = idTag;
   parent.appendChild(label);
 }
 
@@ -441,11 +455,11 @@ function createInputElement(
   input.type = type;
   input.name = name;
   //Optional parameters.
-  if (value != "") input.value = value;
-  if (classTag != "") input.className = classTag;
-  if (idTag != "") input.id = idTag;
-  if (min != "") input.min = min;
-  if (max != "") input.max = max;
+  if (value) input.value = value;
+  if (classTag) input.className = classTag;
+  if (idTag) input.id = idTag;
+  if (min) input.min = min;
+  if (max) input.max = max;
   parent.appendChild(input);
 }
 
@@ -468,11 +482,11 @@ function resetForm(parentId, id = "") {
   //Removes all the weekday divs.
   const parent = document.getElementById(parentId);
   let weekday = parent.lastChild;
-  while(weekday) {
+  while (weekday) {
     weekday.remove();
     weekday = parent.lastChild;
   }
-  if(document.getElementById(`submit-edit-${id}`)) {
+  if (document.getElementById(`submit-edit-${id}`)) {
     $(`#submit-edit-${id}`).hide();
   }
 }
@@ -544,8 +558,7 @@ function createSiteButtonResponse(siteList) {
   for (let index = 0; index < siteList.length; index++) {
     $(`#submit-edit-${index}`).click(function () {
       siteList[index].time = getTimesByWeekday(index);
-      chrome.storage.sync.set({ timeList: siteList }, function () {
-      });
+      chrome.storage.sync.set({ timeList: siteList }, function () {});
       resetForm(`week-form-${index}`, index);
     });
     $(`#site-remove-${index}`).click(function () {
@@ -564,11 +577,11 @@ function createRemoveButtonResponse(weekday, id = "", parentElement) {
     //Removes the div for the weekday.
     $(`#${weekday}-div-${id}`).remove();
     //Hides the submit button if no days are displayed.
-    if(document.getElementById(parentElement).childNodes.length == 0) {
-      if(document.getElementById(`submit-edit-${id}`) != null) {
+    if (document.getElementById(parentElement).childNodes.length == 0) {
+      if (document.getElementById(`submit-edit-${id}`)) {
         $(`#submit-edit-${id}`).hide();
       }
-    };
+    }
   });
 }
 
@@ -584,7 +597,7 @@ function trimURL(url) {
   let re = /([a-zA-Z0-9-]*\.)+\w*/;
   let trimmed = re.exec(url);
   //If it is a trimmable url, trim it.
-  if (trimmed != undefined) {
+  if (trimmed) {
     return trimmed[0];
   }
   //Otherwise use the raw url.

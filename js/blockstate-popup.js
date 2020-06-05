@@ -1,18 +1,13 @@
 $(function () {
-
   //TODO OPEN TO THE SITE LIST if possible.
-  $(`#settings-button`).click(function() {
+  $(`#settings-button`).click(function () {
     window.open(chrome.runtime.getURL("../html/options.html"));
-  })
+  });
 });
 
 //Closes the window at midnight
-chrome.runtime.onMessage.addListener(function (
-  message,
-  sender,
-  sendResponse
-) {
-  if (message.midnight != undefined) {
+chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+  if (message.midnight) {
     window.close();
     return;
   }

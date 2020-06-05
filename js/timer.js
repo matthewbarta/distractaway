@@ -27,7 +27,7 @@ $(function () {
     sender,
     sendResponse
   ) {
-    if (message.midnight != undefined) {
+    if (message.midnight) {
       window.close();
       return;
     }
