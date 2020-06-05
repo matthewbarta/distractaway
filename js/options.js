@@ -16,7 +16,6 @@ let siteList = [];
 //TODO Only allow specific types of URLs
 //TODO Parental locks on edit/remove using a 4 digit PIN.
 //TODO Same limit every day (?)
-//TODO Remove unrestricted option.
 
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();
@@ -104,8 +103,6 @@ function getTimesByWeekday(id = "") {
   for (let day = 0; day < WEEKDAYS.length; day++) {
     if (document.getElementById(`${WEEKDAYS[day]}-div-${id}`) == null) {
       weekdayTimes.push({ timeUsed: 0, dayLimit: -1 });
-    } else if ($(`#${WEEKDAYS[day]}-unrestricted-${id}`).is(":checked")) {
-      weekdayTimes.push({ timeUsed: 0, dayLimit: -1 });
     } else if ($(`#${WEEKDAYS[day]}-blocked-${id}`).is(":checked")) {
       weekdayTimes.push({ timeUsed: 0, dayLimit: 0 });
     } else {
@@ -148,6 +145,7 @@ function createWeek(parentElement, id = "") {
   }
 }
 
+//Creates the dropdown menu for selecting weekdays.
 function createWeekDropdown(parentElement, id = "") {
   createDiv(parentElement, "dropdown", `dropdown-${id}`);
   dropdownProperties = [
@@ -186,7 +184,6 @@ function createWeekday(day, parentElement, id = "") {
   const weekday = WEEKDAYS[day];
   let minutes = "";
   let hours = "";
-  let unrestricted = false;
   let blocked = false;
 
   //Checks if edit forms have information already.
@@ -197,7 +194,6 @@ function createWeekday(day, parentElement, id = "") {
     if (seconds == 0) {
       blocked = true;
     } else if (seconds == -1) {
-      unrestricted = true;
       hours = "";
       minutes = "";
     }
@@ -254,20 +250,6 @@ function createWeekday(day, parentElement, id = "") {
     "weekday-checkbox",
     `${weekday}-blocked-${id}`
   );
-  createLabelElement(
-    `${weekday}-div-${id}`,
-    `${weekday}-unrestricted`,
-    "Unrestricted",
-    "checkbox-label"
-  );
-  createInputElement(
-    `${weekday}-div-${id}`,
-    "checkbox",
-    `${weekday}-unrestricted-${id}`,
-    "",
-    "weekday-checkbox",
-    `${weekday}-unrestricted-${id}`
-  );
   createButtonElement(
     `${weekday}-div-${id}`,
     "X",
@@ -281,12 +263,8 @@ function createWeekday(day, parentElement, id = "") {
   //Validates the new input divs fields.
   validateWeekdayForm(weekday, id);
 
-  //Adds checks for the unrestricted/blocked box.
-  if (unrestricted) {
-    $(`#${weekday}-unrestricted-${id}`).prop("checked", true);
-    $(`#${weekday}-hr-${id}`).prop("disabled", true);
-    $(`#${weekday}-min-${id}`).prop("disabled", true);
-  } else if (blocked) {
+  //Adds checks for the blocked box.
+  if (blocked) {
     $(`#${weekday}-blocked-${id}`).prop("checked", true);
     $(`#${weekday}-hr-${id}`).prop("disabled", true);
     $(`#${weekday}-min-${id}`).prop("disabled", true);
@@ -475,7 +453,6 @@ function resetForm(parentId, id = "") {
     $(`#${WEEKDAYS[day]}-hr-${id}`).val("");
     $(`#${WEEKDAYS[day]}-min-${id}`).val("");
     $(`#${WEEKDAYS[day]}-blocked-${id}`).prop("checked", false);
-    $(`#${WEEKDAYS[day]}-unrestricted-${id}`).prop("checked", false);
     $(`#${WEEKDAYS[day]}-hr-${id}`).prop("disabled", false);
     $(`#${WEEKDAYS[day]}-min-${id}`).prop("disabled", false);
   }
@@ -526,24 +503,9 @@ function validateWeekdayForm(weekday, id = "") {
     else $(this).val($(this).data(`old-min-${id}`));
   });
 
-  //Checkbox details.
-  $(`#${weekday}-unrestricted-${id}`).click(function () {
-    //If it is checked.
-    if ($(`#${weekday}-unrestricted-${id}`).is(":checked")) {
-      $(`#${weekday}-blocked-${id}`).prop("checked", false);
-      $(`#${weekday}-hr-${id}`).prop("disabled", true);
-      $(`#${weekday}-min-${id}`).prop("disabled", true);
-    }
-    //It is unchecked.
-    else {
-      $(`#${weekday}-hr-${id}`).prop("disabled", false);
-      $(`#${weekday}-min-${id}`).prop("disabled", false);
-    }
-  });
-  //Repeat with blocked checkbox.
+  //Blocked checkbox details.
   $(`#${weekday}-blocked-${id}`).click(function () {
     if ($(`#${weekday}-blocked-${id}`).is(":checked")) {
-      $(`#${weekday}-unrestricted-${id}`).prop("checked", false);
       $(`#${weekday}-hr-${id}`).prop("disabled", true);
       $(`#${weekday}-min-${id}`).prop("disabled", true);
     } else {
