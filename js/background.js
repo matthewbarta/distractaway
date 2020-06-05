@@ -8,7 +8,6 @@ let port;
 let today;
 
 //TODO Tab alignment checks (for example switching between tabs when still another is updating)
-//TODO Ensure window is still active.
 
 //Initializes extension.
 chrome.runtime.onInstalled.addListener(function () {
@@ -60,9 +59,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   if (message.unblock) {
     const unblockIndex = blockList.indexOf(`*://${message.unblock}/*`);
     if (unblockIndex != -1) {
-      console.log(`Removing blocked url!: ${message.unblock}`);
       blockList.splice(unblockIndex, 1);
-      console.log(blockList);
     }
     return;
   }
@@ -70,32 +67,38 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 
 //Countdown method for when tabs are opened.
 const reduceTime = (index) => {
-  let time =
-    timeList[index].time[today].dayLimit -
-    timeList[index].time[today].timeUsed++;
-
-  //! DEBUG
-  console.log(time);
-  //For the countdown - sends a message to the timer script.
-  if (time >= 0) {
-    //When time runs out.
-    if (time <= 0) timeExceeded(index);
-    if (port) {
-      port.onDisconnect.addListener((p) => {
-        if (p.error) {
-          console.log(`There was a port error: ${p.error}`);
+  chrome.windows.getCurrent(function (window) {
+    //If the window is not in the forefront, but also ask the user about this option.
+    //TODO Ask the user if they want to choose if the window pauses when minimized.
+    if (window.state == "minimized") {
+      return;
+    }
+    let time =
+      timeList[index].time[today].dayLimit -
+      timeList[index].time[today].timeUsed++;
+    //! DEBUG
+    console.log(time);
+    //For the countdown - sends a message to the timer script.
+    if (time >= 0) {
+      //When time runs out.
+      if (time <= 0) timeExceeded(index);
+      if (port) {
+        port.onDisconnect.addListener((p) => {
+          if (p.error) {
+            console.log(`There was a port error: ${p.error}`);
+          }
+          port = undefined;
+          return;
+        });
+        //Failsafe, because the port can disconnect between the time the last statment is read and now.
+        try {
+          port.postMessage({ time: time });
+        } catch (error) {
+          console.log(error.message);
         }
-        port = undefined;
-        return;
-      });
-      //Failsafe, because the port can disconnect between the time the last statment is read and now.
-      try {
-        port.postMessage({ time: time });
-      } catch (error) {
-        console.log(error.message);
       }
     }
-  }
+  });
 };
 
 /* At midnight we want:

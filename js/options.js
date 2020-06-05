@@ -12,11 +12,11 @@ const DIVS = ["add-site", "site-list"];
 
 let siteList = [];
 
-//TODO Editting daily information, block attempts to edit current day limit.
 //TODO Get rid of the 0 on forms when a new number is typed in, or get rid of it altogether.
 //TODO Only allow specific types of URLs
-//TODO Fix site list responses - need to add a submit option for when the weekdays start.
 //TODO Parental locks on edit/remove using a 4 digit PIN.
+//TODO Same limit every day (?)
+//TODO Remove unrestricted option.
 
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();
