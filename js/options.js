@@ -153,6 +153,7 @@ function createWeekDropdown(parentElement, id = "") {
     dropdownProperties
   );
   createDiv(`dropdown-${id}`, "dropdown-menu", `dropdown-menu-${id}`);
+  createDiv(`dropdown-${id}`, 'week-form', `week-form-${id}`);
   //Adds weekdays.
   for (let index = 0; index < WEEKDAYS.length; index++) {
     createButtonElement(
@@ -163,7 +164,7 @@ function createWeekDropdown(parentElement, id = "") {
     );
     $(`#${WEEKDAYS[index]}-${id}`).click(function () {
       if (document.getElementById(`${WEEKDAYS[index]}-div-${id}`) == null)
-        createWeekday(index, parentElement, id);
+        createWeekday(index, `week-form-${id}`, id);
     });
   }
 }
