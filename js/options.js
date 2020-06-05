@@ -533,8 +533,7 @@ function validateWeekdayForm(weekday, id = "") {
 //Creates actionable items on siteList
 function createSiteButtonResponse(siteList) {
   for (let index = 0; index < siteList.length; index++) {
-    $(`#site-edit-${index}`).click(function () {
-      bkg.console.log(`Edit: ${index}`);
+    $(`#submit-edit-${index}`).click(function () {
       siteList[index].time = getTimesByWeekday(index);
       chrome.storage.sync.set({ timeList: siteList }, function () {
       });
@@ -543,7 +542,6 @@ function createSiteButtonResponse(siteList) {
     $(`#site-remove-${index}`).click(function () {
       chrome.runtime.sendMessage({ unblock: siteList[index].url });
       siteList.splice(index, 1);
-      bkg.console.log(siteList);
       chrome.storage.sync.set({ timeList: siteList }, function () {
         updateSiteList(siteList);
       });
