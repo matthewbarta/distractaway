@@ -153,6 +153,7 @@ function createWeekDropdown(parentElement, id = "") {
     dropdownProperties
   );
   createDiv(`dropdown-${id}`, "dropdown-menu", `dropdown-menu-${id}`);
+  //Div to hold all the days.
   createDiv(`dropdown-${id}`, 'week-form', `week-form-${id}`);
   //Adds weekdays.
   for (let index = 0; index < WEEKDAYS.length; index++) {
@@ -306,7 +307,9 @@ function createSite(site, id = "") {
   );
   createWeekDropdown(`site-div-${id}`, id);
   //Adds submit button.
-  createButtonElement(`dropdown-${id}`, "Submit Changes", "btn btn-secondary btn-lg", `add-site-button-${id}`);
+  createButtonElement(`dropdown-${id}`, "Submit Changes", "btn btn-secondary btn-lg", `submit-edit-${id}`);
+  //Hides the submit button by default.
+  $(`#submit-edit-${id}`).hide();
 }
 
 function updateSiteList(siteList) {
@@ -352,6 +355,12 @@ function insertWeekday(parent, weekdayDiv, day, id) {
     }
   }
   parent.appendChild(weekdayDiv);
+  //Adds the submit button when adding the first element.
+  if(childIds.length == 0) {
+    if(document.getElementById(`submit-edit-${id}`) != null) {
+      $(`#submit-edit-${id}`).show();
+    }
+  }
 }
 
 //Creates a text paragraph element.
