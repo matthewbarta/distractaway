@@ -551,11 +551,17 @@ function createSiteButtonResponse(siteList) {
   }
 }
 
-//Creates the remove response for removal buttons.
+//Creates the remove response for removal buttons on weekdays..
 function createRemoveButtonResponse(weekday, id = "", parentElement) {
   $(`#remove-${weekday}-${id}`).click(function () {
+    //Removes the div for the weekday.
     $(`#${weekday}-div-${id}`).remove();
-    bkg.console.log(document.getElementById(parentElement).childNodes);
+    //Hides the submit button if no days are displayed.
+    if(document.getElementById(parentElement).childNodes.length == 0) {
+      if(document.getElementById(`submit-edit-${id}`) != null) {
+        $(`#submit-edit-${id}`).hide();
+      }
+    };
   });
 }
 
