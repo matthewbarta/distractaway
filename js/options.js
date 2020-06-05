@@ -7,8 +7,9 @@ const WEEKDAYS = [
   "friday",
   "saturday",
 ];
-
 const DIVS = ["add-site", "site-list"];
+
+const zeroRegex = /00+/;
 
 let siteList = [];
 
@@ -477,7 +478,7 @@ function validateWeekdayForm(weekday, id = "") {
     if (
       !$(this).val() ||
       ((parseInt($(this).val()) <= 23 && parseInt($(this).val()) >= 0) &&
-      $(this).val() != "00")
+      !zeroRegex.test($(this).val()))
     )
       $(this).data(`old-hr-${id}`, $(this).val());
   });
@@ -486,7 +487,7 @@ function validateWeekdayForm(weekday, id = "") {
     if (
       !$(this).val() ||
       ((parseInt($(this).val()) <= 23 && parseInt($(this).val()) >= 0) &&
-      $(this).val() != "00")
+      !zeroRegex.test($(this).val()))
     );
     else $(this).val($(this).data(`old-hr-${id}`));
   });
@@ -494,7 +495,7 @@ function validateWeekdayForm(weekday, id = "") {
     if (
       !$(this).val() ||
       ((parseInt($(this).val()) <= 59 && parseInt($(this).val()) >= 0) &&
-      $(this).val() != "00")
+      !zeroRegex.test($(this).val()))
     )
       $(this).data(`old-min-${id}`, $(this).val());
   });
@@ -502,7 +503,7 @@ function validateWeekdayForm(weekday, id = "") {
     if (
       !$(this).val() ||
       ((parseInt($(this).val()) <= 59 && parseInt($(this).val()) >= 0) &&
-      $(this).val() != "00")
+      !zeroRegex.test($(this).val()))
     );
     else $(this).val($(this).data(`old-min-${id}`));
   });
