@@ -266,7 +266,7 @@ function createWeekday(day, parentElement, id = "") {
   );
 
   //Creates the behavior to remove a weekday.
-  createRemoveButtonResponse(weekday, id);
+  createRemoveButtonResponse(weekday, id, parentElement);
 
   //Validates the new input divs fields.
   validateWeekdayForm(weekday, id);
@@ -330,37 +330,42 @@ function createDiv(parentId = "", classTag = "", idTag = "") {
 
 //Creates a div specific to the weekday input forms.
 function createWeekdayDiv(parentId = "", weekday, id) {
-  const parent = document.getElementById(parentId);
   let div = document.createElement("div");
   div.className = `weekday-div`;
   div.id = `${weekday}-div-${id}`;
-  insertWeekday(parent, div, weekdayToNumber(weekday), id);
+  insertWeekday(parentId, div, weekdayToNumber(weekday), id);
 }
 
 //Finds the proper place to insert a weekday div.
-function insertWeekday(parent, weekdayDiv, day, id) {
-  const childNodes = Array.apply(null, parent.childNodes);
-  const divRegex = /(\w+)-div-\d*/;
-  const filterNodes = childNodes.filter((node) => divRegex.test(node.id));
-  const childIds = filterNodes.map((node) =>
-    weekdayToNumber(divRegex.exec(node.id)[1])
-  );
-  for (let index = 0; index < childIds.length; index++) {
-    if (day < childIds[index]) {
+function insertWeekday(parentId, weekdayDiv, day, id) {
+  const parent = document.getElementById(parentId);
+  const currentWeekdays = getCurrentWeekdayArray(parent);
+  for (let index = 0; index < currentWeekdays.length; index++) {
+    if (day < currentWeekdays[index]) {
       parent.insertBefore(
         weekdayDiv,
-        document.getElementById(`${WEEKDAYS[childIds[index]]}-div-${id}`)
+        document.getElementById(`${WEEKDAYS[currentWeekdays[index]]}-div-${id}`)
       );
       return;
     }
   }
   parent.appendChild(weekdayDiv);
   //Adds the submit button when adding the first element.
-  if(childIds.length == 0) {
+  if(currentWeekdays.length == 0) {
     if(document.getElementById(`submit-edit-${id}`) != null) {
       $(`#submit-edit-${id}`).show();
     }
   }
+}
+
+//Returns an array of the weekdays in a div in numerical form.
+function getCurrentWeekdayArray(parent) {
+  const childNodes = Array.apply(null, parent.childNodes);
+  const divRegex = /(\w+)-div-\d*/;
+  const filterNodes = childNodes.filter((node) => divRegex.test(node.id));
+  return filterNodes.map((node) =>
+    weekdayToNumber(divRegex.exec(node.id)[1])
+  );
 }
 
 //Creates a text paragraph element.
@@ -532,7 +537,6 @@ function createSiteButtonResponse(siteList) {
       bkg.console.log(`Edit: ${index}`);
       siteList[index].time = getTimesByWeekday(index);
       chrome.storage.sync.set({ timeList: siteList }, function () {
-        bkg.console.log("SiteList Set");
       });
       resetForm(index);
     });
@@ -542,16 +546,16 @@ function createSiteButtonResponse(siteList) {
       bkg.console.log(siteList);
       chrome.storage.sync.set({ timeList: siteList }, function () {
         updateSiteList(siteList);
-        bkg.console.log("Removal complete");
       });
     });
   }
 }
 
 //Creates the remove response for removal buttons.
-function createRemoveButtonResponse(weekday, id = "") {
+function createRemoveButtonResponse(weekday, id = "", parentElement) {
   $(`#remove-${weekday}-${id}`).click(function () {
     $(`#${weekday}-div-${id}`).remove();
+    bkg.console.log(document.getElementById(parentElement).childNodes);
   });
 }
 
