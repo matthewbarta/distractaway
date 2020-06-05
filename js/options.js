@@ -46,7 +46,7 @@ $(function () {
       chrome.storage.sync.get(["timeList"], function (items) {
         let list = items.timeList;
         storeTimeList(list, url);
-        resetForm();
+        resetForm('week-form-');
       });
     } else {
       alert("No URL submitted!");
@@ -65,7 +65,7 @@ $(function () {
 
   //Reset the form
   $("#reset-button").click(function () {
-    resetForm();
+    resetForm('week-form-');
   });
 });
 
@@ -95,7 +95,6 @@ function storeTimeList(urlTimeArray, url) {
     chrome.storage.sync.set({ timeList: urlTimeArray }, function () {
       updateSiteList(siteList);
     });
-    resetForm();
   }
 }
 
@@ -456,7 +455,7 @@ function capitalize(word) {
 }
 
 //Clears the form data.
-function resetForm(id = "") {
+function resetForm(parentId, id = "") {
   $("#block-site").val("");
   for (let day = 0; day < WEEKDAYS.length; day++) {
     $(`#${WEEKDAYS[day]}-hr-${id}`).val("");
@@ -465,6 +464,16 @@ function resetForm(id = "") {
     $(`#${WEEKDAYS[day]}-unrestricted-${id}`).prop("checked", false);
     $(`#${WEEKDAYS[day]}-hr-${id}`).prop("disabled", false);
     $(`#${WEEKDAYS[day]}-min-${id}`).prop("disabled", false);
+  }
+  //Removes all the weekday divs.
+  const parent = document.getElementById(parentId);
+  let weekday = parent.lastChild;
+  while(weekday) {
+    weekday.remove();
+    weekday = parent.lastChild;
+  }
+  if(document.getElementById(`submit-edit-${id}`)) {
+    $(`#submit-edit-${id}`).hide();
   }
 }
 
@@ -537,7 +546,7 @@ function createSiteButtonResponse(siteList) {
       siteList[index].time = getTimesByWeekday(index);
       chrome.storage.sync.set({ timeList: siteList }, function () {
       });
-      resetForm(index);
+      resetForm(`week-form-${index}`, index);
     });
     $(`#site-remove-${index}`).click(function () {
       chrome.runtime.sendMessage({ unblock: siteList[index].url });
