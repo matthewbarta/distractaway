@@ -75,42 +75,37 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 //Countdown method for when tabs are opened.
 const reduceTime = (index) => {
   chrome.windows.getCurrent(function (window) {
-    chrome.tabs.query({ active: true }, function (tabs) {
-      if (tabs[0] && tabs[0].url.includes(timeList[index].url)) {
-        //If the window is not in the forefront, but also ask the user about this option.
-        //TODO Ask the user if they want to choose if the window pauses when minimized.
-        if (window.state == "minimized") {
-          return;
-        }
-        let time =
-          timeList[index].time[today].dayLimit -
-          timeList[index].time[today].timeUsed++;
-        //! DEBUG
-        console.log(time);
-        //For the countdown - sends a message to the timer script.
-        if (time >= 0) {
-          //When time runs out.
-          if (time <= 0) timeExceeded(index);
-          if (port) {
-            port.onDisconnect.addListener((p) => {
-              if (p.error) {
-                console.log(`There was a port error: ${p.error}`);
-              }
-              port = undefined;
-              return;
-            });
-            //Failsafe, because the port can disconnect between the time the last statment is read and now.
-            try {
-              port.postMessage({ time: time });
-            } catch (error) {
-              console.log(error.message);
-            }
+    //If the window is not in the forefront, but also ask the user about this option.
+    //TODO Ask the user if they want to choose if the window pauses when minimized.
+    if (window.state == "minimized") {
+      return;
+    }
+    let time =
+      timeList[index].time[today].dayLimit -
+      timeList[index].time[today].timeUsed++;
+    //! DEBUG
+    console.log(time);
+    //For the countdown - sends a message to the timer script.
+    if (time >= 0) {
+      //When time runs out.
+      if (time <= 0) timeExceeded(index);
+      if (port) {
+        port.onDisconnect.addListener((p) => {
+          if (p.error) {
+            console.log(`There was a port error: ${p.error}`);
           }
+          port = undefined;
+          return;
+        });
+        //Failsafe, because the port can disconnect between the time the last statment is read and now.
+        try {
+          port.postMessage({ time: time });
+        } catch (error) {
+          console.log(error.message);
         }
-      } else {
-        stopTimeout(timer);
       }
-    });
+    }
+    //If the tab is no longer correct.
   });
 };
 
@@ -209,9 +204,12 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
 
 //Current active tab is updated.
 chrome.tabs.onUpdated.addListener(function (id, info, tab) {
-  let timeState = getTabChangeState(tab.url, today);
-  timeActiveTab(timeState);
-  changePopup(timeState);
+  //Check the tab is still valid.
+  chrome.tabs.query({ active: true }, function (tabs) {
+      let timeState = getTabChangeState(tabs[0].url, today);
+      timeActiveTab(timeState);
+      changePopup(timeState);
+  });
 });
 
 //Checks if active tab is on the timed list, if so time it.
@@ -326,13 +324,6 @@ function getTabChangeState(url, day) {
   )
     return "options";
   return "untimed";
-}
-
-//Checks if the tab being timed is still the correct tab.
-function checkForCorrectTab(index) {
-  let result = false;
-  console.log(`Result after: ${result}`);
-  return result;
 }
 
 //Returns the milliseconds till midnight.
