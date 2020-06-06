@@ -2,6 +2,7 @@
 let timeList = [];
 let blockList = [];
 let activeIndex = -1;
+let tabIndex;
 let timer;
 let midnightTimer;
 let port;
@@ -72,6 +73,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 //Countdown method for when tabs are opened.
 const reduceTime = (index) => {
   chrome.windows.getCurrent(function (window) {
+    checkForCorrectTab(index);
     //If the window is not in the forefront, but also ask the user about this option.
     //TODO Ask the user if they want to choose if the window pauses when minimized.
     if (window.state == "minimized") {
@@ -317,6 +319,14 @@ function getTabChangeState(url, day) {
   )
     return "options";
   return "untimed";
+}
+
+//Checks if the tab being timed is still the correct tab.
+function checkForCorrectTab(index) {
+  chrome.tabs.query({ active: true }, function (tabs) {
+    console.log(tabs[0] && tabs[0].url.includes(timeList[index].url));
+    return tabs[0] && tabs[0].url.includes(timeList[index].url);
+  });
 }
 
 //Returns the milliseconds till midnight.
