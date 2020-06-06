@@ -13,7 +13,6 @@ const zeroRegex = /00+/;
 
 let siteList = [];
 
-//TODO Get rid of the 0 on forms when a new number is typed in, or get rid of it altogether.
 //TODO Only allow specific types of URLs
 //TODO Parental locks on edit/remove using a 4 digit PIN.
 //TODO Same limit every day (?)
@@ -66,6 +65,15 @@ $(function () {
   //Reset the form
   $("#reset-button").click(function () {
     resetForm("week-form-");
+  });
+
+  //Removes the blocked site from the blockList.
+  chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+    if (message.settings) {
+      bkg.console.log(message.settings);
+      showDiv("site-list");
+      return;
+    }
   });
 });
 
@@ -477,8 +485,9 @@ function validateWeekdayForm(weekday, id = "") {
     // Save old value.
     if (
       !$(this).val() ||
-      ((parseInt($(this).val()) <= 23 && parseInt($(this).val()) >= 0) &&
-      !zeroRegex.test($(this).val()))
+      (parseInt($(this).val()) <= 23 &&
+        parseInt($(this).val()) >= 0 &&
+        !zeroRegex.test($(this).val()))
     )
       $(this).data(`old-hr-${id}`, $(this).val());
   });
@@ -486,24 +495,27 @@ function validateWeekdayForm(weekday, id = "") {
     // Check correct, else revert back to old value.
     if (
       !$(this).val() ||
-      ((parseInt($(this).val()) <= 23 && parseInt($(this).val()) >= 0) &&
-      !zeroRegex.test($(this).val()))
+      (parseInt($(this).val()) <= 23 &&
+        parseInt($(this).val()) >= 0 &&
+        !zeroRegex.test($(this).val()))
     );
     else $(this).val($(this).data(`old-hr-${id}`));
   });
   $(`#${weekday}-min-${id}`).keydown(function () {
     if (
       !$(this).val() ||
-      ((parseInt($(this).val()) <= 59 && parseInt($(this).val()) >= 0) &&
-      !zeroRegex.test($(this).val()))
+      (parseInt($(this).val()) <= 59 &&
+        parseInt($(this).val()) >= 0 &&
+        !zeroRegex.test($(this).val()))
     )
       $(this).data(`old-min-${id}`, $(this).val());
   });
   $(`#${weekday}-min-${id}`).keyup(function () {
     if (
       !$(this).val() ||
-      ((parseInt($(this).val()) <= 59 && parseInt($(this).val()) >= 0) &&
-      !zeroRegex.test($(this).val()))
+      (parseInt($(this).val()) <= 59 &&
+        parseInt($(this).val()) >= 0 &&
+        !zeroRegex.test($(this).val()))
     );
     else $(this).val($(this).data(`old-min-${id}`));
   });
