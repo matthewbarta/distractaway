@@ -67,10 +67,9 @@ $(function () {
     resetForm("week-form-");
   });
 
-  //Removes the blocked site from the blockList.
+  //Switches to the correct div when transitioning from a block-state popup.
   chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     if (message.settings) {
-      bkg.console.log(message.settings);
       showDiv("site-list");
       return;
     }

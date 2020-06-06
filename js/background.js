@@ -65,7 +65,6 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   }
   //Toggles the page immediately.
   else if(message.settings) {
-    console.log(`Received: ${message.settings}`);
     setTimeout(() => {chrome.runtime.sendMessage({settings: 'yeet'});}, 100);
   }
 });

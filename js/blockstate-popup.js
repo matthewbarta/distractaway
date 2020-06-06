@@ -1,7 +1,6 @@
 const bkg = chrome.extension.getBackgroundPage();
 
 $(function () {
-  //TODO OPEN TO THE SITE LIST if possible.
   $(`#settings-button`).click(function () {
     //Open an options window if one is not open.
     if (chrome.runtime.openOptionsPage) {
