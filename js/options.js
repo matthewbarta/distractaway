@@ -16,6 +16,7 @@ let siteList = [];
 //TODO Only allow specific types of URLs
 //TODO Parental locks on edit/remove using a 4 digit PIN.
 //TODO Same limit every day (?)
+//TODO Ask the user if they want to choose if the window pauses when minimized.
 
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();
@@ -68,10 +69,21 @@ $(function () {
   });
 
   //Switches to the correct div when transitioning from a block-state popup.
-  chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+  chrome.runtime.onMessage.addListener(function (
+    message,
+    sender,
+    sendResponse
+  ) {
     if (message.settings) {
       showDiv("site-list");
       return;
+    }
+    //For updating the url in the input box even if options page is already open or has input.
+    else if (message.url) {
+      //Trim the new url and change the DOM to reflect.
+      bkg.console.log(`Received ${message.url}`);
+      $("#block-site").val(trimURL(message.url));
+      showDiv("add-site");
     }
   });
 });
@@ -136,15 +148,6 @@ function getTimesByWeekday(id = "") {
   }
   return weekdayTimes;
 }
-
-//For updating the url in the input box even if options page is already open or has input.
-chrome.storage.onChanged.addListener(function (changes) {
-  if (changes.currentURL) {
-    //Trim the new url and change the DOM to reflect.
-    $("#block-site").val(trimURL(changes.currentURL.newValue));
-    showDiv("add-site");
-  }
-});
 
 //I put it into a function for if I want to make it so that users can individually select days, rather than see a whole form at once.
 function createWeek(parentElement, id = "") {

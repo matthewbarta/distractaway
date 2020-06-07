@@ -8,15 +8,13 @@ let midnightTimer;
 let port;
 let today;
 
-//TODO Tab alignment checks (for example switching between tabs when still another is updating)
-
 //Initializes extension.
 chrome.runtime.onInstalled.addListener(function () {
   today = new Date().getDay();
   const date = new Date();
   //Set basic information.
   chrome.storage.sync.set(
-    { timeList: [], currentURL: "", date: date.toJSON() },
+    { timeList: [], date: date.toJSON() },
     function () {
       console.log("Initialized extension.");
       midnightTimer = setTimeout(onMidnight, timeTillMidnight());
@@ -70,13 +68,18 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
       chrome.runtime.sendMessage({ settings: "yeet" });
     }, 100);
   }
+  //For forwarding urls to the options script.
+  else if (message.url) {
+    setTimeout(() => {
+      chrome.runtime.sendMessage({ url: message.url });
+    }, 100);
+  }
 });
 
 //Countdown method for when tabs are opened.
 const reduceTime = (index) => {
   chrome.windows.getCurrent(function (window) {
-    //If the window is not in the forefront, but also ask the user about this option.
-    //TODO Ask the user if they want to choose if the window pauses when minimized.
+    //If the window is not in the forefront, but also ask the user about this option.x
     if (window.state == "minimized") {
       return;
     }
