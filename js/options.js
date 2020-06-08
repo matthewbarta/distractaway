@@ -7,7 +7,7 @@ const WEEKDAYS = [
   "friday",
   "saturday",
 ];
-const DIVS = ["add-site", "site-list"];
+const DIVS = ["add-site", "site-list", "general"];
 
 const zeroRegex = /00+/;
 
@@ -53,15 +53,12 @@ $(function () {
     }
   });
 
-  //Hides the other page divs, shows the add site.
-  $("#add-tag").click(function () {
-    showDiv("add-site");
-  });
-
-  //Hides the other page divs, shows the site-list.
-  $("#site-tag").click(function () {
-    showDiv("site-list");
-  });
+  //Hides the other page divs, shows the clicked div.
+  for(let index = 0; index < DIVS.length; index++) {
+    $(`#${DIVS[index]}-tag`).click(function () {
+      showDiv(`${DIVS[index]}`);
+    });
+  }
 
   //Reset the form
   $("#reset-button").click(function () {
@@ -81,7 +78,6 @@ $(function () {
     //For updating the url in the input box even if options page is already open or has input.
     else if (message.url) {
       //Trim the new url and change the DOM to reflect.
-      bkg.console.log(`Received ${message.url}`);
       $("#block-site").val(trimURL(message.url));
       showDiv("add-site");
     }
@@ -89,7 +85,6 @@ $(function () {
 });
 
 //Show this div, hide the others.
-//TODO FIX WRONG HREF.
 function showDiv(id = "") {
   for (let index = 0; index < DIVS.length; index++) {
     if (DIVS[index] == id) continue;
