@@ -13,6 +13,7 @@ const zeroRegex = /00+/;
 
 let siteList = [];
 
+//TODO Stats tab: time spent on each site.
 //TODO Only allow specific types of URLs
 //TODO Parental locks on edit/remove using a 4 digit PIN.
 //TODO Same limit every day (?)
