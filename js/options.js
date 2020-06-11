@@ -66,6 +66,24 @@ $(function () {
     resetForm("week-form-");
   });
 
+  //Minimized form options.
+  $(`#minimized-input`).click(function () {
+    if($(this).is(":checked")) {
+      chrome.storage.sync.get('settings', function(items) {
+        let settings = items.settings;
+        settings.timeMinimized = true;
+        storeSettings(settings);
+      });
+    }
+    else {
+      chrome.storage.sync.get('settings', function(items) {
+        let settings = items.settings;
+        settings.timeMinimized = false;
+        storeSettings(settings);
+      });
+    }
+  });
+
   //Switches to the correct div when transitioning from a block-state popup.
   chrome.runtime.onMessage.addListener(function (
     message,
@@ -92,6 +110,11 @@ function showDiv(id = "") {
     $(`#${DIVS[index]}`).hide();
   }
   $(`#${id}`).show();
+}
+
+//Stores settings changes.
+function storeSettings(settings) {
+  chrome.storage.sync.set({settings: settings}, function() {});
 }
 
 //Checks for a duplicate link, if none exists, add the site to the blocked list.
@@ -382,6 +405,7 @@ function createParagraphElement(
   parent.appendChild(paragraph);
 }
 
+//Creates a button, has additional options for creating more variable buttons.
 function createButtonElement(
   parentId = "",
   innerHTML = "",
@@ -476,7 +500,6 @@ function resetForm(parentId, id = "") {
 }
 
 //Handles incorrect min/max on inputs.
-//Also handles the checkbox graphics.
 function validateWeekdayForm(weekday, id = "") {
   //Code from stack overflow to handle incorrectly min/max on inputs.
   $(`#${weekday}-hr-${id}`).keydown(function () {

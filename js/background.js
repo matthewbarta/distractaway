@@ -19,7 +19,7 @@ chrome.runtime.onInstalled.addListener(function () {
       date: date.toJSON(),
       settings: {
         pin: "",
-        minimize: true,
+        timeMinimized: false,
       },
     },
     function () {
