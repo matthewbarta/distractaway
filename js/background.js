@@ -194,8 +194,9 @@ const stopCountdown = (timer) => {
   chrome.storage.sync.set({ timeList: timeList }, function () {});
 };
 
-//Whenever the timeList gets a new component added update it on this script.
+//Whenever a needed variable changes.
 chrome.storage.onChanged.addListener(function (changes) {
+  //Timelist changes
   if (changes.timeList) {
     timeList = changes.timeList.newValue;
   }

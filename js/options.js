@@ -12,7 +12,7 @@ const zeroRegex = /00+/;
 let siteList = [];
 let pin = "";
 
-//TODO Stats tab: time spent on each site.
+//TODO Stats tab time spent on each site.
 //TODO Only allow specific types of URLs
 //TODO Parental locks on edit/remove using a 4 digit PIN.
 //TODO Same limit every day (?)
@@ -73,6 +73,12 @@ $(function () {
     else {
       chrome.storage.sync.set({timeMinimized: false}, function() {});
     }
+  });
+
+  //Has correct state checked for checkbox.
+  chrome.storage.sync.get('timeMinimized', function(items) {
+    const minimized = items.timeMinimized;
+    $(`#minimized-input`).prop("checked", minimized);
   });
 
   //Switches to the correct div when transitioning from a block-state popup.
