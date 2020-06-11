@@ -10,13 +10,12 @@ const WEEKDAYS = [
 const DIVS = ["add-site", "site-list", "general"];
 const zeroRegex = /00+/;
 let siteList = [];
-let pin = "";
+let pin;
 
 //TODO Stats tab time spent on each site.
 //TODO Only allow specific types of URLs
 //TODO Parental locks on edit/remove using a 4 digit PIN.
 //TODO Same limit every day (?)
-//TODO Ask the user if they want to choose if the window pauses when minimized.
 
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();

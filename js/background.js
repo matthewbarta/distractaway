@@ -85,7 +85,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 const reduceTime = (index) => {
   chrome.windows.getCurrent(function (window) {
     //If the window is not in the forefront, but also ask the user about this option.x
-    if (window.state == "minimized") {
+    if (window.state == "minimized" && !minimized) {
       return;
     }
     let time =
