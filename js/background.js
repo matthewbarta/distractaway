@@ -7,6 +7,7 @@ let timer;
 let midnightTimer;
 let port;
 let today;
+let minimized = false;
 
 //Initializes extension.
 chrome.runtime.onInstalled.addListener(function () {
@@ -17,10 +18,7 @@ chrome.runtime.onInstalled.addListener(function () {
     {
       timeList: [],
       date: date.toJSON(),
-      settings: {
-        pin: "",
-        timeMinimized: false,
-      },
+      timeMinimized: false
     },
     function () {
       console.log("Initialized extension.");
@@ -200,6 +198,10 @@ const stopCountdown = (timer) => {
 chrome.storage.onChanged.addListener(function (changes) {
   if (changes.timeList) {
     timeList = changes.timeList.newValue;
+  }
+  //For changes in minimizing.
+  if(changes.timeMinimized) {
+    minimized = changes.timeMinimized.newValue;
   }
 });
 

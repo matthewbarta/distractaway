@@ -8,10 +8,9 @@ const WEEKDAYS = [
   "saturday",
 ];
 const DIVS = ["add-site", "site-list", "general"];
-
 const zeroRegex = /00+/;
-
 let siteList = [];
+let pin = "";
 
 //TODO Stats tab: time spent on each site.
 //TODO Only allow specific types of URLs
@@ -69,18 +68,10 @@ $(function () {
   //Minimized form options.
   $(`#minimized-input`).click(function () {
     if($(this).is(":checked")) {
-      chrome.storage.sync.get('settings', function(items) {
-        let settings = items.settings;
-        settings.timeMinimized = true;
-        storeSettings(settings);
-      });
+      chrome.storage.sync.set({timeMinimized: true}, function() {});
     }
     else {
-      chrome.storage.sync.get('settings', function(items) {
-        let settings = items.settings;
-        settings.timeMinimized = false;
-        storeSettings(settings);
-      });
+      chrome.storage.sync.set({timeMinimized: false}, function() {});
     }
   });
 
@@ -110,11 +101,6 @@ function showDiv(id = "") {
     $(`#${DIVS[index]}`).hide();
   }
   $(`#${id}`).show();
-}
-
-//Stores settings changes.
-function storeSettings(settings) {
-  chrome.storage.sync.set({settings: settings}, function() {});
 }
 
 //Checks for a duplicate link, if none exists, add the site to the blocked list.
