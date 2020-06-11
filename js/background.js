@@ -14,7 +14,14 @@ chrome.runtime.onInstalled.addListener(function () {
   const date = new Date();
   //Set basic information.
   chrome.storage.sync.set(
-    { timeList: [], date: date.toJSON() },
+    {
+      timeList: [],
+      date: date.toJSON(),
+      settings: {
+        pin: "",
+        minimize: true,
+      },
+    },
     function () {
       console.log("Initialized extension.");
       midnightTimer = setTimeout(onMidnight, timeTillMidnight());
@@ -209,9 +216,9 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
 chrome.tabs.onUpdated.addListener(function (id, info, tab) {
   //Check the tab is still valid.
   chrome.tabs.query({ active: true }, function (tabs) {
-      let timeState = getTabChangeState(tabs[0].url, today);
-      timeActiveTab(timeState);
-      changePopup(timeState);
+    let timeState = getTabChangeState(tabs[0].url, today);
+    timeActiveTab(timeState);
+    changePopup(timeState);
   });
 });
 

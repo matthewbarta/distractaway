@@ -1,28 +1,28 @@
 {
-    "name": "DistractAway",
-    "version": "1.0",
-    "description" : "Highly customizable website blocker",
-    "permissions" : [
-        "webRequest",
-        "webRequestBlocking",
-        "storage",
-        "<all_urls>",
-        "activeTab",
-        "tabs",
-        "webNavigation"
-    ],
-    "background" : {
-        "scripts" : ["js/background.js"]
-    },
-    "icons" : {
-        "16" : "icons/logo_16x16.png",
-        "48" : "icons/logo_48x48.png",
-        "128" : "icons/logo_128x128.png"
-    },
-    "browser_action" : {
-        "default_popup" : "html/popup.html",
-        "default_icon" : "icons/logo_128x128.png"
-    },
-    "options_page": "html/options.html",
-    "manifest_version": 2
+  "name": "DistractAway",
+  "version": "1.0",
+  "description": "Highly customizable website blocker",
+  "permissions": [
+    "webRequest",
+    "webRequestBlocking",
+    "storage",
+    "<all_urls>",
+    "activeTab",
+    "tabs",
+    "webNavigation"
+  ],
+  "background": {
+    "scripts": ["js/background.js"]
+  },
+  "icons": {
+    "16": "icons/logo_16x16.png",
+    "48": "icons/logo_48x48.png",
+    "128": "icons/logo_128x128.png"
+  },
+  "browser_action": {
+    "default_popup": "html/popup.html",
+    "default_icon": "icons/logo_128x128.png"
+  },
+  "options_page": "html/options.html",
+  "manifest_version": 2
 }
