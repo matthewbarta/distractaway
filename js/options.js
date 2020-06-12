@@ -10,7 +10,7 @@ const WEEKDAYS = [
 const DIVS = ["add-site", "site-list", "general"];
 const zeroRegex = /00+/;
 let siteList = [];
-let pin;
+let pin = "";
 
 //TODO Stats tab time spent on each site.
 //TODO Only allow specific types of URLs
@@ -74,6 +74,15 @@ $(function () {
     }
   });
 
+  $(`#parental-control-input`).click(function() {
+    if($(this).is(":checked")) {
+      enablePin();
+    }
+    else {
+      disablePin();
+    }
+  });
+
   //Has correct state checked for checkbox.
   chrome.storage.sync.get('timeMinimized', function(items) {
     const minimized = items.timeMinimized;
@@ -126,6 +135,16 @@ function storeTimeList(urlTimeArray, url) {
     });
   }
 }
+
+//Function to enable the pin.
+function enablePin() {
+  $(`#add-pin`).modal('show');
+};
+
+//Function to disable the pin.
+function disablePin() {
+  pin = "";
+};
 
 //Returns a formatted version of the form information for the inputs regarding the block time per day.
 function getTimesByWeekday(id = "") {

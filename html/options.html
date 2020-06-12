@@ -74,6 +74,26 @@
             <p>Parental Controls</p>
             <input type="checkbox" id="parental-control-input">
           </div>
+          <!-- Modal -->
+          <div class="modal fade" id="add-pin" tabindex="-1" role="dialog" aria-labelledby="pin-modal" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="add-pin-modal-label">Modal title</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Cancel">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  ...
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancel-pin-button">Cancel</button>
+                  <button type="button" class="btn btn-primary" id="save-pin-button">Save changes</button>
+                </div>
+              </div>
+            </div>
+          </div>
           <div id="minimize-option">
             <p>Time sites even when Google Chrome window is minimized.</p>
             <input type="checkbox" id="minimized-input">
