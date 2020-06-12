@@ -76,10 +76,27 @@ $(function () {
 
   $(`#parental-control-input`).click(function() {
     if($(this).is(":checked")) {
-      enablePin();
+      $(`#add-pin`).modal('show');
     }
     else {
       disablePin();
+    }
+  });
+
+  //Save button on the add pin modal.
+  $(`#save-pin-button`).click(function() {
+    enablePin();
+  });
+
+  //Blocks user from entering non-numeric digits.
+  $(`#initial-pin`).keydown(function(event) {
+    if((event.which < 48 || event.which > 57) && event.which != 8) {
+      return false;
+    }
+  });
+  $(`#confirm-pin`).keydown(function(event) {
+    if((event.which < 48 || event.which > 57) && event.which != 8) {
+      return false;
     }
   });
 
@@ -138,7 +155,7 @@ function storeTimeList(urlTimeArray, url) {
 
 //Function to enable the pin.
 function enablePin() {
-  $(`#add-pin`).modal('show');
+
 };
 
 //Function to disable the pin.
