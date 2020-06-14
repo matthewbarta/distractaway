@@ -79,14 +79,14 @@ $(function () {
     if($(this).is(":checked") && pin == "") {
       $(`#add-pin`).modal('show');
     }
-    else if($(this).is(":checked", false) && pin != ""){
+    //When unchecked.
+    else if(!$(this).is(":checked") && pin != "") {
       disablePin();
     }
   });
 
   //Save button on the add pin modal.
   $(`#save-pin-button`).click(function() {
-    bkg.console.log('CLICKED');
     enablePin();
   });
 
@@ -171,7 +171,9 @@ function enablePin() {
   const initialPin = $(`#initial-pin`).val();
   const confirmPin = $(`#confirm-pin`).val();
   if(Number.isInteger(parseInt(initialPin)) && (confirmPin == initialPin) && initialPin.length == 4) {
-    bkg.console.log('SET PIN');
+    pin = initialPin;
+    $("#add-pin").modal('hide');
+    clearAddPin();
   }
   else {
     bkg.console.log('EPIC FAIL');
@@ -180,6 +182,7 @@ function enablePin() {
 
 //Function to disable the pin.
 function disablePin() {
+  bkg.console.log('PIN DISABLED');
   pin = "";
 };
 
