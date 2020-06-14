@@ -16,6 +16,7 @@ let pin = "";
 //TODO Only allow specific types of URLs
 //TODO Parental locks on edit/remove using a 4 digit PIN.
 //TODO Same limit every day (?)
+//TODO Validation on forms to stop copy-pasting. SEE KEYDOWN RETURN FALSE
 
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();
@@ -86,6 +87,11 @@ $(function () {
   //Save button on the add pin modal.
   $(`#save-pin-button`).click(function() {
     enablePin();
+  });
+
+  //Unchecks the box when a pin isn't entered.
+  $(`#cancel-pin-button`).click(function() {
+    $(`#parental-control-input`).prop('checked', false);
   });
 
   //Blocks user from entering non-numeric digits.
