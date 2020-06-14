@@ -209,7 +209,7 @@ chrome.storage.onChanged.addListener(function (changes) {
 //When the tab changes, get the active tab and check if it's in the blocklist.
 chrome.tabs.onActivated.addListener(function (activeInfo) {
   chrome.tabs.get(activeInfo.tabId, function (tab) {
-    let timeState = getTabChangeState(tab.url, today);
+    let timeState = getTabChangeState(tab?.url, today);
     timeActiveTab(timeState);
     changePopup(timeState);
   });
@@ -294,8 +294,9 @@ function changePopup(state) {
 
 //Gets the state of the tab which has been swapped to or updated.
 function getTabChangeState(url, day) {
+  //! Could be an error?
+  if(url == undefined) return 'untimed';
   //Loop over block list to see if the url is one that has been blocked.
-
   for (let index = 0; index < blockList.length; index++) {
     if (
       url.includes(blockList[index].substring(4, blockList[index].length - 2))
