@@ -76,22 +76,24 @@ $(function () {
   });
 
   $(`#parental-control-input`).click(function() {
-    if($(this).is(":checked")) {
+    if($(this).is(":checked") && pin == "") {
       $(`#add-pin`).modal('show');
     }
-    else {
+    else if($(this).is(":checked", false) && pin != ""){
       disablePin();
     }
   });
 
   //Save button on the add pin modal.
   $(`#save-pin-button`).click(function() {
+    bkg.console.log('CLICKED');
     enablePin();
   });
 
-  //Unchecks the box when a pin isn't entered.
+  //Behavior when cancelling add pin modal.
   $(`#cancel-pin-button`).click(function() {
     $(`#parental-control-input`).prop('checked', false);
+    clearAddPin();
   });
 
   //Blocks user from entering non-numeric digits.
@@ -140,6 +142,11 @@ function showDiv(id = "") {
   $(`#${id}`).show();
 }
 
+function clearAddPin() {
+  $(`#initial-pin`).val('');
+  $(`#confirm-pin`).val('');
+}
+
 //Checks for a duplicate link, if none exists, add the site to the blocked list.
 function storeTimeList(urlTimeArray, url) {
   //If the link is a duplicate.
@@ -161,7 +168,14 @@ function storeTimeList(urlTimeArray, url) {
 
 //Function to enable the pin.
 function enablePin() {
-
+  const initialPin = $(`#initial-pin`).val();
+  const confirmPin = $(`#confirm-pin`).val();
+  if(Number.isInteger(parseInt(initialPin)) && (confirmPin == initialPin) && initialPin.length == 4) {
+    bkg.console.log('SET PIN');
+  }
+  else {
+    bkg.console.log('EPIC FAIL');
+  }
 };
 
 //Function to disable the pin.
