@@ -569,19 +569,16 @@ function validateWeekdayForm(weekday, id = "") {
   $(`#${weekday}-hr-${id}`).keydown(function(event) {
     const keyPress = event.which - 48;
     //-40 is backspace.
-    if((keyPress < 0 || keyPress > 9) && keyPress != -40) {
+    const val = parseInt($(`#${weekday}-hr-${id}`).val());
+    const valCheck = Number.isNaN(val) ? 0 : val;
+    const newVal = valCheck * 10 + keyPress;
+    if(keyPress == -40) return true;
+    if(((keyPress < 0 || keyPress > 9) && keyPress != -40)) {
       return false;
     }
-  });
-  $(`#${weekday}-hr-${id}`).keyup(function () {
-    // Check correct, else revert back to old value.
-    if (
-      !$(this).val() ||
-      (parseInt($(this).val()) <= 23 &&
-        parseInt($(this).val()) >= 0 &&
-        !zeroRegex.test($(this).val()))
-    );
-    else $(this).val($(this).data(`old-hr-${id}`));
+    if(newVal < 0 || newVal > 23) {
+      return false;
+    }
   });
   $(`#${weekday}-min-${id}`).keydown(function () {
     if (
