@@ -555,48 +555,34 @@ function resetForm(parentId, id = "") {
 
 //Handles incorrect min/max on inputs.
 function validateWeekdayForm(weekday, id = "") {
-  //Code from stack overflow to handle incorrectly min/max on inputs.
-  $(`#${weekday}-hr-${id}`).keydown(function () {
-    // Save old value.
-    if (
-      !$(this).val() ||
-      (parseInt($(this).val()) <= 23 &&
-        parseInt($(this).val()) >= 0 &&
-        !zeroRegex.test($(this).val()))
-    )
-      $(this).data(`old-hr-${id}`, $(this).val());
-  });
+  //Ensures only correct values can be entered.
   $(`#${weekday}-hr-${id}`).keydown(function(event) {
     const keyPress = event.which - 48;
-    //-40 is backspace.
     const val = parseInt($(`#${weekday}-hr-${id}`).val());
-    const valCheck = Number.isNaN(val) ? 0 : val;
-    const newVal = valCheck * 10 + keyPress;
+    const newVal = (Number.isNaN(val) ? 0 : val) * 10 + keyPress;
+    //-40 is backspace.
     if(keyPress == -40) return true;
-    if(((keyPress < 0 || keyPress > 9) && keyPress != -40)) {
+    //Gets rid of repeated zero presses.
+    if(keyPress == 0 && $(`#${weekday}-hr-${id}`).val().length > 0 && val == 0) {
       return false;
     }
-    if(newVal < 0 || newVal > 23) {
+    if(keyPress < 0 || keyPress > 9 || newVal < 0 || newVal > 23 ) {
       return false;
     }
   });
-  $(`#${weekday}-min-${id}`).keydown(function () {
-    if (
-      !$(this).val() ||
-      (parseInt($(this).val()) <= 59 &&
-        parseInt($(this).val()) >= 0 &&
-        !zeroRegex.test($(this).val()))
-    )
-      $(this).data(`old-min-${id}`, $(this).val());
-  });
-  $(`#${weekday}-min-${id}`).keyup(function () {
-    if (
-      !$(this).val() ||
-      (parseInt($(this).val()) <= 59 &&
-        parseInt($(this).val()) >= 0 &&
-        !zeroRegex.test($(this).val()))
-    );
-    else $(this).val($(this).data(`old-min-${id}`));
+  $(`#${weekday}-min-${id}`).keydown(function(event) {
+    const keyPress = event.which - 48;
+    const val = parseInt($(`#${weekday}-min-${id}`).val());
+    const newVal = (Number.isNaN(val) ? 0 : val) * 10 + keyPress;
+    //-40 is backspace.
+    if(keyPress == -40) return true;
+    //Gets rid of repeated zero presses.
+    if(keyPress == 0 && $(`#${weekday}-min-${id}`).val().length > 0 && val == 0) {
+      return false;
+    }
+    if(keyPress < 0 || keyPress > 9 || newVal < 0 || newVal > 59 ) {
+      return false;
+    }
   });
 
   //Blocked checkbox details.
