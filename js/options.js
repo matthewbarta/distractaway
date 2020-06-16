@@ -98,12 +98,16 @@ $(function () {
 
   //Blocks user from entering non-numeric digits.
   $(`#initial-pin`).keydown(function(event) {
-    if((event.which < 48 || event.which > 57) && event.which != 8) {
+    const keyPress = event.which - 48;
+    //-40 is backspace.
+    if((keyPress < 0 || keyPress > 9) && keyPress != -40) {
       return false;
     }
   });
   $(`#confirm-pin`).keydown(function(event) {
-    if((event.which < 48 || event.which > 57) && event.which != 8) {
+    const keyPress = event.which - 48;
+    //-40 is backspace.
+    if((keyPress < 0 || keyPress > 9) && keyPress != -40) {
       return false;
     }
   });
@@ -561,6 +565,13 @@ function validateWeekdayForm(weekday, id = "") {
         !zeroRegex.test($(this).val()))
     )
       $(this).data(`old-hr-${id}`, $(this).val());
+  });
+  $(`#${weekday}-hr-${id}`).keydown(function(event) {
+    const keyPress = event.which - 48;
+    //-40 is backspace.
+    if((keyPress < 0 || keyPress > 9) && keyPress != -40) {
+      return false;
+    }
   });
   $(`#${weekday}-hr-${id}`).keyup(function () {
     // Check correct, else revert back to old value.

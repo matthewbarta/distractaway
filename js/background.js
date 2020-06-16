@@ -219,7 +219,7 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
 chrome.tabs.onUpdated.addListener(function (id, info, tab) {
   //Check the tab is still valid.
   chrome.tabs.query({ active: true }, function (tabs) {
-    let timeState = getTabChangeState(tabs[0].url, today);
+    let timeState = getTabChangeState(tabs[0]?.url, today);
     timeActiveTab(timeState);
     changePopup(timeState);
   });
