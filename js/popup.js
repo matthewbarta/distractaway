@@ -12,7 +12,6 @@ $(function () {
         window.open(chrome.runtime.getURL("../html/options.html"));
       }
       //Sends the new URL to either the BG script or to the options script.
-      bkg.console.log(tabs[0].url);
       chrome.runtime.sendMessage({ url: tabs[0].url });
     });
   });

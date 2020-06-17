@@ -11,6 +11,7 @@ const DIVS = ["add-site", "site-list", "general"];
 const zeroRegex = /00+/;
 let siteList = [];
 let pin = "";
+let pinSuccess = false;
 
 //TODO Stats tab time spent on each site.
 //TODO Only allow specific types of URLs
@@ -94,6 +95,15 @@ $(function () {
   $(`#cancel-pin-button`).click(function() {
     $(`#parental-control-input`).prop('checked', false);
     clearAddPin();
+  });
+
+  $(`#save-changes-button`).click(function() {
+    if(pin == $(`#enter-pin`).val()) {
+      pinSuccess = true;
+    }
+    else {
+      pinSuccess = false;
+    }
   });
 
   //Blocks user from entering non-numeric digits.
@@ -190,9 +200,10 @@ function disablePin() {
   pin = "";
 };
 
-//Require PIN()
+//Require PIN
+//TODO MIGHT REQUIRE PROMISES
 function requirePin() {
-  $(`#require-pin`).modal('show');
+
 }
 
 //Returns a formatted version of the form information for the inputs regarding the block time per day.
@@ -225,13 +236,6 @@ function getTimesByWeekday(id = "") {
     }
   }
   return weekdayTimes;
-}
-
-//I put it into a function for if I want to make it so that users can individually select days, rather than see a whole form at once.
-function createWeek(parentElement, id = "") {
-  for (let day = 0; day < WEEKDAYS.length; day++) {
-    createWeekday(day, parentElement, id);
-  }
 }
 
 //Creates the dropdown menu for selecting weekdays.
@@ -608,6 +612,7 @@ function createSiteButtonResponse(siteList) {
   for (let index = 0; index < siteList.length; index++) {
     $(`#submit-edit-${index}`).click(function () {
       if(pin) {
+        $(`#require-pin`).modal('show');
         const result = requirePin();
         bkg.console.log(result);
       }
@@ -617,6 +622,7 @@ function createSiteButtonResponse(siteList) {
     });
     $(`#site-remove-${index}`).click(function () {
       if(pin) {
+        $(`#require-pin`).modal('show');
         const result = requirePin();
         bkg.console.log(result);
       }
@@ -689,5 +695,12 @@ function weekdayToNumber(weekday) {
       return 6;
     default:
       return -1;
+  }
+}
+
+//I put it into a function for if I want to make it so that users can individually select days, rather than see a whole form at once.
+function createWeek(parentElement, id = "") {
+  for (let day = 0; day < WEEKDAYS.length; day++) {
+    createWeekday(day, parentElement, id);
   }
 }
