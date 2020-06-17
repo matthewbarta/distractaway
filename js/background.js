@@ -77,7 +77,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   else if (message.url) {
     setTimeout(() => {
       chrome.runtime.sendMessage({ url: message.url });
-    }, 100);
+    }, 200);
   }
 });
 

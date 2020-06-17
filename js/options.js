@@ -190,6 +190,11 @@ function disablePin() {
   pin = "";
 };
 
+//Require PIN()
+function requirePin() {
+  $(`#require-pin`).modal('show');
+}
+
 //Returns a formatted version of the form information for the inputs regarding the block time per day.
 function getTimesByWeekday(id = "") {
   let weekdayTimes = [];
@@ -387,6 +392,7 @@ function createSite(site, id = "") {
   );
   //Hides the submit button by default.
   $(`#submit-edit-${id}`).hide();
+
 }
 
 function updateSiteList(siteList) {
@@ -601,11 +607,19 @@ function validateWeekdayForm(weekday, id = "") {
 function createSiteButtonResponse(siteList) {
   for (let index = 0; index < siteList.length; index++) {
     $(`#submit-edit-${index}`).click(function () {
+      if(pin) {
+        const result = requirePin();
+        bkg.console.log(result);
+      }
       siteList[index].time = getTimesByWeekday(index);
       chrome.storage.sync.set({ timeList: siteList }, function () {});
       resetForm(`week-form-${index}`, index);
     });
     $(`#site-remove-${index}`).click(function () {
+      if(pin) {
+        const result = requirePin();
+        bkg.console.log(result);
+      }
       chrome.runtime.sendMessage({ unblock: siteList[index].url });
       siteList.splice(index, 1);
       chrome.storage.sync.set({ timeList: siteList }, function () {
