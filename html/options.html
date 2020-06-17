@@ -60,6 +60,26 @@
         <div id="sites">
           <!-- Dynamically Generated -->
         </div>
+
+    <!-- Require Pin Modal -->
+    <div class="modal fade" id="require-pin" tabindex="-1" role="dialog" aria-labelledby="pin-modal" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="add-pin-modal-label">Add PIN</h5>
+          </div>
+          <div class="modal-body">
+            <label for="enter-pin">Enter 4-Digit PIN</label>
+            <input type="password" class="pin-input" id="enter-pin" name="enter-pin" maxlength="4"><br>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancel-changes-button">Cancel</button>
+            <button type="button" class="btn btn-primary" id="save-changes-button">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
       </div>
     </div>
 
@@ -74,7 +94,8 @@
             <p>Parental Controls</p>
             <input type="checkbox" id="parental-control-input">
           </div>
-          <!-- Modal -->
+
+          <!-- Add Pin Modal -->
           <div class="modal fade" id="add-pin" tabindex="-1" role="dialog" aria-labelledby="pin-modal" aria-hidden="true" data-backdrop="static" data-keyboard="false">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
@@ -94,10 +115,12 @@
               </div>
             </div>
           </div>
+
           <div id="minimize-option">
             <p>Time sites even when Google Chrome window is minimized.</p>
             <input type="checkbox" id="minimized-input">
           </div>
+
         </div>
       </div>
     </div>
