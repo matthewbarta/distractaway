@@ -147,20 +147,22 @@ function showDiv(id = "") {
   $(`#${id}`).show();
 }
 
-
 function clickSave() {
-  //Controls the pin modal.
+  //Controls the pin modal, returns it as a promise to fulfill.
   return new Promise((resolve, reject) => {
-    $(`#save-changes-button`).click(function() {
+    $(`#save-changes-button`).off('click').on('click', function() {
+      bkg.console.log('TEST');
       if(pin == $(`#enter-pin`).val()) {
         resolve(true);
         $(`#require-pin`).modal('hide');
       }
       else {
         resolve(false);
+        $(`#require-pin`).modal('hide');
       }
     });
-    $(`#cancel-changes-button`).click(function() {
+    $(`#cancel-changes-button`).off('click').on('click', function() {
+      bkg.console.log('TEST');
       $(`#require-pin`).modal('hide');
       resolve(false);
     });
@@ -634,9 +636,9 @@ function createSiteButtonResponse(siteList) {
     });
     $(`#site-remove-${index}`).click(function () {
       if(pin) {
-        $(`#require-pin`).modal('show');
-        const result = requirePin();
-        bkg.console.log(result);
+        requirePin().then(function(result) {
+          bkg.console.log(result);
+        });
       }
       chrome.runtime.sendMessage({ unblock: siteList[index].url });
       siteList.splice(index, 1);
