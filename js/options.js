@@ -11,13 +11,11 @@ const DIVS = ["add-site", "site-list", "general"];
 const zeroRegex = /00+/;
 let siteList = [];
 let pin = "";
-let pinSuccess = false;
 
 //TODO Stats tab time spent on each site.
 //TODO Only allow specific types of URLs
 //TODO Parental locks on edit/remove using a 4 digit PIN.
 //TODO Same limit every day (?)
-//TODO Validation on forms to stop copy-pasting. SEE KEYDOWN RETURN FALSE
 
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();
@@ -147,28 +145,32 @@ function showDiv(id = "") {
   $(`#${id}`).show();
 }
 
+//Function to return a promise from the PIN modal.
 function clickSave() {
   //Controls the pin modal, returns it as a promise to fulfill.
   return new Promise((resolve, reject) => {
+
     $(`#save-changes-button`).off('click').on('click', function() {
-      bkg.console.log('TEST');
       if(pin == $(`#enter-pin`).val()) {
-        resolve(true);
         $(`#require-pin`).modal('hide');
+        $(`#enter-pin`).val('');
+        resolve(true);
       }
       else {
+        $(`#enter-pin`).val('');
         resolve(false);
-        $(`#require-pin`).modal('hide');
       }
     });
+
     $(`#cancel-changes-button`).off('click').on('click', function() {
-      bkg.console.log('TEST');
       $(`#require-pin`).modal('hide');
+      $(`#enter-pin`).val('');
       resolve(false);
     });
   });
   }
 
+//Clears the add pin modal inputs.
 function clearAddPin() {
   $(`#initial-pin`).val('');
   $(`#confirm-pin`).val('');
@@ -214,11 +216,12 @@ function disablePin() {
 };
 
 //Require PIN
-//TODO MIGHT REQUIRE PROMISES
 async function requirePin() {
   $(`#require-pin`).modal('show');
   return await clickSave();
 }
+
+
 
 //Returns a formatted version of the form information for the inputs regarding the block time per day.
 function getTimesByWeekday(id = "") {
@@ -627,26 +630,44 @@ function createSiteButtonResponse(siteList) {
     $(`#submit-edit-${index}`).click(function () {
       if(pin) {
         requirePin().then(function(result) {
-          bkg.console.log(result);
+          if(result) {
+            editSite(index);
+          }
         });
       }
-      siteList[index].time = getTimesByWeekday(index);
-      chrome.storage.sync.set({ timeList: siteList }, function () {});
-      resetForm(`week-form-${index}`, index);
+      else {
+        editSite(index);
+      }
     });
     $(`#site-remove-${index}`).click(function () {
       if(pin) {
         requirePin().then(function(result) {
-          bkg.console.log(result);
+          if(result) {
+            removeSite(index);
+          }
         });
       }
-      chrome.runtime.sendMessage({ unblock: siteList[index].url });
-      siteList.splice(index, 1);
-      chrome.storage.sync.set({ timeList: siteList }, function () {
-        updateSiteList(siteList);
-      });
+      else {
+        removeSite(index);
+      }
     });
   }
+}
+
+//Edits a site's restrictions given its index.
+function editSite(index) {
+  siteList[index].time = getTimesByWeekday(index);
+  chrome.storage.sync.set({ timeList: siteList }, function () {});
+  resetForm(`week-form-${index}`, index);
+}
+
+//Removes a site from the watchlist. given the index.
+function removeSite(index) {
+  chrome.runtime.sendMessage({ unblock: siteList[index].url });
+  siteList.splice(index, 1);
+  chrome.storage.sync.set({ timeList: siteList }, function () {
+    updateSiteList(siteList);
+  });
 }
 
 //Creates the remove response for removal buttons on weekdays..
