@@ -10,7 +10,7 @@ const WEEKDAYS = [
 const DIVS = ["add-site", "site-list", "general"];
 const zeroRegex = /00+/;
 let siteList = [];
-let pin = "";
+let pin = undefined;
 
 //TODO Stats tab time spent on each site.
 //TODO Only allow specific types of URLs
@@ -76,12 +76,12 @@ $(function () {
   });
 
   $(`#parental-control-input`).click(function() {
-    if($(this).is(":checked") && pin == "") {
+    if($(this).is(":checked") && !pin) {
       $(`#add-pin`).modal('show');
     }
     //When unchecked.
-    else if(!$(this).is(":checked") && pin != "") {
-      disablePin();
+    else if(!$(this).is(":checked") && pin) {
+      $('#remove-pin').modal('show');
     }
   });
 
@@ -96,9 +96,13 @@ $(function () {
     clearAddPin();
   });
 
+  $(`#remove-pin-button`).click(function() {
+    disablePin();
+  });
+
   //Cancels changes to the remove pin.
   $(`#cancel-remove-button`).click(function() {
-    $(`#parental-control-input`).prop('true', false);
+    $(`#parental-control-input`).prop('checked', true);
     $(`#remove-pin-input`).val("");
   });
 
@@ -218,8 +222,14 @@ function enablePin() {
 
 //Function to disable the pin.
 function disablePin() {
-  $('#remove-pin').modal('show');
-  pin = "";
+  if(pin == $(`#remove-pin-input`).val()) {
+    pin = undefined;
+    $("#remove-pin").modal('hide');
+    $('#remove-pin-input').val("");
+  }
+  else {
+    bkg.console.log('EPIC FAIL');
+  }
 };
 
 //Require PIN
