@@ -16,6 +16,7 @@ let pin = "";
 //TODO Only allow specific types of URLs
 //TODO Parental locks on edit/remove using a 4 digit PIN.
 //TODO Same limit every day (?)
+//TODO FIX BUG where editting times gets rid of old restricted days where the time was not logged.
 
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();
@@ -93,6 +94,12 @@ $(function () {
   $(`#cancel-pin-button`).click(function() {
     $(`#parental-control-input`).prop('checked', false);
     clearAddPin();
+  });
+
+  //Cancels changes to the remove pin.
+  $(`#cancel-remove-button`).click(function() {
+    $(`#parental-control-input`).prop('true', false);
+    $(`#remove-pin-input`).val("");
   });
 
   //Blocks user from entering non-numeric digits.
@@ -211,7 +218,7 @@ function enablePin() {
 
 //Function to disable the pin.
 function disablePin() {
-  bkg.console.log('PIN DISABLED');
+  $('#remove-pin').modal('show');
   pin = "";
 };
 
