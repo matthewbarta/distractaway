@@ -97,15 +97,6 @@ $(function () {
     clearAddPin();
   });
 
-  $(`#save-changes-button`).click(function() {
-    if(pin == $(`#enter-pin`).val()) {
-      pinSuccess = true;
-    }
-    else {
-      pinSuccess = false;
-    }
-  });
-
   //Blocks user from entering non-numeric digits.
   $(`#initial-pin`).keydown(function(event) {
     const keyPress = event.which - 48;
@@ -156,6 +147,26 @@ function showDiv(id = "") {
   $(`#${id}`).show();
 }
 
+
+function clickSave() {
+  //Controls the pin modal.
+  return new Promise((resolve, reject) => {
+    $(`#save-changes-button`).click(function() {
+      if(pin == $(`#enter-pin`).val()) {
+        resolve(true);
+        $(`#require-pin`).modal('hide');
+      }
+      else {
+        resolve(false);
+      }
+    });
+    $(`#cancel-changes-button`).click(function() {
+      $(`#require-pin`).modal('hide');
+      resolve(false);
+    });
+  });
+  }
+
 function clearAddPin() {
   $(`#initial-pin`).val('');
   $(`#confirm-pin`).val('');
@@ -202,8 +213,9 @@ function disablePin() {
 
 //Require PIN
 //TODO MIGHT REQUIRE PROMISES
-function requirePin() {
-
+async function requirePin() {
+  $(`#require-pin`).modal('show');
+  return await clickSave();
 }
 
 //Returns a formatted version of the form information for the inputs regarding the block time per day.
@@ -612,9 +624,9 @@ function createSiteButtonResponse(siteList) {
   for (let index = 0; index < siteList.length; index++) {
     $(`#submit-edit-${index}`).click(function () {
       if(pin) {
-        $(`#require-pin`).modal('show');
-        const result = requirePin();
-        bkg.console.log(result);
+        requirePin().then(function(result) {
+          bkg.console.log(result);
+        });
       }
       siteList[index].time = getTimesByWeekday(index);
       chrome.storage.sync.set({ timeList: siteList }, function () {});
