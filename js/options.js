@@ -14,9 +14,9 @@ let pin = undefined;
 
 //TODO Stats tab time spent on each site.
 //TODO Only allow specific types of URLs
-//TODO Parental locks on edit/remove using a 4 digit PIN.
 //TODO Same limit every day (?)
 //TODO FIX BUG where editting times gets rid of old restricted days where the time was not logged.
+//TODO Change clicks on checkbox for parental controls.
 
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();
@@ -54,7 +54,7 @@ $(function () {
   });
 
   //Hides the other page divs, shows the clicked div.
-  for(let index = 0; index < DIVS.length; index++) {
+  for (let index = 0; index < DIVS.length; index++) {
     $(`#${DIVS[index]}-tag`).click(function () {
       showDiv(`${DIVS[index]}`);
     });
@@ -67,63 +67,62 @@ $(function () {
 
   //Minimized form options.
   $(`#minimized-input`).click(function () {
-    if($(this).is(":checked")) {
-      chrome.storage.sync.set({timeMinimized: true}, function() {});
-    }
-    else {
-      chrome.storage.sync.set({timeMinimized: false}, function() {});
+    if ($(this).is(":checked")) {
+      chrome.storage.sync.set({ timeMinimized: true }, function () {});
+    } else {
+      chrome.storage.sync.set({ timeMinimized: false }, function () {});
     }
   });
 
-  $(`#parental-control-input`).click(function() {
-    if($(this).is(":checked") && !pin) {
-      $(`#add-pin`).modal('show');
+  $(`#parental-control-input`).click(function () {
+    if ($(this).is(":checked") && !pin) {
+      $(`#add-pin`).modal("show");
     }
     //When unchecked.
-    else if(!$(this).is(":checked") && pin) {
-      $('#remove-pin').modal('show');
+    else if (!$(this).is(":checked") && pin) {
+      $("#remove-pin").modal("show");
     }
   });
 
   //Save button on the add pin modal.
-  $(`#save-pin-button`).click(function() {
+  $(`#save-pin-button`).click(function () {
     enablePin();
   });
 
   //Behavior when cancelling add pin modal.
-  $(`#cancel-pin-button`).click(function() {
-    $(`#parental-control-input`).prop('checked', false);
+  $(`#cancel-pin-button`).click(function () {
+    $(`#parental-control-input`).prop("checked", false);
     clearAddPin();
   });
 
-  $(`#remove-pin-button`).click(function() {
+  $(`#remove-pin-button`).click(function () {
     disablePin();
   });
 
   //Cancels changes to the remove pin.
-  $(`#cancel-remove-button`).click(function() {
-    $(`#parental-control-input`).prop('checked', true);
+  $(`#cancel-remove-button`).click(function () {
+    $(`#parental-control-input`).prop("checked", true);
     $(`#remove-pin-input`).val("");
   });
 
   //Blocks user from entering non-numeric digits.
-  $(`#initial-pin`).keydown(function(event) {
+  $(`#initial-pin`).keydown(function (event) {
     const keyPress = event.which - 48;
     //-40 is backspace.
-    if((keyPress < 0 || keyPress > 9) && keyPress != -40) {
+    if ((keyPress < 0 || keyPress > 9) && keyPress != -40) {
       return false;
     }
   });
-  $(`#confirm-pin`).keydown(function(event) {
+  $(`#confirm-pin`).keydown(function (event) {
     const keyPress = event.which - 48;
     //-40 is backspace.
-    if((keyPress < 0 || keyPress > 9) && keyPress != -40) {
+    if ((keyPress < 0 || keyPress > 9) && keyPress != -40) {
       return false;
     }
   });
 
   //Has correct state checked for checkbox.
-  chrome.storage.sync.get('timeMinimized', function(items) {
+  chrome.storage.sync.get("timeMinimized", function (items) {
     const minimized = items.timeMinimized;
     $(`#minimized-input`).prop("checked", minimized);
   });
@@ -160,31 +159,33 @@ function showDiv(id = "") {
 function clickSave() {
   //Controls the pin modal, returns it as a promise to fulfill.
   return new Promise((resolve, reject) => {
+    $(`#save-changes-button`)
+      .off("click")
+      .on("click", function () {
+        if (pin == $(`#enter-pin`).val()) {
+          $(`#require-pin`).modal("hide");
+          $(`#enter-pin`).val("");
+          resolve(true);
+        } else {
+          $(`#enter-pin`).val("");
+          resolve(false);
+        }
+      });
 
-    $(`#save-changes-button`).off('click').on('click', function() {
-      if(pin == $(`#enter-pin`).val()) {
-        $(`#require-pin`).modal('hide');
-        $(`#enter-pin`).val('');
-        resolve(true);
-      }
-      else {
-        $(`#enter-pin`).val('');
+    $(`#cancel-changes-button`)
+      .off("click")
+      .on("click", function () {
+        $(`#require-pin`).modal("hide");
+        $(`#enter-pin`).val("");
         resolve(false);
-      }
-    });
-
-    $(`#cancel-changes-button`).off('click').on('click', function() {
-      $(`#require-pin`).modal('hide');
-      $(`#enter-pin`).val('');
-      resolve(false);
-    });
+      });
   });
-  }
+}
 
 //Clears the add pin modal inputs.
 function clearAddPin() {
-  $(`#initial-pin`).val('');
-  $(`#confirm-pin`).val('');
+  $(`#initial-pin`).val("");
+  $(`#confirm-pin`).val("");
 }
 
 //Checks for a duplicate link, if none exists, add the site to the blocked list.
@@ -210,42 +211,44 @@ function storeTimeList(urlTimeArray, url) {
 function enablePin() {
   const initialPin = $(`#initial-pin`).val();
   const confirmPin = $(`#confirm-pin`).val();
-  if(Number.isInteger(parseInt(initialPin)) && (confirmPin == initialPin) && initialPin.length == 4) {
+  if (
+    Number.isInteger(parseInt(initialPin)) &&
+    confirmPin == initialPin &&
+    initialPin.length == 4
+  ) {
     pin = initialPin;
-    $("#add-pin").modal('hide');
+    $("#add-pin").modal("hide");
     clearAddPin();
+  } else {
+    bkg.console.log("EPIC FAIL");
   }
-  else {
-    bkg.console.log('EPIC FAIL');
-  }
-};
+}
 
 //Function to disable the pin.
 function disablePin() {
-  if(pin == $(`#remove-pin-input`).val()) {
+  if (pin == $(`#remove-pin-input`).val()) {
     pin = undefined;
-    $("#remove-pin").modal('hide');
-    $('#remove-pin-input').val("");
+    $("#remove-pin").modal("hide");
+    $("#remove-pin-input").val("");
+  } else {
+    bkg.console.log("EPIC FAIL");
   }
-  else {
-    bkg.console.log('EPIC FAIL');
-  }
-};
+}
 
 //Require PIN
 async function requirePin() {
-  $(`#require-pin`).modal('show');
+  $(`#require-pin`).modal("show");
   return await clickSave();
 }
-
-
 
 //Returns a formatted version of the form information for the inputs regarding the block time per day.
 function getTimesByWeekday(id = "") {
   let weekdayTimes = [];
   for (let day = 0; day < WEEKDAYS.length; day++) {
     if (document.getElementById(`${WEEKDAYS[day]}-div-${id}`) == null) {
-      weekdayTimes.push({ timeUsed: 0, dayLimit: -1 });
+      bkg.console.log(id);
+      bkg.console.log(`day ${day}: ${Number.isInteger(id) ? siteList[id].time[day].dayLimit : -1}`);
+      weekdayTimes.push({ timeUsed: 0, dayLimit: Number.isInteger(id) ? siteList[id].time[day].dayLimit : -1 });
     } else if ($(`#${WEEKDAYS[day]}-blocked-${id}`).is(":checked")) {
       weekdayTimes.push({ timeUsed: 0, dayLimit: 0 });
     } else {
@@ -269,6 +272,7 @@ function getTimesByWeekday(id = "") {
       });
     }
   }
+  bkg.console.log(weekdayTimes);
   return weekdayTimes;
 }
 
@@ -430,7 +434,6 @@ function createSite(site, id = "") {
   );
   //Hides the submit button by default.
   $(`#submit-edit-${id}`).hide();
-
 }
 
 function updateSiteList(siteList) {
@@ -600,31 +603,39 @@ function resetForm(parentId, id = "") {
 //Handles incorrect min/max on inputs.
 function validateWeekdayForm(weekday, id = "") {
   //Ensures only correct values can be entered.
-  $(`#${weekday}-hr-${id}`).keydown(function(event) {
+  $(`#${weekday}-hr-${id}`).keydown(function (event) {
     const keyPress = event.which - 48;
     const val = parseInt($(`#${weekday}-hr-${id}`).val());
     const newVal = (Number.isNaN(val) ? 0 : val) * 10 + keyPress;
     //-40 is backspace.
-    if(keyPress == -40) return true;
+    if (keyPress == -40) return true;
     //Gets rid of repeated zero presses.
-    if(keyPress == 0 && $(`#${weekday}-hr-${id}`).val().length > 0 && val == 0) {
+    if (
+      keyPress == 0 &&
+      $(`#${weekday}-hr-${id}`).val().length > 0 &&
+      val == 0
+    ) {
       return false;
     }
-    if(keyPress < 0 || keyPress > 9 || newVal < 0 || newVal > 23 ) {
+    if (keyPress < 0 || keyPress > 9 || newVal < 0 || newVal > 23) {
       return false;
     }
   });
-  $(`#${weekday}-min-${id}`).keydown(function(event) {
+  $(`#${weekday}-min-${id}`).keydown(function (event) {
     const keyPress = event.which - 48;
     const val = parseInt($(`#${weekday}-min-${id}`).val());
     const newVal = (Number.isNaN(val) ? 0 : val) * 10 + keyPress;
     //-40 is backspace.
-    if(keyPress == -40) return true;
+    if (keyPress == -40) return true;
     //Gets rid of repeated zero presses.
-    if(keyPress == 0 && $(`#${weekday}-min-${id}`).val().length > 0 && val == 0) {
+    if (
+      keyPress == 0 &&
+      $(`#${weekday}-min-${id}`).val().length > 0 &&
+      val == 0
+    ) {
       return false;
     }
-    if(keyPress < 0 || keyPress > 9 || newVal < 0 || newVal > 59 ) {
+    if (keyPress < 0 || keyPress > 9 || newVal < 0 || newVal > 59) {
       return false;
     }
   });
@@ -645,26 +656,24 @@ function validateWeekdayForm(weekday, id = "") {
 function createSiteButtonResponse(siteList) {
   for (let index = 0; index < siteList.length; index++) {
     $(`#submit-edit-${index}`).click(function () {
-      if(pin) {
-        requirePin().then(function(result) {
-          if(result) {
+      if (pin) {
+        requirePin().then(function (result) {
+          if (result) {
             editSite(index);
           }
         });
-      }
-      else {
+      } else {
         editSite(index);
       }
     });
     $(`#site-remove-${index}`).click(function () {
-      if(pin) {
-        requirePin().then(function(result) {
-          if(result) {
+      if (pin) {
+        requirePin().then(function (result) {
+          if (result) {
             removeSite(index);
           }
         });
-      }
-      else {
+      } else {
         removeSite(index);
       }
     });
@@ -673,7 +682,7 @@ function createSiteButtonResponse(siteList) {
 
 //Edits a site's restrictions given its index.
 function editSite(index) {
-  siteList[index].time = getTimesByWeekday(index);
+  siteList[index].time = getTimesByWeekday(index, true);
   chrome.storage.sync.set({ timeList: siteList }, function () {});
   resetForm(`week-form-${index}`, index);
 }
