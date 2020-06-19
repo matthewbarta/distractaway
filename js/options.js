@@ -15,7 +15,6 @@ let pin = undefined;
 //TODO Stats tab time spent on each site.
 //TODO Only allow specific types of URLs
 //TODO Same limit every day (?)
-//TODO FIX BUG where editting times gets rid of old restricted days where the time was not logged.
 //TODO Change clicks on checkbox for parental controls.
 
 //! FOR DEBUGGING
@@ -246,11 +245,9 @@ function getTimesByWeekday(id = "") {
   let weekdayTimes = [];
   for (let day = 0; day < WEEKDAYS.length; day++) {
     if (document.getElementById(`${WEEKDAYS[day]}-div-${id}`) == null) {
-      bkg.console.log(id);
-      bkg.console.log(`day ${day}: ${Number.isInteger(id) ? siteList[id].time[day].dayLimit : -1}`);
-      weekdayTimes.push({ timeUsed: 0, dayLimit: Number.isInteger(id) ? siteList[id].time[day].dayLimit : -1 });
+      weekdayTimes.push({ timeUsed: Number.isInteger(id) ? siteList[id].time[day].timeUsed : 0, dayLimit: Number.isInteger(id) ? siteList[id].time[day].dayLimit : -1 });
     } else if ($(`#${WEEKDAYS[day]}-blocked-${id}`).is(":checked")) {
-      weekdayTimes.push({ timeUsed: 0, dayLimit: 0 });
+      weekdayTimes.push({ timeUsed: Number.isInteger(id) ? siteList[id].time[day].timeUsed : 0, dayLimit: 0 });
     } else {
       const hours = Number.isInteger(
         parseInt($(`#${WEEKDAYS[day]}-hr-${id}`).val())
@@ -272,7 +269,6 @@ function getTimesByWeekday(id = "") {
       });
     }
   }
-  bkg.console.log(weekdayTimes);
   return weekdayTimes;
 }
 
