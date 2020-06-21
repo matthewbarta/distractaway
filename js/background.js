@@ -9,6 +9,8 @@ let port;
 let today;
 let minimized = false;
 
+//TODO Unchecked runtime.lastError: This request exceeds the MAX_WRITE_OPERATIONS_PER_MINUTE quota.
+
 //Initializes extension.
 chrome.runtime.onInstalled.addListener(function () {
   today = new Date().getDay();
@@ -89,7 +91,7 @@ const reduceTime = (index) => {
       return;
     }
     let time =
-      timeList[index].time[today].dayLimit -
+      timeList[index].time[today].limit -
       timeList[index].time[today].timeUsed++;
     //! DEBUG
     console.log(time);
@@ -176,7 +178,7 @@ function resetDailyLimits(day) {
 //Sets block list at midnight.
 function setDailyBlockList(day) {
   for (let index = 0; index < timeList.length; index++) {
-    if (timeList[index].time[day].dayLimit == 0) {
+    if (timeList[index].time[day].limit == 0) {
       blockList.push(`*://${timeList[index].url}/*`);
     }
   }
@@ -199,12 +201,30 @@ chrome.storage.onChanged.addListener(function (changes) {
   //Timelist changes
   if (changes.timeList) {
     timeList = changes.timeList.newValue;
+    console.log(changes.timeList.oldValue);
+    console.log(timeList);
   }
   //For changes in minimizing.
   if(changes.timeMinimized) {
     minimized = changes.timeMinimized.newValue;
   }
 });
+
+//Return index to remove.
+function indexToRemove(newArray, oldArray) {
+  newLength = newArray.length;
+  oldLength = oldArray.length;
+  if(newLength == 0) {
+      return 0;
+  }
+  let index;
+  for(index = 0; index < newLength; index++) {
+      if(oldArray[index].url != newArray[index].url) {
+          return index;
+      }
+  }
+  return index;
+}
 
 //When the tab changes, get the active tab and check if it's in the blocklist.
 chrome.tabs.onActivated.addListener(function (activeInfo) {
@@ -310,9 +330,9 @@ function getTabChangeState(url, day) {
   for (let index = 0; index < timeList.length; index++) {
     if (url.includes(timeList[index].url)) {
       //Wasn't a blacklisted tab before.
-      if (timeList[index].time[day].dayLimit == -1) {
+      if (timeList[index].time[day].limit == -1) {
         return "unrestricted";
-      } else if (timeList[index].time[day].dayLimit == 0) {
+      } else if (timeList[index].time[day].limit == 0) {
         blockList.push(`*://${timeList[index].url}/*`);
         return "blocked";
       } else if (activeIndex == -1) {

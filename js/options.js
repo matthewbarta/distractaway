@@ -245,9 +245,9 @@ function getTimesByWeekday(id = "") {
   let weekdayTimes = [];
   for (let day = 0; day < WEEKDAYS.length; day++) {
     if (document.getElementById(`${WEEKDAYS[day]}-div-${id}`) == null) {
-      weekdayTimes.push({ timeUsed: Number.isInteger(id) ? siteList[id].time[day].timeUsed : 0, dayLimit: Number.isInteger(id) ? siteList[id].time[day].dayLimit : -1 });
+      weekdayTimes.push({ limit: Number.isInteger(id) ? siteList[id].time[day].limit : -1 });
     } else if ($(`#${WEEKDAYS[day]}-blocked-${id}`).is(":checked")) {
-      weekdayTimes.push({ timeUsed: Number.isInteger(id) ? siteList[id].time[day].timeUsed : 0, dayLimit: 0 });
+      weekdayTimes.push({ limit: 0 });
     } else {
       const hours = Number.isInteger(
         parseInt($(`#${WEEKDAYS[day]}-hr-${id}`).val())
@@ -264,8 +264,7 @@ function getTimesByWeekday(id = "") {
           ? convertToSeconds(hours, minutes)
           : -1;
       weekdayTimes.push({
-        timeUsed: 0,
-        dayLimit: seconds,
+        limit: seconds,
       });
     }
   }
@@ -315,7 +314,7 @@ function createWeekday(day, parentElement, id = "") {
 
   //Checks if edit forms have information already.
   if (siteList[id]) {
-    seconds = siteList[id].time[day].dayLimit;
+    seconds = siteList[id].time[day].limit;
     hours = Math.floor(seconds / 3600).toString();
     minutes = Math.floor((seconds % 3600) / 60).toString();
     if (seconds == 0) {
