@@ -216,15 +216,11 @@ chrome.storage.onChanged.addListener(function (changes) {
       for(let index = 0; index < 7; index++) {
         time[index].timeUsed = 0;
       }
-      oldArray.push({url: newArray[newArray.length - 1].url, time: time});
-      urlList = oldArray;
-      console.log(urlList);
+      urlList.push({url: newArray[newArray.length - 1].url, time: time});
     }
     //Remove an element from the list.
     else {
-      oldArray.splice(indexToRemove(newArray, oldArray), 1);
-      urlList = oldArray;
-      console.log(urlList);
+      urlList.splice(indexToRemove(newArray, oldArray), 1);
     }
   }
   //For changes in minimizing.
