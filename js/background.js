@@ -11,6 +11,7 @@ let today;
 let minimized = false;
 
 //TODO Unchecked runtime.lastError: This request exceeds the MAX_WRITE_OPERATIONS_PER_MINUTE quota.
+//TODO CHANGE DAILY LIMITS FIX - basically this needs to happen in the same size loop thing.
 
 
 //Initializes extension.
@@ -201,7 +202,16 @@ chrome.storage.onChanged.addListener(function (changes) {
   if (changes.urlList) {
     newArray = changes.urlList.newValue;
     oldArray = changes.urlList.oldValue;
-    if(oldArray.length < newArray.length) {
+    //Change daily limits.
+    if(oldArray.length == newArray.length) {
+      urlList.map((element, index) => {
+        for(let day = 0; day < 7; day++) {
+          element.time[day].limit = newArray[index].time[day].limit;
+        }
+      });
+    }
+    //Adds a new item to the list.
+    else if(oldArray.length < newArray.length) {
       let time = newArray[newArray.length - 1].time;
       for(let index = 0; index < 7; index++) {
         time[index].timeUsed = 0;
@@ -210,7 +220,8 @@ chrome.storage.onChanged.addListener(function (changes) {
       urlList = oldArray;
       console.log(urlList);
     }
-    else if (oldArray.length > newArray.length) {
+    //Remove an element from the list.
+    else {
       oldArray.splice(indexToRemove(newArray, oldArray), 1);
       urlList = oldArray;
       console.log(urlList);
