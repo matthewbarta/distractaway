@@ -22,8 +22,8 @@ const bkg = chrome.extension.getBackgroundPage();
 
 $(function () {
   //Creates the site elements.
-  chrome.storage.sync.get("timeList", function (items) {
-    siteList = items.timeList;
+  chrome.storage.sync.get("urlList", function (items) {
+    siteList = items.urlList;
     updateSiteList(siteList);
   });
 
@@ -42,8 +42,8 @@ $(function () {
     let url = $("#block-site").val();
     if (url) {
       //Store the given url if it is not a duplicated.
-      chrome.storage.sync.get(["timeList"], function (items) {
-        let list = items.timeList;
+      chrome.storage.sync.get(["urlList"], function (items) {
+        let list = items.urlList;
         storeTimeList(list, url);
         resetForm("week-form-");
       });
@@ -200,7 +200,7 @@ function storeTimeList(urlTimeArray, url) {
     const times = getTimesByWeekday();
     urlTimeArray.push({ url: url, time: times });
     siteList = urlTimeArray;
-    chrome.storage.sync.set({ timeList: urlTimeArray }, function () {
+    chrome.storage.sync.set({ urlList: urlTimeArray }, function () {
       updateSiteList(siteList);
     });
   }
@@ -678,7 +678,7 @@ function createSiteButtonResponse(siteList) {
 //Edits a site's restrictions given its index.
 function editSite(index) {
   siteList[index].time = getTimesByWeekday(index, true);
-  chrome.storage.sync.set({ timeList: siteList }, function () {});
+  chrome.storage.sync.set({ urlList: siteList }, function () {});
   resetForm(`week-form-${index}`, index);
 }
 
@@ -686,7 +686,7 @@ function editSite(index) {
 function removeSite(index) {
   chrome.runtime.sendMessage({ unblock: siteList[index].url });
   siteList.splice(index, 1);
-  chrome.storage.sync.set({ timeList: siteList }, function () {
+  chrome.storage.sync.set({ urlList: siteList }, function () {
     updateSiteList(siteList);
   });
 }

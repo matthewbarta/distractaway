@@ -1,4 +1,5 @@
 //Global variables
+let urlList = [];
 let timeList = [];
 let blockList = [];
 let activeIndex = -1;
@@ -18,7 +19,7 @@ chrome.runtime.onInstalled.addListener(function () {
   //Set basic information.
   chrome.storage.sync.set(
     {
-      timeList: [],
+      urlList: [],
       date: date.toJSON(),
       timeMinimized: false
     },
@@ -91,8 +92,8 @@ const reduceTime = (index) => {
       return;
     }
     let time =
-      timeList[index].time[today].limit -
-      timeList[index].time[today].timeUsed++;
+      urlList[index].time[today].limit -
+      urlList[index].time[today].timeUsed++;
     //! DEBUG
     console.log(time);
     //For the countdown - sends a message to the timer script.
@@ -140,8 +141,8 @@ function onMidnight() {
   console.log("Midnight");
   //This should send a message to close the current popup.
   chrome.runtime.sendMessage({ midnight: "midnight" });
-  if (timeList.length > 0 && activeIndex >= 0) {
-    const url = timeList[activeIndex].url;
+  if (urlList.length > 0 && activeIndex >= 0) {
+    const url = urlList[activeIndex].url;
     activeIndex = -1;
     const timeState = getTabChangeState(url, today);
     timeActiveTab(timeState);
@@ -153,7 +154,7 @@ function onMidnight() {
 //When time runs out - stop the timer and push the url to blocklist.
 function timeExceeded(index) {
   stopCountdown(timer);
-  blockList.push(`*://${timeList[index].url}/*`);
+  blockList.push(`*://${urlList[index].url}/*`);
   chrome.browserAction.setPopup(
     {
       popup:
@@ -163,23 +164,22 @@ function timeExceeded(index) {
   );
   //Set a timeout on the alert for good measure.
   setTimeout(() => {
-    alert(`You have reached your daily limit on ${timeList[index].url}!`);
+    alert(`You have reached your daily limit on ${urlList[index].url}!`);
   }, 500);
 }
 
 //Resets the daily time limits for the last used day.
 function resetDailyLimits(day) {
-  for (let index = 0; index < timeList.length; index++) {
-    timeList[index].time[day].timeUsed = 0;
+  for (let index = 0; index < urlList.length; index++) {
+    urlList[index].time[day].timeUsed = 0;
   }
-  chrome.storage.sync.set({ timeList: timeList }, function () {});
 }
 
 //Sets block list at midnight.
 function setDailyBlockList(day) {
-  for (let index = 0; index < timeList.length; index++) {
-    if (timeList[index].time[day].limit == 0) {
-      blockList.push(`*://${timeList[index].url}/*`);
+  for (let index = 0; index < urlList.length; index++) {
+    if (urlList[index].time[day].limit == 0) {
+      blockList.push(`*://${urlList[index].url}/*`);
     }
   }
 }
@@ -192,17 +192,28 @@ const stopTimeout = (timeout) => {
 //Function to stop the countdown.
 const stopCountdown = (timer) => {
   clearInterval(timer);
-  //Store the updated daily time used.
-  chrome.storage.sync.set({ timeList: timeList }, function () {});
 };
 
 //Whenever a needed variable changes.
 chrome.storage.onChanged.addListener(function (changes) {
   //Timelist changes
-  if (changes.timeList) {
-    timeList = changes.timeList.newValue;
-    console.log(changes.timeList.oldValue);
-    console.log(timeList);
+  if (changes.urlList) {
+    newArray = changes.urlList.newValue;
+    oldArray = changes.urlList.oldValue;
+    if(oldArray.length < newArray.length) {
+      let time = newArray[newArray.length - 1].time;
+      for(let index = 0; index < 7; index++) {
+        time[index].timeUsed = 0;
+      }
+      oldArray.push({url: newArray[newArray.length - 1].url, time: time});
+      urlList = oldArray;
+      console.log(urlList);
+    }
+    else if (oldArray.length > newArray.length) {
+      oldArray.splice(indexToRemove(newArray, oldArray), 1);
+      urlList = oldArray;
+      console.log(urlList);
+    }
   }
   //For changes in minimizing.
   if(changes.timeMinimized) {
@@ -327,13 +338,13 @@ function getTabChangeState(url, day) {
   }
 
   //Loop over timed list to see if it one that is being timed still.
-  for (let index = 0; index < timeList.length; index++) {
-    if (url.includes(timeList[index].url)) {
+  for (let index = 0; index < urlList.length; index++) {
+    if (url.includes(urlList[index].url)) {
       //Wasn't a blacklisted tab before.
-      if (timeList[index].time[day].limit == -1) {
+      if (urlList[index].time[day].limit == -1) {
         return "unrestricted";
-      } else if (timeList[index].time[day].limit == 0) {
-        blockList.push(`*://${timeList[index].url}/*`);
+      } else if (urlList[index].time[day].limit == 0) {
+        blockList.push(`*://${urlList[index].url}/*`);
         return "blocked";
       } else if (activeIndex == -1) {
         activeIndex = index;
