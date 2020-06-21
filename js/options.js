@@ -67,9 +67,21 @@ $(function () {
   //Minimized form options.
   $(`#minimized-input`).click(function () {
     if ($(this).is(":checked")) {
-      chrome.storage.sync.set({ timeMinimized: true }, function () {});
+      chrome.storage.sync.set({ timeMinimized: true }, function () {
+        //! ERROR CATCH
+        var error = chrome.runtime.lastError;
+        if (error) {
+          bkg.console.log(error);
+        }
+      });
     } else {
-      chrome.storage.sync.set({ timeMinimized: false }, function () {});
+      chrome.storage.sync.set({ timeMinimized: false }, function () {
+        //! ERROR CATCH
+        var error = chrome.runtime.lastError;
+        if (error) {
+          bkg.console.log(error);
+        }
+      });
     }
   });
 
@@ -202,6 +214,11 @@ function storeTimeList(urlTimeArray, url) {
     siteList = urlTimeArray;
     chrome.storage.sync.set({ urlList: urlTimeArray }, function () {
       updateSiteList(siteList);
+      //! ERROR CATCH
+      var error = chrome.runtime.lastError;
+      if (error) {
+        bkg.console.log(error);
+      }
     });
   }
 }
@@ -245,7 +262,9 @@ function getTimesByWeekday(id = "") {
   let weekdayTimes = [];
   for (let day = 0; day < WEEKDAYS.length; day++) {
     if (document.getElementById(`${WEEKDAYS[day]}-div-${id}`) == null) {
-      weekdayTimes.push({ limit: Number.isInteger(id) ? siteList[id].time[day].limit : -1 });
+      weekdayTimes.push({
+        limit: Number.isInteger(id) ? siteList[id].time[day].limit : -1,
+      });
     } else if ($(`#${WEEKDAYS[day]}-blocked-${id}`).is(":checked")) {
       weekdayTimes.push({ limit: 0 });
     } else {
@@ -678,7 +697,13 @@ function createSiteButtonResponse(siteList) {
 //Edits a site's restrictions given its index.
 function editSite(index) {
   siteList[index].time = getTimesByWeekday(index, true);
-  chrome.storage.sync.set({ urlList: siteList }, function () {});
+  chrome.storage.sync.set({ urlList: siteList }, function () {
+    //! ERROR CATCH
+    var error = chrome.runtime.lastError;
+    if (error) {
+      bkg.console.log(error);
+    }
+  });
   resetForm(`week-form-${index}`, index);
 }
 
@@ -688,6 +713,12 @@ function removeSite(index) {
   siteList.splice(index, 1);
   chrome.storage.sync.set({ urlList: siteList }, function () {
     updateSiteList(siteList);
+
+    //! ERROR CATCH
+    var error = chrome.runtime.lastError;
+    if (error) {
+      bkg.console.log(error);
+    }
   });
 }
 

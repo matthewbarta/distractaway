@@ -11,8 +11,6 @@ let today;
 let minimized = false;
 
 //TODO Unchecked runtime.lastError: This request exceeds the MAX_WRITE_OPERATIONS_PER_MINUTE quota.
-//TODO CHANGE DAILY LIMITS FIX - basically this needs to happen in the same size loop thing.
-
 
 //Initializes extension.
 chrome.runtime.onInstalled.addListener(function () {
@@ -23,11 +21,17 @@ chrome.runtime.onInstalled.addListener(function () {
     {
       urlList: [],
       date: date.toJSON(),
-      timeMinimized: false
+      timeMinimized: false,
     },
     function () {
       console.log("Initialized extension.");
       midnightTimer = setTimeout(onMidnight, timeTillMidnight());
+
+      //! ERROR CATCH
+      var error = chrome.runtime.lastError;
+      if (error) {
+        bkg.console.log(error);
+      }
     }
   );
 });
@@ -51,6 +55,12 @@ chrome.runtime.onStartup.addListener(function () {
       chrome.storage.sync.set({ date: currentDate.toJSON() }, function () {
         console.log("NEW DATE SET to ");
         console.log(currentDate);
+
+        //! ERROR CATCH
+        var error = chrome.runtime.lastError;
+        if (error) {
+          bkg.console.log(error);
+        }
       });
     }
     //Set the midnight timer.
@@ -94,8 +104,7 @@ const reduceTime = (index) => {
       return;
     }
     let time =
-      urlList[index].time[today].limit -
-      urlList[index].time[today].timeUsed++;
+      urlList[index].time[today].limit - urlList[index].time[today].timeUsed++;
     //! DEBUG
     console.log(time);
     //For the countdown - sends a message to the timer script.
@@ -130,7 +139,13 @@ const reduceTime = (index) => {
 */
 function onMidnight() {
   //Set the new date.
-  chrome.storage.sync.set({ date: new Date().toJSON() }, function () {});
+  chrome.storage.sync.set({ date: new Date().toJSON() }, function () {
+    //! ERROR CATCH
+    var error = chrome.runtime.lastError;
+    if (error) {
+      bkg.console.log(error);
+    }
+  });
   //Reset blockist.
   blockList = [];
   //Clear timers.
@@ -203,20 +218,20 @@ chrome.storage.onChanged.addListener(function (changes) {
     newArray = changes.urlList.newValue;
     oldArray = changes.urlList.oldValue;
     //Change daily limits.
-    if(oldArray.length == newArray.length) {
+    if (oldArray.length == newArray.length) {
       urlList.map((element, index) => {
-        for(let day = 0; day < 7; day++) {
+        for (let day = 0; day < 7; day++) {
           element.time[day].limit = newArray[index].time[day].limit;
         }
       });
     }
     //Adds a new item to the list.
-    else if(oldArray.length < newArray.length) {
+    else if (oldArray.length < newArray.length) {
       let time = newArray[newArray.length - 1].time;
-      for(let index = 0; index < 7; index++) {
+      for (let index = 0; index < 7; index++) {
         time[index].timeUsed = 0;
       }
-      urlList.push({url: newArray[newArray.length - 1].url, time: time});
+      urlList.push({ url: newArray[newArray.length - 1].url, time: time });
     }
     //Remove an element from the list.
     else {
@@ -224,7 +239,7 @@ chrome.storage.onChanged.addListener(function (changes) {
     }
   }
   //For changes in minimizing.
-  if(changes.timeMinimized) {
+  if (changes.timeMinimized) {
     minimized = changes.timeMinimized.newValue;
   }
 });
@@ -233,14 +248,14 @@ chrome.storage.onChanged.addListener(function (changes) {
 function indexToRemove(newArray, oldArray) {
   newLength = newArray.length;
   oldLength = oldArray.length;
-  if(newLength == 0) {
-      return 0;
+  if (newLength == 0) {
+    return 0;
   }
   let index;
-  for(index = 0; index < newLength; index++) {
-      if(oldArray[index].url != newArray[index].url) {
-          return index;
-      }
+  for (index = 0; index < newLength; index++) {
+    if (oldArray[index].url != newArray[index].url) {
+      return index;
+    }
   }
   return index;
 }
@@ -334,7 +349,7 @@ function changePopup(state) {
 //Gets the state of the tab which has been swapped to or updated.
 function getTabChangeState(url, day) {
   //! Could be an error?
-  if(url == undefined) return 'untimed';
+  if (url == undefined) return "untimed";
   //Loop over block list to see if the url is one that has been blocked.
   for (let index = 0; index < blockList.length; index++) {
     if (
