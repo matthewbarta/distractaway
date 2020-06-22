@@ -13,8 +13,6 @@ let siteList = [];
 let pin = undefined;
 
 // ? Stats tab time spent on each site.
-//TODO Only allow specific types of URLs
-//TODO Change clicks on checkbox for parental controls.
 
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();
@@ -41,11 +39,16 @@ $(function () {
     let url = $("#block-site").val();
     if (url) {
       //Store the given url if it is not a duplicated.
-      chrome.storage.sync.get(["urlList"], function (items) {
-        let list = items.urlList;
-        storeTimeList(list, url);
-        resetForm("week-form-");
-      });
+      url = url.toLowerCase();
+      if(validUrl(url)) {
+        chrome.storage.sync.get(["urlList"], function (items) {
+          let list = items.urlList;
+          storeTimeList(list, url);
+          resetForm("week-form-");
+        });
+      } else {
+        alert('Invalid URL format!');
+      }
     } else {
       alert("No URL submitted!");
     }
@@ -754,6 +757,15 @@ function trimURL(url) {
   else {
     return url;
   }
+}
+
+//Checks if the url is a valid for blocking url.
+function validUrl(url) {
+  const validStart = /^[a-zA-Z0-9]/;
+  const validEnd = /[a-zA-Z0-9.~?_]$/
+  const invalidCharacters = /[^a-zA-Z0-9.~?/_]/
+  const noDoubleSlash = /(\/\/)+/;
+  return !invalidCharacters.test(url) && validEnd.test(url) && validStart.test(url) && !noDoubleSlash.test(url);
 }
 
 //Converts hours and minutes to seconds.
