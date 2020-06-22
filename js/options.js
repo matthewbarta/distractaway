@@ -13,6 +13,9 @@ let siteList = [];
 let pin = undefined;
 
 // ? Stats tab time spent on each site.
+// TODO Unfold menu for days.
+// TODO Same limit each day - unfolds all and puts the value into each box.
+
 
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();
@@ -323,6 +326,17 @@ function createWeekDropdown(parentElement, id = "") {
         createWeekday(index, `week-form-${id}`, id);
     });
   }
+  //Button to show all days.
+  // TODO Make this button colored red.
+  createButtonElement(
+    `dropdown-menu-${id}`,
+    `Show All`,
+    `dropdown-item show-all-button`,
+    `show-all-${id}`
+  );
+  $(`#show-all-${id}`).click(function () {
+    unfoldWeekdays(id);
+  });
 }
 
 //Create individual days.
@@ -415,6 +429,13 @@ function createWeekday(day, parentElement, id = "") {
     $(`#${weekday}-blocked-${id}`).prop("checked", true);
     $(`#${weekday}-hr-${id}`).prop("disabled", true);
     $(`#${weekday}-min-${id}`).prop("disabled", true);
+  }
+}
+
+function unfoldWeekdays(id = "") {
+  for(let index = 0; index < WEEKDAYS.length; index++) {
+    if (document.getElementById(`${WEEKDAYS[index]}-div-${id}`) == null)
+    createWeekday(index, `week-form-${id}`, id);
   }
 }
 
