@@ -1,6 +1,5 @@
 //Global variables
 let urlList = [];
-let timeList = [];
 let blockList = [];
 let activeIndex = -1;
 let tabIndex;
@@ -190,6 +189,7 @@ function resetDailyLimits(day) {
   for (let index = 0; index < urlList.length; index++) {
     urlList[index].time[day].timeUsed = 0;
   }
+  console.log(urlList);
 }
 
 //Sets block list at midnight.
@@ -224,6 +224,7 @@ chrome.storage.onChanged.addListener(function (changes) {
           element.time[day].limit = newArray[index].time[day].limit;
         }
       });
+      console.log(urlList);
     }
     //Adds a new item to the list.
     else if (oldArray.length < newArray.length) {
@@ -232,10 +233,12 @@ chrome.storage.onChanged.addListener(function (changes) {
         time[index].timeUsed = 0;
       }
       urlList.push({ url: newArray[newArray.length - 1].url, time: time });
+      console.log(urlList);
     }
     //Remove an element from the list.
     else {
       urlList.splice(indexToRemove(newArray, oldArray), 1);
+      console.log(urlList);
     }
   }
   //For changes in minimizing.

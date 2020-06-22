@@ -12,9 +12,8 @@ const zeroRegex = /00+/;
 let siteList = [];
 let pin = undefined;
 
-//TODO Stats tab time spent on each site.
+// ? Stats tab time spent on each site.
 //TODO Only allow specific types of URLs
-//TODO Same limit every day (?)
 //TODO Change clicks on checkbox for parental controls.
 
 //! FOR DEBUGGING
