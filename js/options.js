@@ -319,6 +319,7 @@ function createWeekDropdown(parentElement, id = "") {
     "btn btn-sm select-all-button",
     `select-all-${id}`
   );
+  $(`#select-all-${id}`).hide();
   //Adds weekdays.
   for (let index = 0; index < WEEKDAYS.length; index++) {
     createButtonElement(
@@ -521,6 +522,9 @@ function insertWeekday(parentId, weekdayDiv, day, id) {
   if (currentWeekdays.length == 0) {
     if (document.getElementById(`submit-edit-${id}`)) {
       $(`#submit-edit-${id}`).show();
+    }
+    if (document.getElementById(`select-all-${id}`)) {
+      $(`#select-all-${id}`).show();
     }
   }
 }
@@ -762,9 +766,12 @@ function createRemoveButtonResponse(weekday, id = "", parentElement) {
     //Removes the div for the weekday.
     $(`#${weekday}-div-${id}`).remove();
     //Hides the submit button if no days are displayed.
-    if (document.getElementById(parentElement).childNodes.length == 0) {
+    if (document.getElementById(parentElement).childNodes.length == 1) {
       if (document.getElementById(`submit-edit-${id}`)) {
         $(`#submit-edit-${id}`).hide();
+      }
+      if (document.getElementById(`select-all-${id}`)) {
+        $(`#select-all-${id}`).hide();
       }
     }
   });
