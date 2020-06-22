@@ -13,7 +13,6 @@ let siteList = [];
 let pin = undefined;
 
 // ? Stats tab time spent on each site.
-// TODO Unfold menu for days.
 // TODO Same limit each day - unfolds all and puts the value into each box.
 
 
@@ -313,6 +312,13 @@ function createWeekDropdown(parentElement, id = "") {
   createDiv(`dropdown-${id}`, "dropdown-menu", `dropdown-menu-${id}`);
   //Div to hold all the days.
   createDiv(`dropdown-${id}`, "week-form", `week-form-${id}`);
+  //Button to select all the days at once.
+  createButtonElement(
+    `week-form-${id}`,
+    "Select All Days",
+    "btn btn-sm select-all-button",
+    `select-all-${id}`
+  );
   //Adds weekdays.
   for (let index = 0; index < WEEKDAYS.length; index++) {
     createButtonElement(
@@ -330,7 +336,7 @@ function createWeekDropdown(parentElement, id = "") {
   // TODO Make this button colored red.
   createButtonElement(
     `dropdown-menu-${id}`,
-    `Show All`,
+    `Show All Days`,
     `dropdown-item show-all-button`,
     `show-all-${id}`
   );
@@ -629,6 +635,11 @@ function resetForm(parentId, id = "") {
   const parent = document.getElementById(parentId);
   let weekday = parent.lastChild;
   while (weekday) {
+    //Stops the select all button from being deleted.
+    if(weekday.id == `select-all-${id}`) {
+      $(`#${weekday.id}`).hide();
+      break;
+    }
     weekday.remove();
     weekday = parent.lastChild;
   }
