@@ -315,11 +315,17 @@ function createWeekDropdown(parentElement, id = "") {
   //Button to select all the days at once.
   createButtonElement(
     `week-form-${id}`,
-    "Select All Days",
-    "btn btn-sm select-all-button",
-    `select-all-${id}`
+    "Select All Below",
+    "btn btn-primary btn-sm select-all-button",
+    `select-all-${id}`,
+    [{property: 'data-toggle', value: 'button'}, {property: 'aria-pressed', value: 'false'}]
   );
   $(`#select-all-${id}`).hide();
+  //Selects all the below days.
+  //TODO Needs to be a toggleable button.
+  $(`#select-all-${id}`).click(function() {
+    selectAllWeekdayValues(id);
+  });
   //Adds weekdays.
   for (let index = 0; index < WEEKDAYS.length; index++) {
     createButtonElement(
@@ -439,10 +445,42 @@ function createWeekday(day, parentElement, id = "") {
   }
 }
 
+//Shows all the weekday divs,
 function unfoldWeekdays(id = "") {
   for(let index = 0; index < WEEKDAYS.length; index++) {
     if (document.getElementById(`${WEEKDAYS[index]}-div-${id}`) == null)
     createWeekday(index, `week-form-${id}`, id);
+  }
+}
+
+//TODO Enable and disable weekday values.
+function selectAllWeekdayValues(id) {
+  for(let index = 0; index < WEEKDAYS.length; index++) {
+    $(`#${WEEKDAYS[index]}-hr-${id}`).change(function() {
+      const changedVal = $(`#${WEEKDAYS[index]}-hr-${id}`).val();
+      bkg.console.log(changedVal);
+      for(let day = 0; day < WEEKDAYS.length; day++) {
+        bkg.console.log(document.getElementById(`${WEEKDAYS[day]}-hr-${id}`));
+        if(document.getElementById(`${WEEKDAYS[day]}-hr-${id}`) && index != day) {
+          bkg.console.log(`#${WEEKDAYS[day]}-hr-${id}`);
+          $(`#${WEEKDAYS[day]}-hr-${id}`).val(changedVal);
+        }
+      }
+    });
+    $(`#${WEEKDAYS[index]}-min-${id}`).change(function() {
+      const changedVal = $(`#${WEEKDAYS[index]}-min-${id}`).val();
+      bkg.console.log(changedVal);
+      for(let day = 0; day < WEEKDAYS.length; day++) {
+        bkg.console.log(document.getElementById(`${WEEKDAYS[day]}-min-${id}`));
+        if(document.getElementById(`${WEEKDAYS[day]}-min-${id}`) && index != day) {
+          bkg.console.log(`#${WEEKDAYS[day]}-min-${id}`);
+          $(`#${WEEKDAYS[day]}-min-${id}`).val(changedVal);
+        }
+      }
+    });
+    $(`#${WEEKDAYS[index]}-blocked-${id}`).change(function() {
+
+    });
   }
 }
 
@@ -659,8 +697,8 @@ function validateWeekdayForm(weekday, id = "") {
     const keyPress = event.which - 48;
     const val = parseInt($(`#${weekday}-hr-${id}`).val());
     const newVal = (Number.isNaN(val) ? 0 : val) * 10 + keyPress;
-    //-40 is backspace.
-    if (keyPress == -40) return true;
+    //Allows for tab, backspace and left and right arrows.
+    if (keyPress == -40 || keyPress == -37 || keyPress == -11 || keyPress == -9) return true;
     //Gets rid of repeated zero presses.
     if (
       keyPress == 0 &&
@@ -678,7 +716,7 @@ function validateWeekdayForm(weekday, id = "") {
     const val = parseInt($(`#${weekday}-min-${id}`).val());
     const newVal = (Number.isNaN(val) ? 0 : val) * 10 + keyPress;
     //-40 is backspace.
-    if (keyPress == -40) return true;
+    if (keyPress == -40 || keyPress == -37 || keyPress == -11 || keyPress == -9) return true;
     //Gets rid of repeated zero presses.
     if (
       keyPress == 0 &&
