@@ -698,7 +698,7 @@ function validateWeekdayForm(weekday, id = "") {
     const val = parseInt($(`#${weekday}-hr-${id}`).val());
     const newVal = (Number.isNaN(val) ? 0 : val) * 10 + keyPress;
     //Allows for tab, backspace and left and right arrows.
-    if (keyPress == -40 || keyPress == -37 || keyPress == -11 || keyPress == -9) return true;
+    if (keyPress == -40 || keyPress == -39 || keyPress == -11 || keyPress == -9) return true;
     //Gets rid of repeated zero presses.
     if (
       keyPress == 0 &&
@@ -716,7 +716,7 @@ function validateWeekdayForm(weekday, id = "") {
     const val = parseInt($(`#${weekday}-min-${id}`).val());
     const newVal = (Number.isNaN(val) ? 0 : val) * 10 + keyPress;
     //-40 is backspace.
-    if (keyPress == -40 || keyPress == -37 || keyPress == -11 || keyPress == -9) return true;
+    if (keyPress == -40 || keyPress == -39 || keyPress == -11 || keyPress == -9) return true;
     //Gets rid of repeated zero presses.
     if (
       keyPress == 0 &&
