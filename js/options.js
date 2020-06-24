@@ -460,9 +460,7 @@ function selectAllWeekdayValues(id) {
     $(`#${WEEKDAYS[index]}-hr-${id}`).change(function() {
       const changedVal = $(`#${WEEKDAYS[index]}-hr-${id}`).val();
       for(let day = 0; day < WEEKDAYS.length; day++) {
-        bkg.console.log(document.getElementById(`${WEEKDAYS[day]}-hr-${id}`));
         if(document.getElementById(`${WEEKDAYS[day]}-hr-${id}`) && index != day) {
-          bkg.console.log(`#${WEEKDAYS[day]}-hr-${id}`);
           $(`#${WEEKDAYS[day]}-hr-${id}`).val(changedVal);
         }
       }
@@ -470,15 +468,12 @@ function selectAllWeekdayValues(id) {
     $(`#${WEEKDAYS[index]}-min-${id}`).change(function() {
       const changedVal = $(`#${WEEKDAYS[index]}-min-${id}`).val();
       for(let day = 0; day < WEEKDAYS.length; day++) {
-        bkg.console.log(document.getElementById(`${WEEKDAYS[day]}-min-${id}`));
         if(document.getElementById(`${WEEKDAYS[day]}-min-${id}`) && index != day) {
-          bkg.console.log(`#${WEEKDAYS[day]}-min-${id}`);
           $(`#${WEEKDAYS[day]}-min-${id}`).val(changedVal);
         }
       }
     });
 
-    //TODO Change to fit the function.
     $(`#${WEEKDAYS[index]}-blocked-${id}`).change(function() {
       const isChecked = $(`#${WEEKDAYS[index]}-blocked-${id}`).is(":checked");
       bkg.console.log(isChecked);
@@ -486,6 +481,8 @@ function selectAllWeekdayValues(id) {
         const modifyDay = document.getElementById(`${WEEKDAYS[day]}-blocked-${id}`);
         if(modifyDay && index != day) {
           $(`#${WEEKDAYS[day]}-blocked-${id}`).prop("checked", isChecked);
+          $(`#${WEEKDAYS[day]}-hr-${id}`).prop("disabled", isChecked);
+          $(`#${WEEKDAYS[day]}-min-${id}`).prop("disabled", isChecked);
         }
       }
     });
