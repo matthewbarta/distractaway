@@ -453,7 +453,8 @@ function unfoldWeekdays(id = "") {
   }
 }
 
-//TODO Enable and disable weekday values.
+//TODO Enable and disable weekday values - consider using keydown function.
+//TODO Consider using global variable to control whether this executes.
 function selectAllWeekdayValues(id) {
   //Updates the values on changed to simulate all changing at once.
   for(let index = 0; index < WEEKDAYS.length; index++) {
@@ -465,6 +466,7 @@ function selectAllWeekdayValues(id) {
         }
       }
     });
+    //Synchronized min value.
     $(`#${WEEKDAYS[index]}-min-${id}`).change(function() {
       const changedVal = $(`#${WEEKDAYS[index]}-min-${id}`).val();
       for(let day = 0; day < WEEKDAYS.length; day++) {
@@ -473,7 +475,7 @@ function selectAllWeekdayValues(id) {
         }
       }
     });
-
+    //Synchronized block all day checkbox.
     $(`#${WEEKDAYS[index]}-blocked-${id}`).change(function() {
       const isChecked = $(`#${WEEKDAYS[index]}-blocked-${id}`).is(":checked");
       bkg.console.log(isChecked);
