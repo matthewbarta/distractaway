@@ -11,6 +11,7 @@ const DIVS = ["add-site", "site-list", "general"];
 const zeroRegex = /00+/;
 let siteList = [];
 let pin = undefined;
+let selectAll = false;
 
 // ? Stats tab time spent on each site.
 // TODO Same limit each day - unfolds all and puts the value into each box.
@@ -324,7 +325,15 @@ function createWeekDropdown(parentElement, id = "") {
   //Selects all the below days.
   //TODO Needs to be a toggleable button.
   $(`#select-all-${id}`).click(function() {
-    selectAllWeekdayValues(id);
+    //Toggle select-all.
+    selectAll = !selectAll;
+    if(selectAll) {
+      selectAllWeekdayValues(id);
+    }
+    else {
+      bkg.console.log('SELECT ALL OFF')
+      turnSelectAllOff(id);
+    }
   });
   //Adds weekdays.
   for (let index = 0; index < WEEKDAYS.length; index++) {
@@ -478,7 +487,6 @@ function selectAllWeekdayValues(id) {
     //Synchronized block all day checkbox.
     $(`#${WEEKDAYS[index]}-blocked-${id}`).change(function() {
       const isChecked = $(`#${WEEKDAYS[index]}-blocked-${id}`).is(":checked");
-      bkg.console.log(isChecked);
       for(let day = 0; day < WEEKDAYS.length; day++) {
         const modifyDay = document.getElementById(`${WEEKDAYS[day]}-blocked-${id}`);
         if(modifyDay && index != day) {
@@ -488,6 +496,15 @@ function selectAllWeekdayValues(id) {
         }
       }
     });
+  }
+}
+
+//Turns the select all off.
+function turnSelectAllOff(id) {
+  for(let index = 0; index < WEEKDAYS.length; index++) {
+    $(`#${WEEKDAYS[index]}-hr-${id}`).off("change");
+    $(`#${WEEKDAYS[index]}-min-${id}`).off("change");
+    $(`#${WEEKDAYS[index]}-blocked-${id}`).off("change");
   }
 }
 
