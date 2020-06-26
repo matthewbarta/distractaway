@@ -522,8 +522,7 @@ function createSite(site, id = "") {
     `site-div-${id}`,
     site.url,
     6,
-    "site-names",
-    `site-p${id}`
+    "site-names"
   );
   createButtonElement(
     `site-div-${id}`,
@@ -616,7 +615,7 @@ function createParagraphElement(
   parent.appendChild(paragraph);
 }
 
-//Creates a text paragraph element.
+//Creates a text header element.
 function createHeaderElement(
   parentId = "",
   innerHTML = "",

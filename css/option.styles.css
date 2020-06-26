@@ -35,6 +35,15 @@ body {
     margin: 0;
 }
 
+#site-list {
+    display: none;
+}
+
+#general {
+    display: none;
+}
+
+/*----------  Site Input Form Components   ----------*/
 
 .weekday-text {
     margin-top: 20px;
@@ -52,13 +61,7 @@ body {
     margin: 0px 10px;
 }
 
-#site-list {
-    display: none;
-}
-
-#general {
-    display: none;
-}
+/*----------  Modal Components  ----------*/
 
 .pin-input {
     width: 15%;
