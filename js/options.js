@@ -11,7 +11,6 @@ const DIVS = ["add-site", "site-list", "general"];
 const zeroRegex = /00+/;
 let siteList = [];
 let pin = undefined;
-let selectAll = false;
 
 // ? Stats tab time spent on each site.
 // TODO Same limit each day - unfolds all and puts the value into each box.
@@ -326,8 +325,9 @@ function createWeekDropdown(parentElement, id = "") {
   //TODO Needs to be a toggleable button.
   $(`#select-all-${id}`).click(function() {
     //Toggle select-all.
-    selectAll = !selectAll;
-    if(selectAll) {
+    const selectAll = $(`#select-all-${id}`).attr("aria-pressed");
+    bkg.console.log(selectAll);
+    if(selectAll == 'false') {
       selectAllWeekdayValues(id);
     }
     else {
@@ -440,7 +440,8 @@ function createWeekday(day, parentElement, id = "") {
   );
 
   //Creates behavior to enact select all on the weekday.
-  if(selectAll) selectAllWeekdayValues(id);
+  const selectAll = $(`#select-all-${id}`).attr("aria-pressed");
+  if(selectAll == 'true') selectAllWeekdayValues(id);
 
   //Creates the behavior to remove a weekday.
   createRemoveButtonResponse(weekday, id, parentElement);
@@ -464,11 +465,11 @@ function unfoldWeekdays(id = "") {
   }
 }
 
-//TODO Enable and disable weekday values - consider using keydown function.
+//Selects all the values in a list.
 function selectAllWeekdayValues(id) {
   //Updates the values on changed to simulate all changing at once.
   for(let index = 0; index < WEEKDAYS.length; index++) {
-    $(`#${WEEKDAYS[index]}-hr-${id}`).change(function() {
+    $(`#${WEEKDAYS[index]}-hr-${id}`).off('change').on('change', function() {
       const changedVal = $(`#${WEEKDAYS[index]}-hr-${id}`).val();
       for(let day = 0; day < WEEKDAYS.length; day++) {
         if(document.getElementById(`${WEEKDAYS[day]}-hr-${id}`) && index != day) {
@@ -477,7 +478,7 @@ function selectAllWeekdayValues(id) {
       }
     });
     //Synchronized min value.
-    $(`#${WEEKDAYS[index]}-min-${id}`).change(function() {
+    $(`#${WEEKDAYS[index]}-min-${id}`).off('change').on('change', function() {
       const changedVal = $(`#${WEEKDAYS[index]}-min-${id}`).val();
       for(let day = 0; day < WEEKDAYS.length; day++) {
         if(document.getElementById(`${WEEKDAYS[day]}-min-${id}`) && index != day) {
@@ -486,7 +487,7 @@ function selectAllWeekdayValues(id) {
       }
     });
     //Synchronized block all day checkbox.
-    $(`#${WEEKDAYS[index]}-blocked-${id}`).change(function() {
+    $(`#${WEEKDAYS[index]}-blocked-${id}`).off('change').on('change', function() {
       const isChecked = $(`#${WEEKDAYS[index]}-blocked-${id}`).is(":checked");
       for(let day = 0; day < WEEKDAYS.length; day++) {
         const modifyDay = document.getElementById(`${WEEKDAYS[day]}-blocked-${id}`);
