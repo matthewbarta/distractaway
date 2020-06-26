@@ -331,7 +331,6 @@ function createWeekDropdown(parentElement, id = "") {
       selectAllWeekdayValues(id);
     }
     else {
-      bkg.console.log('SELECT ALL OFF')
       turnSelectAllOff(id);
     }
   });
@@ -440,6 +439,9 @@ function createWeekday(day, parentElement, id = "") {
     `remove-${weekday}-${id}`
   );
 
+  //Creates behavior to enact select all on the weekday.
+  if(selectAll) selectAllWeekdayValues(id);
+
   //Creates the behavior to remove a weekday.
   createRemoveButtonResponse(weekday, id, parentElement);
 
@@ -463,7 +465,6 @@ function unfoldWeekdays(id = "") {
 }
 
 //TODO Enable and disable weekday values - consider using keydown function.
-//TODO Consider using global variable to control whether this executes.
 function selectAllWeekdayValues(id) {
   //Updates the values on changed to simulate all changing at once.
   for(let index = 0; index < WEEKDAYS.length; index++) {
