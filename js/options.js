@@ -378,9 +378,10 @@ function createWeekday(day, parentElement, id = "") {
     }
   }
   createWeekdayDiv(parentElement, weekday, id);
-  createParagraphElement(
+  createHeaderElement(
     `${weekday}-div-${id}`,
     `${capitalize(weekday)}`,
+    6,
     "weekday-text"
   );
   createLabelElement(
@@ -517,9 +518,10 @@ function createSiteList(siteList) {
 //Creates an individual site.
 function createSite(site, id = "") {
   createDiv("sites", "site-div", `site-div-${id}`);
-  createParagraphElement(
+  createHeaderElement(
     `site-div-${id}`,
     site.url,
+    6,
     "site-names",
     `site-p${id}`
   );
@@ -612,6 +614,23 @@ function createParagraphElement(
   if (classTag) paragraph.className = classTag;
   if (idTag) paragraph.id = idTag;
   parent.appendChild(paragraph);
+}
+
+//Creates a text paragraph element.
+function createHeaderElement(
+  parentId = "",
+  innerHTML = "",
+  headerNumber = 1,
+  classTag = "",
+  idTag = ""
+) {
+  const parent = document.getElementById(parentId);
+  let header = document.createElement(`h${headerNumber}`);
+  header.innerHTML = innerHTML;
+  //Optional parameters.
+  if (classTag) header.className = classTag;
+  if (idTag) header.id = idTag;
+  parent.appendChild(header);
 }
 
 //Creates a button, has additional options for creating more variable buttons.

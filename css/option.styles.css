@@ -1,3 +1,9 @@
+
+/*=============================================
+=            Element Styling                  =
+=============================================*/
+
+
 html {
     height: 100%;
 }
@@ -7,6 +13,21 @@ body {
     margin: 0;
 }
 
+
+/*=============================================
+=          Navigation Bar Components          =
+=============================================*/
+
+.left-navbar {
+    float: left;
+    width: 20%;
+    height: 100%;
+}
+
+/*=============================================
+=            Page Content Components          =
+=============================================*/
+
 .page-content {
     float: right;
     width: 80%;
@@ -14,11 +35,6 @@ body {
     margin: 0;
 }
 
-#left-navbar {
-    float: left;
-    width: 20%;
-    height: 100%;
-}
 
 .weekday-text {
     margin-top: 20px;
