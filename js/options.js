@@ -13,7 +13,6 @@ let siteList = [];
 let pin = undefined;
 
 // ? Stats tab time spent on each site.
-// TODO Same limit each day - unfolds all and puts the value into each box.
 
 
 //! FOR DEBUGGING
@@ -322,11 +321,9 @@ function createWeekDropdown(parentElement, id = "") {
   );
   $(`#select-all-${id}`).hide();
   //Selects all the below days.
-  //TODO Needs to be a toggleable button.
   $(`#select-all-${id}`).click(function() {
     //Toggle select-all.
     const selectAll = $(`#select-all-${id}`).attr("aria-pressed");
-    bkg.console.log(selectAll);
     if(selectAll == 'false') {
       selectAllWeekdayValues(id);
     }
