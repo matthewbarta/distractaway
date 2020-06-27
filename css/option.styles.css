@@ -25,12 +25,16 @@ body {
     width: 20%;
     height: 100%;
     border: 1px solid black;
+    background-color: #b1bbc9;
 }
 
 .left-navbar h3 {
     background-color: #788cad;
 }
 
+.left-navbar ul {
+    
+}
 /*=============================================
 =            Page Content Components          =
 =============================================*/
