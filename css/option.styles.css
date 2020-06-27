@@ -13,7 +13,6 @@ body {
     margin: 0;
 }
 
-
 /*=============================================
 =          Navigation Bar Components          =
 =============================================*/
@@ -28,11 +27,11 @@ body {
 }
 
 .left-navbar h3 {
-
+    font-family: 'ABeeZee';
 }
 
-.left-navbar ul {
-
+.left-navbar a, .left-navbar h6 {
+    font-family: 'Archivo';
 }
 /*=============================================
 =            Page Content Components          =
