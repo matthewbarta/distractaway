@@ -26,8 +26,11 @@ body {
     background-color: #e1eced;
 }
 
-.left-navbar h3 {
+.left-navbar h2 {
     font-family: 'ABeeZee';
+    display: flex;
+    justify-content: center;
+    margin: 5% 0%;
 }
 
 .left-navbar a, .left-navbar h6 {
