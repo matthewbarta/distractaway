@@ -19,9 +19,16 @@ body {
 =============================================*/
 
 .left-navbar {
+    display: flex;
+    flex-direction: column;
     float: left;
     width: 20%;
     height: 100%;
+    border: 1px solid black;
+}
+
+.left-navbar h3 {
+    background-color: #788cad;
 }
 
 /*=============================================
@@ -29,10 +36,15 @@ body {
 =============================================*/
 
 .page-content {
-    float: right;
+    display: flex;
+    justify-content: center;
     width: 80%;
     height: 100%;
     margin: 0;
+}
+
+.page-content ul {
+    background-color: blue;
 }
 
 #site-list {

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Distractaway Options</title>
   <!--Bootstrap and Dependencies-->
@@ -10,17 +11,18 @@
   <link rel="stylesheet" href="../css/bootstrapcss/bootstrap-toggle.min.css" />
   <link rel="stylesheet" href="../css/bootstrapcss/bootstrap.min.css">
 
-    <!-- Options Script-->
-    <script src="../js/options.js"></script>
+  <!-- Options Script-->
+  <script src="../js/options.js"></script>
 
   <!--Custom Styles-->
   <link rel="stylesheet" href="../css/option.styles.css">
 </head>
+
 <body>
 
 
   <div class="left-navbar">
-    <h4>Distractaway</h4>
+    <h3>Distractaway</h3>
     <ul>
       <li>
         <a id="add-site-tag" href="#add-site">Add Site</a>
@@ -53,99 +55,108 @@
 
     <!-- Site List: removing and editing blocked sites -->
     <div id="site-list">
+
       <div class="header">
         <h1>Site List</h1>
       </div>
+
       <div id="site-list-content">
         <div id="sites">
           <!-- Dynamically Generated -->
         </div>
 
-    <!-- Require Pin Modal -->
-    <div class="modal fade" id="require-pin" tabindex="-1" role="dialog" aria-labelledby="pin-modal" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="add-pin-modal-label">Add PIN</h5>
-          </div>
-          <div class="modal-body">
-            <label for="enter-pin">Enter 4-Digit PIN</label>
-            <input type="password" class="pin-input" id="enter-pin" name="enter-pin" maxlength="4"><br>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" id="cancel-changes-button">Cancel</button>
-            <button type="button" class="btn btn-primary" id="save-changes-button">Save changes</button>
+        <!-- Require Pin Modal -->
+        <div class="modal fade" id="require-pin" tabindex="-1" role="dialog" aria-labelledby="pin-modal"
+          aria-hidden="true" data-backdrop="static" data-keyboard="false">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="add-pin-modal-label">Add PIN</h5>
+              </div>
+              <div class="modal-body">
+                <label for="enter-pin">Enter 4-Digit PIN</label>
+                <input type="password" class="pin-input" id="enter-pin" name="enter-pin" maxlength="4"><br>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancel-changes-button">Cancel</button>
+                <button type="button" class="btn btn-primary" id="save-changes-button">Save changes</button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
 
       </div>
     </div>
 
     <!-- General Settings: some default settings the user can change -->
     <div id="general">
+
       <div class="header">
         <h1>General Settings</h1>
       </div>
+
       <div id="general-content">
         <!-- Settings Buttons -->
-          <div id="parental-controls">
-            <p>Parental Controls</p>
-            <input type="checkbox" id="parental-control-input">
-          </div>
+        <div id="parental-controls">
+          <p>Parental Controls</p>
+          <input type="checkbox" id="parental-control-input">
+        </div>
 
-          <!-- Add Pin Modal -->
-          <div class="modal fade" id="add-pin" tabindex="-1" role="dialog" aria-labelledby="pin-modal" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="add-pin-modal-label">Add PIN</h5>
-                </div>
-                <div class="modal-body">
-                  <label for="initial-pin">Enter 4-Digit PIN</label>
-                  <input type="password" class="pin-input" id="initial-pin" name="initial-pin" maxlength="4"><br>
-                  <label for="confirm-pin">Confirm your PIN</label>
-                  <input type="password" class="pin-input" id="confirm-pin" name="confirm-pin" maxlength="4">
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancel-pin-button">Cancel</button>
-                  <button type="button" class="btn btn-primary" id="save-pin-button">Save changes</button>
-                </div>
+        <!-- Add Pin Modal -->
+        <div class="modal fade" id="add-pin" tabindex="-1" role="dialog" aria-labelledby="pin-modal" aria-hidden="true"
+          data-backdrop="static" data-keyboard="false">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="add-pin-modal-label">Add PIN</h5>
+              </div>
+              <div class="modal-body">
+                <label for="initial-pin">Enter 4-Digit PIN</label>
+                <input type="password" class="pin-input" id="initial-pin" name="initial-pin" maxlength="4"><br>
+                <label for="confirm-pin">Confirm your PIN</label>
+                <input type="password" class="pin-input" id="confirm-pin" name="confirm-pin" maxlength="4">
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                  id="cancel-pin-button">Cancel</button>
+                <button type="button" class="btn btn-primary" id="save-pin-button">Save changes</button>
               </div>
             </div>
           </div>
+        </div>
 
-          <!-- Remove Pin Modal -->
-          <div class="modal fade" id="remove-pin" tabindex="-1" role="dialog" aria-labelledby="pin-modal" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="remove-pin-modal-label">Add PIN</h5>
-                </div>
-                <div class="modal-body">
-                  <label for="remove-pin-input">Enter your PIN</label>
-                  <input type="password" class="pin-input" id="remove-pin-input" name="remove-pin-input" maxlength="4"><br>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancel-remove-button">Cancel</button>
-                  <button type="button" class="btn btn-primary" id="remove-pin-button">Remove Pin</button>
-                </div>
+        <!-- Remove Pin Modal -->
+        <div class="modal fade" id="remove-pin" tabindex="-1" role="dialog" aria-labelledby="pin-modal"
+          aria-hidden="true" data-backdrop="static" data-keyboard="false">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="remove-pin-modal-label">Add PIN</h5>
+              </div>
+              <div class="modal-body">
+                <label for="remove-pin-input">Enter your PIN</label>
+                <input type="password" class="pin-input" id="remove-pin-input" name="remove-pin-input"
+                  maxlength="4"><br>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                  id="cancel-remove-button">Cancel</button>
+                <button type="button" class="btn btn-primary" id="remove-pin-button">Remove Pin</button>
               </div>
             </div>
           </div>
+        </div>
 
-          <div id="minimize-option">
-            <p>Time sites even when Google Chrome window is minimized.</p>
-            <input type="checkbox" id="minimized-input">
-          </div>
-
+        <div id="minimize-option">
+          <p>Time sites even when Google Chrome window is minimized.</p>
+          <input type="checkbox" id="minimized-input">
         </div>
       </div>
+
     </div>
 
   </div>
-</div>
 
 </body>
+
 </html>
