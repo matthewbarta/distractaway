@@ -25,9 +25,6 @@ $(function () {
     updateSiteList(siteList);
   });
 
-  //Creates the week elements.
-  createWeekDropdown("weekday-input");
-
   //Puts in the current url.
   chrome.storage.sync.get({ currentURL: "" }, function (url) {
     if (url.currentURL) {

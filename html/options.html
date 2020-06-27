@@ -1,168 +1,188 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-  <title>Distractaway Options</title>
-  <!--Bootstrap and Dependencies-->
-  <script src="../js/bootstrapjs/jquery-3.5.1.min.js"></script>
-  <script src="../js/bootstrapjs/popper.min.js"></script>
-  <script src="../js/bootstrapjs/bootstrap.min.js"></script>
-  <script src="../js/bootstrapjs/bootstrap-toggle.min.js"></script>
-  <link rel="stylesheet" href="../css/bootstrapcss/bootstrap-toggle.min.css" />
-  <link rel="stylesheet" href="../css/bootstrapcss/bootstrap.min.css">
-  <link href='https://fonts.googleapis.com/css?family=ABeeZee' rel='stylesheet'>
-  <link href='https://fonts.googleapis.com/css?family=Archivo' rel='stylesheet'>
+  <head>
+    <title>Distractaway Options</title>
+    <!--Bootstrap and Dependencies-->
+    <script src="../js/bootstrapjs/jquery-3.5.1.min.js"></script>
+    <script src="../js/bootstrapjs/popper.min.js"></script>
+    <script src="../js/bootstrapjs/bootstrap.min.js"></script>
+    <script src="../js/bootstrapjs/bootstrap-toggle.min.js"></script>
+    <link rel="stylesheet" href="../css/bootstrapcss/bootstrap-toggle.min.css"
+      />
+    <link rel="stylesheet" href="../css/bootstrapcss/bootstrap.min.css">
+    <link href='https://fonts.googleapis.com/css?family=ABeeZee'
+      rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Archivo'
+      rel='stylesheet'>
 
-  <!-- Options Script-->
-  <script src="../js/options.js"></script>
+    <!-- Options Script-->
+    <script src="../js/options.js"></script>
 
-  <!--Custom Styles-->
-  <link rel="stylesheet" href="../css/option.styles.css">
-</head>
+    <!--Custom Styles-->
+    <link rel="stylesheet" href="../css/option.styles.css">
+  </head>
 
-<body>
+  <body>
 
 
-  <div class="left-navbar">
-    <h2>Distractaway</h3>
-    <ul>
-      <li>
-        <a id="add-site-tag" href="#add-site">Add Site</a>
-      </li>
-      <li>
-        <a id="site-list-tag" href="#site-list">Site List</a>
-      </li>
-      <li>
-        <a id="general-tag" href="#general">General</a>
-      </li>
-    </ul>
-    <h6>Version 1.0.0</h6>
-  </div>
-
-  <div class="page-content">
-    <!-- Add Site: adding blocked sites -->
-    <div id="add-site">
-      <div class="header">
-        <h1>Add Site</h1>
-      </div>
-      <div id="add-site-content">
-        <div class="input-group">
-          <input type="text" class="form-control" id="block-site" placeholder="URL to Limit" aria-label="URL to Limit" aria-describedby="basic-addon2">
-          <div class="input-group-append">
-            <button class="btn btn-outline-secondary" name="submit" id="submit-button">Submit</button>
-            <button class="btn btn-outline-secondary" name="reset" id="reset-button">Reset</button>
-          </div>
-        </div>
-        <div id="weekday-input">
-          <!-- Dynamically Generated -->
-        </div>
-      </div>
+    <div class="left-navbar">
+      <h2>Distractaway</h3>
+      <ul>
+        <li>
+          <a id="add-site-tag" href="#add-site">Add Site</a>
+        </li>
+        <li>
+          <a id="site-list-tag" href="#site-list">Site List</a>
+        </li>
+        <li>
+          <a id="general-tag" href="#general">General</a>
+        </li>
+      </ul>
+      <h6>Version 1.0.0</h6>
     </div>
 
-    <!-- Site List: removing and editing blocked sites -->
-    <div id="site-list">
-
-      <div class="header">
-        <h1>Site List</h1>
+    <div class="page-content">
+      <!-- Add Site: adding blocked sites -->
+      <div id="add-site">
+        <div class="header">
+          <h1>Add Site</h1>
+        </div>
+        <div id="add-site-content">
+          <div class="input-group">
+            <input type="text" class="form-control" id="block-site"
+              placeholder="URL to Limit" aria-label="URL to Limit"
+              aria-describedby="basic-addon2">
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary" name="submit"
+                id="submit-button">Submit</button>
+              <button class="btn btn-outline-secondary" name="reset"
+                id="reset-button">Reset</button>
+            </div>
+          </div>
+          <div id="weekday-input">
+            <!-- Dynamically Generated -->
+          <div class="weekday-div" id="sunday-div-"><h6 class="weekday-text">Sunday</h6><label for="sunday-hr" class="hr-label">Hours</label><input type="number" name="sunday-hr-" class="input-time" id="sunday-hr-" min="0" max="23"><label for="sunday-min" class="min-label">Minutes</label><input type="number" name="sunday-min-" class="input-time" id="sunday-min-" min="0" max="59"><label for="sunday-blocked" class="checkbox-label">Block All Day</label><input type="checkbox" name="sunday-blocked-" class="weekday-checkbox" id="sunday-blocked-"></div><div class="weekday-div" id="monday-div-"><h6 class="weekday-text">Monday</h6><label for="monday-hr" class="hr-label">Hours</label><input type="number" name="monday-hr-" class="input-time" id="monday-hr-" min="0" max="23"><label for="monday-min" class="min-label">Minutes</label><input type="number" name="monday-min-" class="input-time" id="monday-min-" min="0" max="59"><label for="monday-blocked" class="checkbox-label">Block All Day</label><input type="checkbox" name="monday-blocked-" class="weekday-checkbox" id="monday-blocked-"></div><div class="weekday-div" id="tuesday-div-"><h6 class="weekday-text">Tuesday</h6><label for="tuesday-hr" class="hr-label">Hours</label><input type="number" name="tuesday-hr-" class="input-time" id="tuesday-hr-" min="0" max="23"><label for="tuesday-min" class="min-label">Minutes</label><input type="number" name="tuesday-min-" class="input-time" id="tuesday-min-" min="0" max="59"><label for="tuesday-blocked" class="checkbox-label">Block All Day</label><input type="checkbox" name="tuesday-blocked-" class="weekday-checkbox" id="tuesday-blocked-"></div><div class="weekday-div" id="wednesday-div-"><h6 class="weekday-text">Wednesday</h6><label for="wednesday-hr" class="hr-label">Hours</label><input type="number" name="wednesday-hr-" class="input-time" id="wednesday-hr-" min="0" max="23"><label for="wednesday-min" class="min-label">Minutes</label><input type="number" name="wednesday-min-" class="input-time" id="wednesday-min-" min="0" max="59"><label for="wednesday-blocked" class="checkbox-label">Block All Day</label><input type="checkbox" name="wednesday-blocked-" class="weekday-checkbox" id="wednesday-blocked-"></div><div class="weekday-div" id="thursday-div-"><h6 class="weekday-text">Thursday</h6><label for="thursday-hr" class="hr-label">Hours</label><input type="number" name="thursday-hr-" class="input-time" id="thursday-hr-" min="0" max="23"><label for="thursday-min" class="min-label">Minutes</label><input type="number" name="thursday-min-" class="input-time" id="thursday-min-" min="0" max="59"><label for="thursday-blocked" class="checkbox-label">Block All Day</label><input type="checkbox" name="thursday-blocked-" class="weekday-checkbox" id="thursday-blocked-"></div><div class="weekday-div" id="friday-div-"><h6 class="weekday-text">Friday</h6><label for="friday-hr" class="hr-label">Hours</label><input type="number" name="friday-hr-" class="input-time" id="friday-hr-" min="0" max="23"><label for="friday-min" class="min-label">Minutes</label><input type="number" name="friday-min-" class="input-time" id="friday-min-" min="0" max="59"><label for="friday-blocked" class="checkbox-label">Block All Day</label><input type="checkbox" name="friday-blocked-" class="weekday-checkbox" id="friday-blocked-"></div><div class="weekday-div" id="saturday-div-"><h6 class="weekday-text">Saturday</h6><label for="saturday-hr" class="hr-label">Hours</label><input type="number" name="saturday-hr-" class="input-time" id="saturday-hr-" min="0" max="23"><label for="saturday-min" class="min-label">Minutes</label><input type="number" name="saturday-min-" class="input-time" id="saturday-min-" min="0" max="59"><label for="saturday-blocked" class="checkbox-label">Block All Day</label><input type="checkbox" name="saturday-blocked-" class="weekday-checkbox" id="saturday-blocked-"></div></div>
+        </div>
       </div>
 
-      <div id="site-list-content">
-        <div id="sites">
-          <!-- Dynamically Generated -->
+      <!-- Site List: removing and editing blocked sites -->
+      <div id="site-list">
+
+        <div class="header">
+          <h1>Site List</h1>
         </div>
 
-        <!-- Require Pin Modal -->
-        <div class="modal fade" id="require-pin" tabindex="-1" role="dialog" aria-labelledby="pin-modal"
-          aria-hidden="true" data-backdrop="static" data-keyboard="false">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="add-pin-modal-label">Add PIN</h5>
-              </div>
-              <div class="modal-body">
-                <label for="enter-pin">Enter 4-Digit PIN</label>
-                <input type="password" class="pin-input" id="enter-pin" name="enter-pin" maxlength="4"><br>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="cancel-changes-button">Cancel</button>
-                <button type="button" class="btn btn-primary" id="save-changes-button">Save changes</button>
+        <div id="site-list-content">
+          <div id="sites">
+            <!-- Dynamically Generated -->
+          </div>
+
+          <!-- Require Pin Modal -->
+          <div class="modal fade" id="require-pin" tabindex="-1" role="dialog"
+            aria-labelledby="pin-modal"
+            aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="add-pin-modal-label">Add PIN</h5>
+                </div>
+                <div class="modal-body">
+                  <label for="enter-pin">Enter 4-Digit PIN</label>
+                  <input type="password" class="pin-input" id="enter-pin"
+                    name="enter-pin" maxlength="4"><br>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary"
+                    id="cancel-changes-button">Cancel</button>
+                  <button type="button" class="btn btn-primary"
+                    id="save-changes-button">Save changes</button>
+                </div>
               </div>
             </div>
           </div>
+
         </div>
-
-      </div>
-    </div>
-
-    <!-- General Settings: some default settings the user can change -->
-    <div id="general">
-
-      <div class="header">
-        <h1>General Settings</h1>
       </div>
 
-      <div id="general-content">
-        <!-- Settings Buttons -->
-        <div id="parental-controls">
-          <p>Parental Controls</p>
-          <input type="checkbox" id="parental-control-input">
+      <!-- General Settings: some default settings the user can change -->
+      <div id="general">
+
+        <div class="header">
+          <h1>General Settings</h1>
         </div>
 
-        <!-- Add Pin Modal -->
-        <div class="modal fade" id="add-pin" tabindex="-1" role="dialog" aria-labelledby="pin-modal" aria-hidden="true"
-          data-backdrop="static" data-keyboard="false">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="add-pin-modal-label">Add PIN</h5>
-              </div>
-              <div class="modal-body">
-                <label for="initial-pin">Enter 4-Digit PIN</label>
-                <input type="password" class="pin-input" id="initial-pin" name="initial-pin" maxlength="4"><br>
-                <label for="confirm-pin">Confirm your PIN</label>
-                <input type="password" class="pin-input" id="confirm-pin" name="confirm-pin" maxlength="4">
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                  id="cancel-pin-button">Cancel</button>
-                <button type="button" class="btn btn-primary" id="save-pin-button">Save changes</button>
+        <div id="general-content">
+          <!-- Settings Buttons -->
+          <div id="parental-controls">
+            <p>Parental Controls</p>
+            <input type="checkbox" id="parental-control-input">
+          </div>
+
+          <!-- Add Pin Modal -->
+          <div class="modal fade" id="add-pin" tabindex="-1" role="dialog"
+            aria-labelledby="pin-modal" aria-hidden="true"
+            data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="add-pin-modal-label">Add PIN</h5>
+                </div>
+                <div class="modal-body">
+                  <label for="initial-pin">Enter 4-Digit PIN</label>
+                  <input type="password" class="pin-input" id="initial-pin"
+                    name="initial-pin" maxlength="4"><br>
+                  <label for="confirm-pin">Confirm your PIN</label>
+                  <input type="password" class="pin-input" id="confirm-pin"
+                    name="confirm-pin" maxlength="4">
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary"
+                    data-dismiss="modal"
+                    id="cancel-pin-button">Cancel</button>
+                  <button type="button" class="btn btn-primary"
+                    id="save-pin-button">Save changes</button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Remove Pin Modal -->
-        <div class="modal fade" id="remove-pin" tabindex="-1" role="dialog" aria-labelledby="pin-modal"
-          aria-hidden="true" data-backdrop="static" data-keyboard="false">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="remove-pin-modal-label">Add PIN</h5>
-              </div>
-              <div class="modal-body">
-                <label for="remove-pin-input">Enter your PIN</label>
-                <input type="password" class="pin-input" id="remove-pin-input" name="remove-pin-input"
-                  maxlength="4"><br>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                  id="cancel-remove-button">Cancel</button>
-                <button type="button" class="btn btn-primary" id="remove-pin-button">Remove Pin</button>
+          <!-- Remove Pin Modal -->
+          <div class="modal fade" id="remove-pin" tabindex="-1" role="dialog"
+            aria-labelledby="pin-modal"
+            aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="remove-pin-modal-label">Add PIN</h5>
+                </div>
+                <div class="modal-body">
+                  <label for="remove-pin-input">Enter your PIN</label>
+                  <input type="password" class="pin-input" id="remove-pin-input"
+                    name="remove-pin-input"
+                    maxlength="4"><br>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary"
+                    data-dismiss="modal"
+                    id="cancel-remove-button">Cancel</button>
+                  <button type="button" class="btn btn-primary"
+                    id="remove-pin-button">Remove Pin</button>
+                </div>
               </div>
             </div>
           </div>
+
+          <div id="minimize-option">
+            <p>Time sites even when Google Chrome window is minimized.</p>
+            <input type="checkbox" id="minimized-input">
+          </div>
         </div>
 
-        <div id="minimize-option">
-          <p>Time sites even when Google Chrome window is minimized.</p>
-          <input type="checkbox" id="minimized-input">
-        </div>
       </div>
 
     </div>
 
-  </div>
-
-</body>
+  </body>
 
 </html>
