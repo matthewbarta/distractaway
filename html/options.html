@@ -46,13 +46,16 @@
         <h1>Add Site</h1>
       </div>
       <div id="add-site-content">
-        <input type="text" id="block-site" name="" value="">
-        <br>
+        <div class="input-group">
+          <input type="text" class="form-control" id="block-site" placeholder="URL to Limit" aria-label="URL to Limit" aria-describedby="basic-addon2">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary" name="submit" id="submit-button">Submit</button>
+            <button class="btn btn-outline-secondary" name="reset" id="reset-button">Reset</button>
+          </div>
+        </div>
         <div id="weekday-input">
           <!-- Dynamically Generated -->
         </div>
-        <input type="submit" name="submit" id="submit-button">
-        <input type="reset" name="reset" id="reset-button">
       </div>
     </div>
 

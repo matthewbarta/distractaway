@@ -303,7 +303,7 @@ function createWeekDropdown(parentElement, id = "") {
   ];
   createButtonElement(
     `dropdown-${id}`,
-    "Edit",
+    "Modify Day",
     "btn btn-secondary btn-lg dropdown-toggle",
     `add-site-button-${id}`,
     dropdownProperties

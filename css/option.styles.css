@@ -33,6 +33,12 @@ body {
     margin: 5% 0%;
 }
 
+.left-navbar h6 {
+    display: flex;
+    justify-content: center;
+    bottom: 50%;
+}
+
 .left-navbar a, .left-navbar h6 {
     font-family: 'Archivo';
 }
