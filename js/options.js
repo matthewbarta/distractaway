@@ -711,6 +711,8 @@ function resetForm(parentId, id = "") {
     $(`#${WEEKDAYS[day]}-hr-${id}`).prop("disabled", false);
     $(`#${WEEKDAYS[day]}-min-${id}`).prop("disabled", false);
   }
+  //For the add-site div.
+  if(id === "") return;
   //Removes all the weekday divs.
   const parent = document.getElementById(parentId);
   let weekday = parent.lastChild;
