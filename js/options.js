@@ -21,11 +21,18 @@ let pin = "";
 const bkg = chrome.extension.getBackgroundPage();
 
 $(function () {
-  //Creates the site elements.
+  //Gets necessary global variables from storage.
   chrome.storage.sync.get(["urlList", "pin"], function (items) {
     bkg.console.log(items);
     siteList = items.urlList;
     pin = items.pin;
+    //Updates the status of the pin checkbox.
+    if (pin) {
+      $(`#parental-control-input`).prop("checked", true);
+    } else {
+      $(`#parental-control-input`).prop("checked", false);
+    }
+    //Updates the site list page.
     updateSiteList(siteList);
   });
 
@@ -35,18 +42,23 @@ $(function () {
     if (url) {
       //Store the given url if it is not a duplicated.
       url = url.toLowerCase();
-      if(validUrl(url)) {
+      if (validUrl(url)) {
         chrome.storage.sync.get(["urlList"], function (items) {
           let list = items.urlList;
           storeTimeList(list, url);
           resetForm("week-form-");
         });
       } else {
-        alert('Invalid URL format!');
+        alert("Invalid URL format!");
       }
     } else {
       alert("No URL submitted!");
     }
+  });
+
+  //Reset the form
+  $("#reset-button").click(function () {
+    resetForm("week-form-");
   });
 
   //Hides the other page divs, shows the clicked div.
@@ -56,24 +68,20 @@ $(function () {
     });
   }
 
-  for(let day = 0; day < WEEKDAYS.length; day++) {
-    validateWeekdayForm(WEEKDAYS[day]);
-  }
-
-  //Reset the form
-  $("#reset-button").click(function () {
-    resetForm("week-form-");
-  });
-
+  //The select-all button functionality for the add-site form.
   $("#select-all").click(function () {
     const selectAll = $(`#select-all`).attr("aria-pressed");
-    if(selectAll == 'false') {
+    if (selectAll == "false") {
       selectAllWeekdayValues();
-    }
-    else {
+    } else {
       turnSelectAllOff();
     }
   });
+
+  //Validates the weekday form for the add-site div.
+  for (let day = 0; day < WEEKDAYS.length; day++) {
+    validateWeekdayForm(WEEKDAYS[day]);
+  }
 
   //Minimized form options.
   $(`#minimized-input`).click(function () {
@@ -96,15 +104,7 @@ $(function () {
     }
   });
 
-  if(pin) {
-    bkg.console.log('CHECK PIN');
-    $(`#parental-control-input`).prop("checked", true);
-  }
-  else {
-    bkg.console.log('NO CHECK PIN');
-    $(`#parental-control-input`).prop("checked", false);
-  }
-
+  //Display the proper modal for the parental control checkbox.
   $(`#parental-control-input`).click(function () {
     if ($(this).is(":checked") && !pin) {
       $(`#add-pin`).modal("show");
@@ -126,6 +126,7 @@ $(function () {
     clearAddPin();
   });
 
+  //Removing the pin behavior.
   $(`#remove-pin-button`).click(function () {
     disablePin();
   });
@@ -253,8 +254,10 @@ function enablePin() {
     initialPin.length == 4
   ) {
     pin = initialPin;
-    $("#add-pin").modal("hide");
-    clearAddPin();
+    chrome.storage.sync.set({pin: pin}, function() {
+      $("#add-pin").modal("hide");
+      clearAddPin();
+    });
   } else {
     bkg.console.log("EPIC FAIL");
   }
@@ -334,17 +337,19 @@ function createWeekDropdown(parentElement, id = "") {
     "Select All Below",
     "btn btn-primary btn-sm select-all-button",
     `select-all-${id}`,
-    [{property: 'data-toggle', value: 'button'}, {property: 'aria-pressed', value: 'false'}]
+    [
+      { property: "data-toggle", value: "button" },
+      { property: "aria-pressed", value: "false" },
+    ]
   );
   $(`#select-all-${id}`).hide();
   //Selects all the below days.
-  $(`#select-all-${id}`).click(function() {
+  $(`#select-all-${id}`).click(function () {
     //Toggle select-all.
     const selectAll = $(`#select-all-${id}`).attr("aria-pressed");
-    if(selectAll == 'false') {
+    if (selectAll == "false") {
       selectAllWeekdayValues(id);
-    }
-    else {
+    } else {
       turnSelectAllOff(id);
     }
   });
@@ -456,7 +461,7 @@ function createWeekday(day, parentElement, id = "") {
 
   //Creates behavior to enact select all on the weekday.
   const selectAll = $(`#select-all-${id}`).attr("aria-pressed");
-  if(selectAll == 'true') selectAllWeekdayValues(id);
+  if (selectAll == "true") selectAllWeekdayValues(id);
 
   //Creates the behavior to remove a weekday.
   createRemoveButtonResponse(weekday, id, parentElement);
@@ -474,51 +479,65 @@ function createWeekday(day, parentElement, id = "") {
 
 //Shows all the weekday divs,
 function unfoldWeekdays(id = "") {
-  for(let index = 0; index < WEEKDAYS.length; index++) {
+  for (let index = 0; index < WEEKDAYS.length; index++) {
     if (document.getElementById(`${WEEKDAYS[index]}-div-${id}`) == null)
-    createWeekday(index, `week-form-${id}`, id);
+      createWeekday(index, `week-form-${id}`, id);
   }
 }
 
 //Selects all the values in a list.
 function selectAllWeekdayValues(id = "") {
   //Updates the values on changed to simulate all changing at once.
-  for(let index = 0; index < WEEKDAYS.length; index++) {
-    $(`#${WEEKDAYS[index]}-hr-${id}`).off('change').on('change', function() {
-      const changedVal = $(`#${WEEKDAYS[index]}-hr-${id}`).val();
-      for(let day = 0; day < WEEKDAYS.length; day++) {
-        if(document.getElementById(`${WEEKDAYS[day]}-hr-${id}`) && index != day) {
-          $(`#${WEEKDAYS[day]}-hr-${id}`).val(changedVal);
+  for (let index = 0; index < WEEKDAYS.length; index++) {
+    $(`#${WEEKDAYS[index]}-hr-${id}`)
+      .off("change")
+      .on("change", function () {
+        const changedVal = $(`#${WEEKDAYS[index]}-hr-${id}`).val();
+        for (let day = 0; day < WEEKDAYS.length; day++) {
+          if (
+            document.getElementById(`${WEEKDAYS[day]}-hr-${id}`) &&
+            index != day
+          ) {
+            $(`#${WEEKDAYS[day]}-hr-${id}`).val(changedVal);
+          }
         }
-      }
-    });
+      });
     //Synchronized min value.
-    $(`#${WEEKDAYS[index]}-min-${id}`).off('change').on('change', function() {
-      const changedVal = $(`#${WEEKDAYS[index]}-min-${id}`).val();
-      for(let day = 0; day < WEEKDAYS.length; day++) {
-        if(document.getElementById(`${WEEKDAYS[day]}-min-${id}`) && index != day) {
-          $(`#${WEEKDAYS[day]}-min-${id}`).val(changedVal);
+    $(`#${WEEKDAYS[index]}-min-${id}`)
+      .off("change")
+      .on("change", function () {
+        const changedVal = $(`#${WEEKDAYS[index]}-min-${id}`).val();
+        for (let day = 0; day < WEEKDAYS.length; day++) {
+          if (
+            document.getElementById(`${WEEKDAYS[day]}-min-${id}`) &&
+            index != day
+          ) {
+            $(`#${WEEKDAYS[day]}-min-${id}`).val(changedVal);
+          }
         }
-      }
-    });
+      });
     //Synchronized block all day checkbox.
-    $(`#${WEEKDAYS[index]}-blocked-${id}`).off('change').on('change', function() {
-      const isChecked = $(`#${WEEKDAYS[index]}-blocked-${id}`).is(":checked");
-      for(let day = 0; day < WEEKDAYS.length; day++) {
-        const modifyDay = document.getElementById(`${WEEKDAYS[day]}-blocked-${id}`);
-        if(modifyDay && index != day) {
-          $(`#${WEEKDAYS[day]}-blocked-${id}`).prop("checked", isChecked);
-          $(`#${WEEKDAYS[day]}-hr-${id}`).prop("disabled", isChecked);
-          $(`#${WEEKDAYS[day]}-min-${id}`).prop("disabled", isChecked);
+    $(`#${WEEKDAYS[index]}-blocked-${id}`)
+      .off("change")
+      .on("change", function () {
+        const isChecked = $(`#${WEEKDAYS[index]}-blocked-${id}`).is(":checked");
+        for (let day = 0; day < WEEKDAYS.length; day++) {
+          const modifyDay = document.getElementById(
+            `${WEEKDAYS[day]}-blocked-${id}`
+          );
+          if (modifyDay && index != day) {
+            $(`#${WEEKDAYS[day]}-blocked-${id}`).prop("checked", isChecked);
+            $(`#${WEEKDAYS[day]}-hr-${id}`).prop("disabled", isChecked);
+            $(`#${WEEKDAYS[day]}-min-${id}`).prop("disabled", isChecked);
+          }
         }
-      }
-    });
+      });
   }
 }
 
 //Turns the select all off.
 function turnSelectAllOff(id = "") {
-  for(let index = 0; index < WEEKDAYS.length; index++) {
+  for (let index = 0; index < WEEKDAYS.length; index++) {
     $(`#${WEEKDAYS[index]}-hr-${id}`).off("change");
     $(`#${WEEKDAYS[index]}-min-${id}`).off("change");
     $(`#${WEEKDAYS[index]}-blocked-${id}`).off("change");
@@ -535,12 +554,7 @@ function createSiteList(siteList) {
 //Creates an individual site.
 function createSite(site, id = "") {
   createDiv("sites", "site-div", `site-div-${id}`);
-  createHeaderElement(
-    `site-div-${id}`,
-    site.url,
-    6,
-    "site-names"
-  );
+  createHeaderElement(`site-div-${id}`, site.url, 6, "site-names");
   createButtonElement(
     `site-div-${id}`,
     "Remove",
@@ -732,13 +746,13 @@ function resetForm(parentId, id = "") {
     $(`#${WEEKDAYS[day]}-min-${id}`).prop("disabled", false);
   }
   //Current precaution for the way the weeks are being setup, remove if I want to dynamically generate add-site.
-  if(id === "") return;
+  if (id === "") return;
   //Removes all the weekday divs.
   const parent = document.getElementById(parentId);
   let weekday = parent.lastChild;
   while (weekday) {
     //Stops the select all button from being deleted.
-    if(weekday.id == `select-all-${id}`) {
+    if (weekday.id == `select-all-${id}`) {
       $(`#${weekday.id}`).hide();
       break;
     }
@@ -758,7 +772,8 @@ function validateWeekdayForm(weekday, id = "") {
     const val = parseInt($(`#${weekday}-hr-${id}`).val());
     const newVal = (Number.isNaN(val) ? 0 : val) * 10 + keyPress;
     //Allows for tab, backspace and left and right arrows.
-    if (keyPress == -40 || keyPress == -39 || keyPress == -11 || keyPress == -9) return true;
+    if (keyPress == -40 || keyPress == -39 || keyPress == -11 || keyPress == -9)
+      return true;
     //Gets rid of repeated zero presses.
     if (
       keyPress == 0 &&
@@ -776,7 +791,8 @@ function validateWeekdayForm(weekday, id = "") {
     const val = parseInt($(`#${weekday}-min-${id}`).val());
     const newVal = (Number.isNaN(val) ? 0 : val) * 10 + keyPress;
     //-40 is backspace.
-    if (keyPress == -40 || keyPress == -39 || keyPress == -11 || keyPress == -9) return true;
+    if (keyPress == -40 || keyPress == -39 || keyPress == -11 || keyPress == -9)
+      return true;
     //Gets rid of repeated zero presses.
     if (
       keyPress == 0 &&
@@ -899,10 +915,15 @@ function trimURL(url) {
 //Checks if the url is a valid for blocking url.
 function validUrl(url) {
   const validStart = /^[a-zA-Z0-9]/;
-  const validEnd = /[a-zA-Z0-9.~?_]$/
-  const invalidCharacters = /[^a-zA-Z0-9.~?/_]/
+  const validEnd = /[a-zA-Z0-9.~?_]$/;
+  const invalidCharacters = /[^a-zA-Z0-9.~?/_]/;
   const noDoubleSlash = /(\/\/)+/;
-  return !invalidCharacters.test(url) && validEnd.test(url) && validStart.test(url) && !noDoubleSlash.test(url);
+  return (
+    !invalidCharacters.test(url) &&
+    validEnd.test(url) &&
+    validStart.test(url) &&
+    !noDoubleSlash.test(url)
+  );
 }
 
 //Converts hours and minutes to seconds.
