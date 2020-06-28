@@ -711,7 +711,7 @@ function resetForm(parentId, id = "") {
     $(`#${WEEKDAYS[day]}-hr-${id}`).prop("disabled", false);
     $(`#${WEEKDAYS[day]}-min-${id}`).prop("disabled", false);
   }
-  //For the add-site div.
+  //Current precaution for the way the weeks are being setup, remove if I want to dynamically generate add-site.
   if(id === "") return;
   //Removes all the weekday divs.
   const parent = document.getElementById(parentId);
@@ -719,6 +719,7 @@ function resetForm(parentId, id = "") {
   while (weekday) {
     //Stops the select all button from being deleted.
     if(weekday.id == `select-all-${id}`) {
+      bkg.console.log('HIDING');
       $(`#${weekday.id}`).hide();
       break;
     }
