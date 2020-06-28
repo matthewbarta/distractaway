@@ -18,6 +18,7 @@ body {
 =============================================*/
 
 .left-navbar {
+    position: fixed;
     display: flex;
     flex-direction: column;
     float: left;
@@ -52,10 +53,7 @@ body {
     width: 80%;
     height: 100%;
     margin: 0;
-}
-
-.page-content ul {
-    background-color: blue;
+    float: right;
 }
 
 #site-list {
@@ -68,7 +66,7 @@ body {
 
 /*----------  Site Input Form Components   ----------*/
 
-.select-div, .week-form {
+.week-form {
     display: flex;
     flex-direction: column;
     justify-content: center;
