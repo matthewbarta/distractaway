@@ -15,7 +15,6 @@ let pin = "";
 // ? Stats tab time spent on each site.
 
 //TODO ERRORS with PIN: doesn't submit if you enter a wrong pin first.
-//TODO Also fails to hold the checkbox/keep the pin on a reload.
 
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();
@@ -23,7 +22,6 @@ const bkg = chrome.extension.getBackgroundPage();
 $(function () {
   //Gets necessary global variables from storage.
   chrome.storage.sync.get(["urlList", "pin"], function (items) {
-    bkg.console.log(items);
     siteList = items.urlList;
     pin = items.pin;
     //Updates the status of the pin checkbox.
@@ -266,9 +264,10 @@ function enablePin() {
 //Function to disable the pin.
 function disablePin() {
   if (pin == $(`#remove-pin-input`).val()) {
-    pin = undefined;
-    $("#remove-pin").modal("hide");
-    $("#remove-pin-input").val("");
+    chrome.storage.sync.set({pin: ""}, function() {
+      $("#remove-pin").modal("hide");
+      $("#remove-pin-input").val("");
+    });
   } else {
     bkg.console.log("EPIC FAIL");
   }
