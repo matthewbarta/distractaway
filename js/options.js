@@ -59,9 +59,23 @@ $(function () {
     });
   }
 
+  for(let day = 0; day < WEEKDAYS.length; day++) {
+    validateWeekdayForm(WEEKDAYS[day]);
+  }
+
   //Reset the form
   $("#reset-button").click(function () {
     resetForm("week-form-");
+  });
+
+  $("#select-all").click(function () {
+    const selectAll = $(`#select-all`).attr("aria-pressed");
+    if(selectAll == 'false') {
+      selectAllWeekdayValues();
+    }
+    else {
+      turnSelectAllOff();
+    }
   });
 
   //Minimized form options.
@@ -461,7 +475,7 @@ function unfoldWeekdays(id = "") {
 }
 
 //Selects all the values in a list.
-function selectAllWeekdayValues(id) {
+function selectAllWeekdayValues(id = "") {
   //Updates the values on changed to simulate all changing at once.
   for(let index = 0; index < WEEKDAYS.length; index++) {
     $(`#${WEEKDAYS[index]}-hr-${id}`).off('change').on('change', function() {
@@ -497,7 +511,7 @@ function selectAllWeekdayValues(id) {
 }
 
 //Turns the select all off.
-function turnSelectAllOff(id) {
+function turnSelectAllOff(id = "") {
   for(let index = 0; index < WEEKDAYS.length; index++) {
     $(`#${WEEKDAYS[index]}-hr-${id}`).off("change");
     $(`#${WEEKDAYS[index]}-min-${id}`).off("change");
