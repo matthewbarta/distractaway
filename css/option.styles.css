@@ -68,6 +68,18 @@ body {
 
 /*----------  Site Input Form Components   ----------*/
 
+.select-div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.week-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 .weekday-text {
     margin-top: 20px;
 }
