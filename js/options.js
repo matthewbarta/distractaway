@@ -10,28 +10,25 @@ const WEEKDAYS = [
 const DIVS = ["add-site", "site-list", "general"];
 const zeroRegex = /00+/;
 let siteList = [];
-let pin = undefined;
+let pin = "";
 
 // ? Stats tab time spent on each site.
 
+//TODO ERRORS with PIN: doesn't submit if you enter a wrong pin first.
+//TODO Also fails to hold the checkbox/keep the pin on a reload.
 
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();
 
 $(function () {
   //Creates the site elements.
-  chrome.storage.sync.get("urlList", function (items) {
+  chrome.storage.sync.get(["urlList", "pin"], function (items) {
+    bkg.console.log(items);
     siteList = items.urlList;
+    pin = items.pin;
     updateSiteList(siteList);
   });
 
-  //Puts in the current url.
-  chrome.storage.sync.get({ currentURL: "" }, function (url) {
-    if (url.currentURL) {
-      let trimmedURL = trimURL(url.currentURL);
-      $("#block-site").val(trimmedURL);
-    }
-  });
   //On submission, reset the form and send the data to the background script.
   $("#submit-button").click(function () {
     let url = $("#block-site").val();
@@ -98,6 +95,15 @@ $(function () {
       });
     }
   });
+
+  if(pin) {
+    bkg.console.log('CHECK PIN');
+    $(`#parental-control-input`).prop("checked", true);
+  }
+  else {
+    bkg.console.log('NO CHECK PIN');
+    $(`#parental-control-input`).prop("checked", false);
+  }
 
   $(`#parental-control-input`).click(function () {
     if ($(this).is(":checked") && !pin) {
@@ -733,7 +739,6 @@ function resetForm(parentId, id = "") {
   while (weekday) {
     //Stops the select all button from being deleted.
     if(weekday.id == `select-all-${id}`) {
-      bkg.console.log('HIDING');
       $(`#${weekday.id}`).hide();
       break;
     }

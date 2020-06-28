@@ -21,6 +21,7 @@ chrome.runtime.onInstalled.addListener(function () {
       urlList: [],
       date: date.toJSON(),
       timeMinimized: false,
+      pin: ""
     },
     function () {
       console.log("Initialized extension.");
