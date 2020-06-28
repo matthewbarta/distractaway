@@ -56,8 +56,17 @@ body {
     float: right;
 }
 
+.content {
+    height: 100%;
+}
+
+#add-site {
+    width: 37%;
+}
+
 #site-list {
     display: none;
+    width: 45%;
 }
 
 #general {
@@ -84,7 +93,12 @@ body {
     margin: 0px 10px;
 }
 
+#add-site .input-time {
+    width: 15%;
+}
+
 .input-time {
+    width: 12%;
     margin: 0px 10px;
 }
 
