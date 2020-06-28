@@ -57,19 +57,15 @@ body {
 }
 
 .content {
+    width: 45%;
     height: 100%;
 }
 
 #add-site {
-    width: 37%;
+    padding-right: 8%;
 }
 
-#site-list {
-    display: none;
-    width: 45%;
-}
-
-#general {
+#site-list, #general {
     display: none;
 }
 
@@ -108,6 +104,23 @@ body {
 
 /*----------  Modal Components  ----------*/
 
+.modal-dialog {
+    display: flex;
+    justify-content: center;
+}
+
+.modal-content {
+    width: 60%;
+}
+
+.pin-label, .modal-title {
+    margin-left: 5%;
+}
+
+.pin-label {
+    margin-right: 5%;
+}
+
 .pin-input {
-    width: 15%;
+    width: 20%;
 }
