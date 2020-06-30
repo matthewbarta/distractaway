@@ -61,6 +61,12 @@ body {
     height: 100%;
 }
 
+.header {
+    display: flex;
+    justify-content: center;
+    margin: 3%;
+}
+
 #add-site {
     padding-right: 8%;
 }
