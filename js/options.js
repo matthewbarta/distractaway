@@ -14,7 +14,7 @@ let pin = "";
 
 // ? Stats tab time spent on each site.
 
-//TODO ERRORS with PIN: doesn't submit if you enter a wrong pin first.
+//TODO Cancel button on edit sites.
 
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();
@@ -225,7 +225,7 @@ function enablePin() {
     initialPin.length == 4
   ) {
     pin = initialPin;
-    chrome.storage.sync.set({pin: pin}, function() {
+    chrome.storage.sync.set({ pin: pin }, function () {
       $("#add-pin").modal("hide");
       clearAddPin();
     });
@@ -237,7 +237,7 @@ function enablePin() {
 //Function to disable the pin.
 function disablePin() {
   if (pin == $(`#remove-pin-input`).val()) {
-    chrome.storage.sync.set({pin: ""}, function() {
+    chrome.storage.sync.set({ pin: "" }, function () {
       $("#remove-pin").modal("hide");
       $("#remove-pin-input").val("");
     });
@@ -790,11 +790,13 @@ function createSiteButtonResponse(siteList) {
     //For the button to submit changes to an editted site.
     $(`#submit-edit-${index}`).click(function () {
       if (pin) {
-        requirePin().then(function (result) {
-          if (result == 'correct') {
-            editSite(index);
+        requirePin().then(async function (result) {
+          while (result == "wrong") {
+            result = await clickSave();
           }
-          else {
+          if (result == "correct") {
+            editSite(index);
+          } else if (result == "cancel") {
             $(`#require-pin`).modal("hide");
           }
         });
@@ -805,9 +807,14 @@ function createSiteButtonResponse(siteList) {
     //To remove a site from the list of limited sites.
     $(`#site-remove-${index}`).click(function () {
       if (pin) {
-        requirePin().then(function (result) {
-          if (result) {
+        requirePin().then(async function (result) {
+          while (result == "wrong") {
+            result = await clickSave();
+          }
+          if (result == "correct") {
             removeSite(index);
+          } else if (result == "cancel") {
+            $(`#require-pin`).modal("hide");
           }
         });
       } else {
@@ -833,10 +840,10 @@ function clickSave() {
         if (pin == $(`#enter-pin`).val()) {
           $(`#require-pin`).modal("hide");
           $(`#enter-pin`).val("");
-          resolve('correct');
+          resolve("correct");
         } else {
           $(`#enter-pin`).val("");
-          resolve('wrong');
+          resolve("wrong");
         }
       });
 
@@ -845,7 +852,7 @@ function clickSave() {
       .on("click", function () {
         $(`#require-pin`).modal("hide");
         $(`#enter-pin`).val("");
-        resolve('cancel');
+        resolve("cancel");
       });
   });
 }
