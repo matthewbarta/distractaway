@@ -185,33 +185,6 @@ function showDiv(id = "") {
   $(`#${id}`).show();
 }
 
-//Function to return a promise from the PIN modal.
-function clickSave() {
-  //Controls the pin modal, returns it as a promise to fulfill.
-  return new Promise((resolve, reject) => {
-    $(`#save-changes-button`)
-      .off("click")
-      .on("click", function () {
-        if (pin == $(`#enter-pin`).val()) {
-          $(`#require-pin`).modal("hide");
-          $(`#enter-pin`).val("");
-          resolve(true);
-        } else {
-          $(`#enter-pin`).val("");
-          resolve(false);
-        }
-      });
-
-    $(`#cancel-changes-button`)
-      .off("click")
-      .on("click", function () {
-        $(`#require-pin`).modal("hide");
-        $(`#enter-pin`).val("");
-        resolve(false);
-      });
-  });
-}
-
 //Clears the add pin modal inputs.
 function clearAddPin() {
   $(`#initial-pin`).val("");
@@ -271,12 +244,6 @@ function disablePin() {
   } else {
     bkg.console.log("EPIC FAIL");
   }
-}
-
-//Require PIN
-async function requirePin() {
-  $(`#require-pin`).modal("show");
-  return await clickSave();
 }
 
 //Returns a formatted version of the form information for the inputs regarding the block time per day.
@@ -820,6 +787,7 @@ function validateWeekdayForm(weekday, id = "") {
 //Creates actionable items on siteList
 function createSiteButtonResponse(siteList) {
   for (let index = 0; index < siteList.length; index++) {
+    //For the button to submit changes to an editted site.
     $(`#submit-edit-${index}`).click(function () {
       if (pin) {
         requirePin().then(function (result) {
@@ -831,6 +799,7 @@ function createSiteButtonResponse(siteList) {
         editSite(index);
       }
     });
+    //To remove a site from the list of limited sites.
     $(`#site-remove-${index}`).click(function () {
       if (pin) {
         requirePin().then(function (result) {
@@ -843,6 +812,39 @@ function createSiteButtonResponse(siteList) {
       }
     });
   }
+}
+
+//Require PIN
+async function requirePin() {
+  $(`#require-pin`).modal("show");
+  return await clickSave();
+}
+
+//Function to return a promise from the PIN modal.
+function clickSave() {
+  //Controls the pin modal, returns it as a promise to fulfill.
+  return new Promise((resolve, reject) => {
+    $(`#save-changes-button`)
+      .off("click")
+      .on("click", function () {
+        if (pin == $(`#enter-pin`).val()) {
+          $(`#require-pin`).modal("hide");
+          $(`#enter-pin`).val("");
+          resolve(true);
+        } else {
+          $(`#enter-pin`).val("");
+          resolve(false);
+        }
+      });
+
+    $(`#cancel-changes-button`)
+      .off("click")
+      .on("click", function () {
+        $(`#require-pin`).modal("hide");
+        $(`#enter-pin`).val("");
+        resolve(false);
+      });
+  });
 }
 
 //Edits a site's restrictions given its index.
