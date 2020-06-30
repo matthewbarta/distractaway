@@ -130,3 +130,18 @@ body {
 .pin-input {
     width: 20%;
 }
+
+
+/*----------  General Options  ----------*/
+
+/*Useless settings*/
+.option {
+    width: 100%;
+}
+
+/*Useless settings*/
+.options-label {
+    margin: 0%;
+}
+
+
