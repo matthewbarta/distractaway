@@ -791,8 +791,11 @@ function createSiteButtonResponse(siteList) {
     $(`#submit-edit-${index}`).click(function () {
       if (pin) {
         requirePin().then(function (result) {
-          if (result) {
+          if (result == 'correct') {
             editSite(index);
+          }
+          else {
+            $(`#require-pin`).modal("hide");
           }
         });
       } else {
@@ -830,10 +833,10 @@ function clickSave() {
         if (pin == $(`#enter-pin`).val()) {
           $(`#require-pin`).modal("hide");
           $(`#enter-pin`).val("");
-          resolve(true);
+          resolve('correct');
         } else {
           $(`#enter-pin`).val("");
-          resolve(false);
+          resolve('wrong');
         }
       });
 
@@ -842,7 +845,7 @@ function clickSave() {
       .on("click", function () {
         $(`#require-pin`).modal("hide");
         $(`#enter-pin`).val("");
-        resolve(false);
+        resolve('cancel');
       });
   });
 }
