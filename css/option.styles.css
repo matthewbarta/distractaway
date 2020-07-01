@@ -34,10 +34,8 @@ body {
     margin: 5% 0%;
 }
 
-.left-navbar h6 {
-    display: flex;
-    justify-content: center;
-    bottom: 50%;
+.left-navbar ul {
+    list-style-type: none;
 }
 
 .left-navbar a, .left-navbar h6 {
@@ -51,6 +49,12 @@ body {
 
 .left-navbar h5 {
     display: inline-block;
+}
+
+.left-navbar h6 {
+    display: flex;
+    justify-content: center;
+    bottom: 50%;
 }
 
 /*=============================================
