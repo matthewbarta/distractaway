@@ -25,8 +25,6 @@ const trashPath = `<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi b
 
 // ? Stats tab time spent on each site.
 
-//TODO Cancel button on edit sites.
-
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();
 
@@ -334,7 +332,7 @@ function createWeekDropdown(id = "") {
     createButtonElement(
       `dropdown-menu-${id}`,
       `${capitalize(WEEKDAYS[index])}`,
-      `dropdown-item`,
+      `dropdown-item menu-button`,
       `${WEEKDAYS[index]}-${id}`
     );
     $(`#${WEEKDAYS[index]}-${id}`).click(function () {
@@ -347,7 +345,7 @@ function createWeekDropdown(id = "") {
   createButtonElement(
     `dropdown-menu-${id}`,
     `Show All Days`,
-    `dropdown-item show-all-button`,
+    `dropdown-item menu-button show-all-button`,
     `show-all-${id}`
   );
   $(`#show-all-${id}`).click(function () {
