@@ -537,7 +537,7 @@ function createSite(site, id = "") {
     "remove-button btn btn-secondary",
     `site-remove-${id}`
   );
-  createHeaderElement(`site-div-${id}`, site.url, 6, "site-name");
+  createHeaderElement(`site-div-${id}`, site.url, 6, "btn btn-secondary site-name");
   createWeekDropdown(`site-div-${id}`, id);
   //Adds the cancel button.
   createButtonElement(

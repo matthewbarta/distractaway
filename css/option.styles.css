@@ -43,6 +43,16 @@ body {
 .left-navbar a, .left-navbar h6 {
     font-family: 'Archivo';
 }
+
+.link-logo {
+    display: inline-block;
+    margin-right: 2%;
+}
+
+.left-navbar h5 {
+    display: inline-block;
+}
+
 /*=============================================
 =            Page Content Components          =
 =============================================*/
@@ -100,6 +110,7 @@ body {
 
 .site-name {
     display: inline-block;
+    vertical-align: top;
 }
 
 .dropdown-button {
