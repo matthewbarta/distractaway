@@ -75,6 +75,13 @@ body {
     display: none;
 }
 
+
+/*----------  Add Site Components  ----------*/
+
+#add-site .input-time {
+    width: 15%;
+}
+
 /*----------  Site Input Form Components   ----------*/
 
 .week-form {
@@ -83,20 +90,28 @@ body {
     justify-content: center;
 }
 
-.select-all-button {
-    margin-top: 6%;
-}
-
 .weekday-text {
     margin-top: 20px;
 }
 
-.checkbox-label {
-    margin: 0px 10px;
+.remove-button {
+    display: inline-block;
 }
 
-#add-site .input-time {
-    width: 15%;
+.site-name {
+    display: inline-block;
+}
+
+.dropdown-button {
+    display: inline-block;
+}
+
+.select-all-button {
+    margin-top: 6%;
+}
+
+.checkbox-label {
+    margin: 0px 10px;
 }
 
 .input-time {
