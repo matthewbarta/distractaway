@@ -25,6 +25,9 @@ const trashPath = `<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi b
 const checkPath = `<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check-square-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 <path fill-rule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm10.03 4.97a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
 </svg>`;
+const XPath = `<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-x-square-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm9.854 4.854a.5.5 0 0 0-.708-.708L8 7.293 4.854 4.146a.5.5 0 1 0-.708.708L7.293 8l-3.147 3.146a.5.5 0 0 0 .708.708L8 8.707l3.146 3.147a.5.5 0 0 0 .708-.708L8.707 8l3.147-3.146z"/>
+</svg>`;
 
 // ? Stats tab time spent on each site.
 
@@ -429,9 +432,9 @@ function createWeekday(day, parentElement, id = "") {
     "weekday-checkbox",
     `${weekday}-blocked-${id}`
   );
-  createButtonElement(
+  createAnchorElement(
     `${weekday}-div-${id}`,
-    "X",
+    XPath,
     "remove-weekday-button",
     `remove-${weekday}-${id}`
   );
@@ -532,26 +535,26 @@ function createSiteList(siteList) {
 function createSite(site, id = "") {
   //Dropdown div.
   createDiv(`sites`, "dropdown dropdown-div", `dropdown-${id}`);
-  createButtonElement(
+  createAnchorElement(
     `dropdown-${id}`,
     trashPath,
-    "remove-button btn btn-secondary",
+    "remove-button btn",
     `site-remove-${id}`
   );
   createHeaderElement(`dropdown-${id}`, site.url, 6, "btn btn-secondary site-name");
   createWeekDropdown(id);
   //Adds the cancel button.
-  createButtonElement(
+  createAnchorElement(
     `dropdown-${id}`,
     chevronPath,
-    "btn btn-secondary",
+    "btn form-anchor",
     `cancel-edit-${id}`
   );
   //Adds submit button.
-  createButtonElement(
+  createAnchorElement(
     `dropdown-${id}`,
     checkPath,
-    "btn btn-secondary",
+    "btn form-anchor",
     `submit-edit-${id}`
   );
   //Hides the submit/cancel button by default.
@@ -673,6 +676,31 @@ function createButtonElement(
     }
   }
   parent.appendChild(button);
+}
+
+//Creates an anchor attribute, has additional options for creating more variable buttons.
+function createAnchorElement(
+  parentId = "",
+  innerHTML = "",
+  classTag = "",
+  idTag = "",
+  additionalAttributes = []
+) {
+  const parent = document.getElementById(parentId);
+  let a = document.createElement("a");
+  a.innerHTML = innerHTML;
+  //Optional parameters.
+  if (classTag) a.className = classTag;
+  if (idTag) a.id = idTag;
+  if (additionalAttributes.length > 0) {
+    for (let index = 0; index < additionalAttributes.length; index++) {
+      a.setAttribute(
+        additionalAttributes[index].property,
+        additionalAttributes[index].value
+      );
+    }
+  }
+  parent.appendChild(a);
 }
 
 //Create the necessary label elements.
