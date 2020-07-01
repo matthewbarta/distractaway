@@ -121,6 +121,11 @@ body {
     display: inline-block;
 }
 
+.dropdown-div {
+    display: inline-block;
+    margin: 2% 0%;
+}
+
 .select-all-button {
     margin-top: 6%;
 }

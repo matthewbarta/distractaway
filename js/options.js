@@ -291,8 +291,7 @@ function getTimesByWeekday(id = "") {
 }
 
 //Creates the dropdown menu for selecting weekdays.
-function createWeekDropdown(parentElement, id = "") {
-  createDiv(parentElement, "dropdown dropdown-button", `dropdown-${id}`);
+function createWeekDropdown(id = "") {
   dropdownProperties = [
     { property: "data-toggle", value: "dropdown" },
     { property: "aria-haspopup", value: "true" },
@@ -301,7 +300,7 @@ function createWeekDropdown(parentElement, id = "") {
   createButtonElement(
     `dropdown-${id}`,
     "Modify Day",
-    "btn btn-secondary dropdown-toggle",
+    "btn btn-secondary dropdown-toggle dropdown-button",
     `add-site-button-${id}`,
     dropdownProperties
   );
@@ -530,15 +529,16 @@ function createSiteList(siteList) {
 
 //Creates an individual site.
 function createSite(site, id = "") {
-  createDiv("sites", "site-div", `site-div-${id}`);
+  //Dropdown div.
+  createDiv(`sites`, "dropdown dropdown-div", `dropdown-${id}`);
   createButtonElement(
-    `site-div-${id}`,
+    `dropdown-${id}`,
     trashPath,
     "remove-button btn btn-secondary",
     `site-remove-${id}`
   );
-  createHeaderElement(`site-div-${id}`, site.url, 6, "btn btn-secondary site-name");
-  createWeekDropdown(`site-div-${id}`, id);
+  createHeaderElement(`dropdown-${id}`, site.url, 6, "btn btn-secondary site-name");
+  createWeekDropdown(id);
   //Adds the cancel button.
   createButtonElement(
     `dropdown-${id}`,
