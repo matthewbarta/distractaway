@@ -535,8 +535,16 @@ function createSite(site, id = "") {
     "btn btn-secondary btn-lg",
     `submit-edit-${id}`
   );
-  //Hides the submit button by default.
+  //Adds the cancel button.
+  createButtonElement(
+    `dropdown-${id}`,
+    "Cancel Changes",
+    "btn btn-secondary btn-lg",
+    `cancel-edit-${id}`
+  );
+  //Hides the submit/cancel button by default.
   $(`#submit-edit-${id}`).hide();
+  $(`#cancel-edit-${id}`).hide();
 }
 
 function updateSiteList(siteList) {
@@ -581,6 +589,7 @@ function insertWeekday(parentId, weekdayDiv, day, id) {
   if (currentWeekdays.length == 0) {
     if (document.getElementById(`submit-edit-${id}`)) {
       $(`#submit-edit-${id}`).show();
+      $(`#cancel-edit-${id}`).show();
     }
     if (document.getElementById(`select-all-${id}`)) {
       $(`#select-all-${id}`).show();
@@ -728,6 +737,9 @@ function resetForm(parentId, id = "") {
   if (document.getElementById(`submit-edit-${id}`)) {
     $(`#submit-edit-${id}`).hide();
   }
+  if (document.getElementById(`cancel-edit-${id}`)) {
+    $(`#cancel-edit-${id}`).hide();
+  }
 }
 
 //Handles incorrect min/max on inputs.
@@ -803,6 +815,10 @@ function createSiteButtonResponse(siteList) {
       } else {
         editSite(index);
       }
+    });
+    //For the cancel the changes button.
+    $(`#cancel-edit-${index}`).click(function() {
+      resetForm(`week-form-${index}`, index);
     });
     //To remove a site from the list of limited sites.
     $(`#site-remove-${index}`).click(function () {
@@ -894,6 +910,9 @@ function createRemoveButtonResponse(weekday, id = "", parentElement) {
     if (document.getElementById(parentElement).childNodes.length == 1) {
       if (document.getElementById(`submit-edit-${id}`)) {
         $(`#submit-edit-${id}`).hide();
+      }
+      if (document.getElementById(`cancel-edit-${id}`)) {
+        $(`#cancel-edit-${id}`).hide();
       }
       if (document.getElementById(`select-all-${id}`)) {
         $(`#select-all-${id}`).hide();
