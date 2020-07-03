@@ -27,6 +27,15 @@ body {
     background-color: #e1eced;
 }
 
+.nav-header, .nav-footer {
+    height: 5%;
+}
+
+.nav-links {
+    height: 90%;
+}
+
+
 .left-navbar h2 {
     font-family: 'ABeeZee';
     display: flex;
