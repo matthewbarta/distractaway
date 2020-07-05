@@ -129,10 +129,9 @@ body {
     border: 1px solid black;
 }
 
-.site-button:hover {
-    display: inline-block;
+.site-button:hover, .form-anchor:hover {
     border: 1px solid black;
-    background-color: aliceblue;
+    background-color: #f8f9fa;
 }
 
 .site-name {
@@ -168,11 +167,6 @@ body {
 
 .form-anchor {
     border: 1px solid black;
-}
-
-.form-anchor:hover {
-    border: 1px solid black;
-    background-color: aliceblue;
 }
 
 .remove-weekday-button {
