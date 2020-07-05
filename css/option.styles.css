@@ -50,6 +50,14 @@ body {
     font-family: 'Archivo';
 }
 
+.left-navbar a {
+    color: #6b6b6b;
+}
+
+.left-navbar a:hover {
+    color: black;
+}
+
 .link-logo {
     display: inline-block;
     margin-right: 5%;
