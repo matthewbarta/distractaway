@@ -273,7 +273,7 @@ function getTimesByWeekday(id = "") {
       weekdayTimes.push({
         limit: Number.isInteger(id) ? siteList[id].time[day].limit : -1,
       });
-    } else if ($(`#${WEEKDAYS[day]}-blocked-${id}`).is(":checked")) {
+    } else if ($(`#${WEEKDAYS[day]}-blocked-${id}`).attr("aria-pressed") == "true") {
       weekdayTimes.push({ limit: 0 });
     } else {
       const hours = Number.isInteger(
@@ -422,18 +422,10 @@ function createWeekday(day, parentElement, id = "") {
     "0",
     "59"
   );
-  createLabelElement(
+  createButtonElement(
     `${weekday}-div-${id}`,
-    `${weekday}-blocked`,
-    "Block All Day",
-    "checkbox-label"
-  );
-  createInputElement(
-    `${weekday}-div-${id}`,
-    "checkbox",
-    `${weekday}-blocked-${id}`,
-    "",
-    "weekday-checkbox",
+    "Block",
+    "btn btn-danger",
     `${weekday}-blocked-${id}`
   );
   createAnchorElement(
@@ -455,7 +447,7 @@ function createWeekday(day, parentElement, id = "") {
 
   //Adds checks for the blocked box.
   if (blocked) {
-    $(`#${weekday}-blocked-${id}`).prop("checked", true);
+    $(`#${weekday}-blocked-${id}`).button("checked", true);
     $(`#${weekday}-hr-${id}`).prop("disabled", true);
     $(`#${weekday}-min-${id}`).prop("disabled", true);
   }
