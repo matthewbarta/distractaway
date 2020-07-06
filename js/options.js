@@ -426,7 +426,8 @@ function createWeekday(day, parentElement, id = "") {
     `${weekday}-div-${id}`,
     "Block",
     "btn btn-danger",
-    `${weekday}-blocked-${id}`
+    `${weekday}-blocked-${id}`,
+    [{property: "data-toggle", value: "button"}]
   );
   createAnchorElement(
     `${weekday}-div-${id}`,
@@ -447,7 +448,11 @@ function createWeekday(day, parentElement, id = "") {
 
   //Adds checks for the blocked box.
   if (blocked) {
-    $(`#${weekday}-blocked-${id}`).button("checked", true);
+    const block = $(`#${weekday}-blocked-${id}`).attr('aria-pressed');
+    if(block == 'false') {
+      $(`#${weekday}-blocked-${id}`).button('toggle');
+      $(`#${weekday}-blocked-${id}`).prop('aria-pressed', 'false');
+    }
     $(`#${weekday}-hr-${id}`).prop("disabled", true);
     $(`#${weekday}-min-${id}`).prop("disabled", true);
   }
@@ -496,13 +501,14 @@ function selectAllWeekdayValues(id = "") {
     $(`#${WEEKDAYS[index]}-blocked-${id}`)
       .off("change")
       .on("change", function () {
-        const isChecked = $(`#${WEEKDAYS[index]}-blocked-${id}`).is(":checked");
+        const isChecked = $(`#${WEEKDAYS[index]}-blocked-${id}`).attr('aria-pressed') == 'true';
+        bkg.console.log(isChecked);
         for (let day = 0; day < WEEKDAYS.length; day++) {
           const modifyDay = document.getElementById(
             `${WEEKDAYS[day]}-blocked-${id}`
           );
           if (modifyDay && index != day) {
-            $(`#${WEEKDAYS[day]}-blocked-${id}`).prop("checked", isChecked);
+            $(`#${WEEKDAYS[day]}-blocked-${id}`).prop("aria-pressed", isChecked.toString());
             $(`#${WEEKDAYS[day]}-hr-${id}`).prop("disabled", isChecked);
             $(`#${WEEKDAYS[day]}-min-${id}`).prop("disabled", isChecked);
           }
@@ -832,13 +838,10 @@ function validateWeekdayForm(weekday, id = "") {
 
   //Blocked checkbox details.
   $(`#${weekday}-blocked-${id}`).click(function () {
-    if ($(`#${weekday}-blocked-${id}`).is(":checked")) {
-      $(`#${weekday}-hr-${id}`).prop("disabled", true);
-      $(`#${weekday}-min-${id}`).prop("disabled", true);
-    } else {
-      $(`#${weekday}-hr-${id}`).prop("disabled", false);
-      $(`#${weekday}-min-${id}`).prop("disabled", false);
-    }
+    const block = $(`#${weekday}-blocked-${id}`).attr('aria-pressed') == 'true';
+    bkg.console.log(block);
+    $(`#${weekday}-hr-${id}`).prop("disabled", !block);
+    $(`#${weekday}-min-${id}`).prop("disabled", !block);
   });
 }
 
