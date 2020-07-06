@@ -449,7 +449,7 @@ function createWeekday(day, parentElement, id = "") {
   //Adds checks for the blocked box.
   if (blocked) {
     const block = $(`#${weekday}-blocked-${id}`).attr('aria-pressed');
-    if(block == 'false') {
+    if(block == 'true') {
       $(`#${weekday}-blocked-${id}`).button('toggle');
       $(`#${weekday}-blocked-${id}`).prop('aria-pressed', 'false');
     }
@@ -499,18 +499,24 @@ function selectAllWeekdayValues(id = "") {
       });
     //Synchronized block all day checkbox.
     $(`#${WEEKDAYS[index]}-blocked-${id}`)
-      .off("change")
-      .on("change", function () {
+      .off("click")
+      .on("click", function () {
         const isChecked = $(`#${WEEKDAYS[index]}-blocked-${id}`).attr('aria-pressed') == 'true';
-        bkg.console.log(isChecked);
+        $(`#${WEEKDAYS[index]}-hr-${id}`).prop("disabled", !isChecked);
+        $(`#${WEEKDAYS[index]}-min-${id}`).prop("disabled", !isChecked);
         for (let day = 0; day < WEEKDAYS.length; day++) {
           const modifyDay = document.getElementById(
             `${WEEKDAYS[day]}-blocked-${id}`
           );
           if (modifyDay && index != day) {
-            $(`#${WEEKDAYS[day]}-blocked-${id}`).prop("aria-pressed", isChecked.toString());
-            $(`#${WEEKDAYS[day]}-hr-${id}`).prop("disabled", isChecked);
-            $(`#${WEEKDAYS[day]}-min-${id}`).prop("disabled", isChecked);
+            bkg.console.log($(`#${WEEKDAYS[day]}-blocked-${id}`).attr('aria-pressed'));
+            if($(`#${WEEKDAYS[day]}-blocked-${id}`).attr("aria-pressed") == isChecked.toString()) {
+              $(`#${WEEKDAYS[day]}-blocked-${id}`).button('toggle');
+              $(`#${WEEKDAYS[day]}-blocked-${id}`).prop("aria-pressed", (!isChecked).toString());
+            }
+            $(`#${WEEKDAYS[day]}-blocked-${id}`).prop("aria-pressed", (!isChecked).toString());
+            $(`#${WEEKDAYS[day]}-hr-${id}`).prop("disabled", !isChecked);
+            $(`#${WEEKDAYS[day]}-min-${id}`).prop("disabled", !isChecked);
           }
         }
       });
@@ -522,7 +528,7 @@ function turnSelectAllOff(id = "") {
   for (let index = 0; index < WEEKDAYS.length; index++) {
     $(`#${WEEKDAYS[index]}-hr-${id}`).off("change");
     $(`#${WEEKDAYS[index]}-min-${id}`).off("change");
-    $(`#${WEEKDAYS[index]}-blocked-${id}`).off("change");
+    $(`#${WEEKDAYS[index]}-blocked-${id}`).off("click");
   }
 }
 
@@ -758,7 +764,12 @@ function resetForm(parentId, id = "") {
   for (let day = 0; day < WEEKDAYS.length; day++) {
     $(`#${WEEKDAYS[day]}-hr-${id}`).val("");
     $(`#${WEEKDAYS[day]}-min-${id}`).val("");
-    $(`#${WEEKDAYS[day]}-blocked-${id}`).prop("checked", false);
+    //Turn the blocked button back to normal.
+    const block = $(`#${WEEKDAYS[day]}-blocked-${id}`).attr("aria-pressed");
+    if(block == 'true') {
+      $(`#${WEEKDAYS[day]}-blocked-${id}`).button('toggle');
+      $(`#${WEEKDAYS[day]}-blocked-${id}`).prop('aria-pressed', 'false');
+    }
     $(`#${WEEKDAYS[day]}-hr-${id}`).prop("disabled", false);
     $(`#${WEEKDAYS[day]}-min-${id}`).prop("disabled", false);
   }
@@ -768,7 +779,6 @@ function resetForm(parentId, id = "") {
   if(select == 'true') {
     $(`#select-all-${id}`).button('toggle');
     $(`#select-all-${id}`).prop('aria-pressed', 'false');
-    bkg.console.log($(`#select-all-${id}`).attr("aria-pressed"));
     turnSelectAllOff(id);
   }
   if (id === "") {
