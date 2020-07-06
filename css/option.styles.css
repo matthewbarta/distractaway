@@ -93,7 +93,7 @@ body {
     height: 100%;
 }
 
-.header {
+.page-content h1 {
     display: flex;
     justify-content: center;
     margin: 3%;
