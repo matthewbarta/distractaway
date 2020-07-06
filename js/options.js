@@ -528,7 +528,12 @@ function turnSelectAllOff(id = "") {
   for (let index = 0; index < WEEKDAYS.length; index++) {
     $(`#${WEEKDAYS[index]}-hr-${id}`).off("change");
     $(`#${WEEKDAYS[index]}-min-${id}`).off("change");
-    $(`#${WEEKDAYS[index]}-blocked-${id}`).off("click");
+    $(`#${WEEKDAYS[index]}-blocked-${id}`).off("click").on("click", function() {
+      const isChecked = $(`#${WEEKDAYS[index]}-blocked-${id}`).attr('aria-pressed') == 'true';
+      $(`#${WEEKDAYS[index]}-blocked-${id}`).prop("aria-pressed", (!isChecked).toString());
+      $(`#${WEEKDAYS[index]}-hr-${id}`).prop("disabled", !isChecked);
+      $(`#${WEEKDAYS[index]}-min-${id}`).prop("disabled", !isChecked);
+    });
   }
 }
 
