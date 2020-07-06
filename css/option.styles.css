@@ -31,8 +31,9 @@ body {
     height: 5%;
 }
 
-.nav-links {
+.left-navbar ul {
     height: 90%;
+    list-style-type: none;
 }
 
 .left-navbar h2 {
@@ -42,16 +43,17 @@ body {
     margin: 5% 0%;
 }
 
-.left-navbar ul {
-    list-style-type: none;
-}
-
 .left-navbar a, .left-navbar h6 {
     font-family: 'Archivo';
 }
 
+.left-navbar li {
+    margin: 4% 0%;
+}
+
 .left-navbar a {
     color: #6b6b6b;
+    display: flex;
 }
 
 .left-navbar a:hover {
