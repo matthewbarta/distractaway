@@ -150,20 +150,24 @@ body {
     margin: 2% 0%;
 }
 
+.block-checkbox {
+    display: inline-block;
+}
+
+.block-checkbox label {
+    cursor: pointer;
+}
+
+.block-checkbox input {
+    cursor: pointer;
+}
+
 .select-all-button {
     margin-top: 6%;
 }
 
-.checkbox-label {
-    margin: 0px 10px;
-}
-
 .input-time {
     width: 12%;
-    margin: 0px 10px;
-}
-
-.weekday-checkbox {
     margin: 0px 10px;
 }
 
