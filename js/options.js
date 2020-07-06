@@ -86,8 +86,8 @@ $(function () {
   }
 
   //The select-all button functionality for the add-site form.
-  $("#select-all").click(function () {
-    const selectAll = $(`#select-all`).attr("aria-pressed");
+  $("#select-all-").click(function () {
+    const selectAll = $(`#select-all-`).attr("aria-pressed");
     if (selectAll == "false") {
       selectAllWeekdayValues();
     } else {
@@ -764,8 +764,18 @@ function resetForm(parentId, id = "") {
     $(`#${WEEKDAYS[day]}-hr-${id}`).prop("disabled", false);
     $(`#${WEEKDAYS[day]}-min-${id}`).prop("disabled", false);
   }
+
   //Current precaution for the way the weeks are being setup, remove if I want to dynamically generate add-site.
-  if (id === "") return;
+  const select = $(`#select-all-${id}`).attr("aria-pressed");
+  if(select == 'true') {
+    $(`#select-all-${id}`).button('toggle');
+    $(`#select-all-${id}`).prop('aria-pressed', 'false');
+    bkg.console.log($(`#select-all-${id}`).attr("aria-pressed"));
+    turnSelectAllOff(id);
+  }
+  if (id === "") {
+    return;
+  }
   //Removes all the weekday divs.
   const parent = document.getElementById(parentId);
   let weekday = parent.lastChild;
