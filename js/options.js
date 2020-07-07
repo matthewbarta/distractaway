@@ -306,7 +306,7 @@ function createWeekDropdown(id = "") {
     { property: "aria-expanded", value: "false" },
   ];
   const selectProperties = [
-    { property: "data-toggle", value: "dropdown" },
+    { property: "data-toggle", value: "button" },
     { property: "aria-pressed", value: "false" },
   ];
   createButtonElement(
@@ -371,10 +371,6 @@ function createWeekday(day, parentElement, id = "") {
   let minutes = "";
   let hours = "";
   let blocked = false;
-  const blockProperties = [
-    { property: "data-toggle", value: "button" },
-    { property: "aria-pressed", value: "false" },
-  ];
 
   //Checks if edit forms have information already.
   if (siteList[id]) {
@@ -388,6 +384,12 @@ function createWeekday(day, parentElement, id = "") {
       minutes = "";
     }
   }
+
+  const blockProperties = [
+    { property: "data-toggle", value: "button" },
+    { property: "aria-pressed", value: blocked.toString() },
+  ];
+
   createWeekdayDiv(parentElement, weekday, id);
   createHeaderElement(
     `${weekday}-div-${id}`,
@@ -514,7 +516,6 @@ function selectAllWeekdayValues(id = "") {
             `${WEEKDAYS[day]}-blocked-${id}`
           );
           if (modifyDay && index != day) {
-            bkg.console.log($(`#${WEEKDAYS[day]}-blocked-${id}`).attr('aria-pressed'));
             if($(`#${WEEKDAYS[day]}-blocked-${id}`).attr("aria-pressed") == isChecked.toString()) {
               $(`#${WEEKDAYS[day]}-blocked-${id}`).button('toggle');
             }
