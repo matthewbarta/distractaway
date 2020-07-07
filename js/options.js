@@ -300,10 +300,14 @@ function getTimesByWeekday(id = "") {
 
 //Creates the dropdown menu for selecting weekdays.
 function createWeekDropdown(id = "") {
-  dropdownProperties = [
+  const dropdownProperties = [
     { property: "data-toggle", value: "dropdown" },
     { property: "aria-haspopup", value: "true" },
     { property: "aria-expanded", value: "false" },
+  ];
+  const selectProperties = [
+    { property: "data-toggle", value: "dropdown" },
+    { property: "aria-pressed", value: "false" },
   ];
   createButtonElement(
     `dropdown-${id}`,
@@ -321,10 +325,7 @@ function createWeekDropdown(id = "") {
     "Select All Below",
     "btn btn-primary btn-sm select-all-button",
     `select-all-${id}`,
-    [
-      { property: "data-toggle", value: "button" },
-      { property: "aria-pressed", value: "false" },
-    ]
+    selectProperties
   );
   $(`#select-all-${id}`).hide();
   //Selects all the below days.
@@ -370,6 +371,10 @@ function createWeekday(day, parentElement, id = "") {
   let minutes = "";
   let hours = "";
   let blocked = false;
+  const blockProperties = [
+    { property: "data-toggle", value: "button" },
+    { property: "aria-pressed", value: "false" },
+  ];
 
   //Checks if edit forms have information already.
   if (siteList[id]) {
@@ -427,7 +432,7 @@ function createWeekday(day, parentElement, id = "") {
     "Block",
     "btn btn-danger",
     `${weekday}-blocked-${id}`,
-    [{property: "data-toggle", value: "button"}]
+    blockProperties
   );
   createAnchorElement(
     `${weekday}-div-${id}`,
@@ -512,7 +517,6 @@ function selectAllWeekdayValues(id = "") {
             bkg.console.log($(`#${WEEKDAYS[day]}-blocked-${id}`).attr('aria-pressed'));
             if($(`#${WEEKDAYS[day]}-blocked-${id}`).attr("aria-pressed") == isChecked.toString()) {
               $(`#${WEEKDAYS[day]}-blocked-${id}`).button('toggle');
-              $(`#${WEEKDAYS[day]}-blocked-${id}`).prop("aria-pressed", (!isChecked).toString());
             }
             $(`#${WEEKDAYS[day]}-blocked-${id}`).prop("aria-pressed", (!isChecked).toString());
             $(`#${WEEKDAYS[day]}-hr-${id}`).prop("disabled", !isChecked);
@@ -854,7 +858,6 @@ function validateWeekdayForm(weekday, id = "") {
   //Blocked checkbox details.
   $(`#${weekday}-blocked-${id}`).click(function () {
     const block = $(`#${weekday}-blocked-${id}`).attr('aria-pressed') == 'true';
-    bkg.console.log(block);
     $(`#${weekday}-hr-${id}`).prop("disabled", !block);
     $(`#${weekday}-min-${id}`).prop("disabled", !block);
   });
