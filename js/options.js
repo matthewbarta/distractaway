@@ -942,6 +942,7 @@ function clickSave() {
 }
 
 //Edits a site's restrictions given its index.
+//TODO CHECK THAT THE getTimesByWeekday method works as intended.
 function editSite(index) {
   siteList[index].time = getTimesByWeekday(index, true);
   chrome.storage.sync.set({ urlList: siteList }, function () {

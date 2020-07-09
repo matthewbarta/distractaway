@@ -10,6 +10,7 @@ let today;
 let minimized = false;
 
 //TODO Unchecked runtime.lastError: This request exceeds the MAX_WRITE_OPERATIONS_PER_MINUTE quota.
+//TODO BUG WITH MULTIPLE WINDOWS BEING OPEN AT ONCE.
 
 //Initializes extension.
 chrome.runtime.onInstalled.addListener(function () {
@@ -30,7 +31,7 @@ chrome.runtime.onInstalled.addListener(function () {
       //! ERROR CATCH
       var error = chrome.runtime.lastError;
       if (error) {
-        bkg.console.log(error);
+        console.log(error);
       }
     }
   );
@@ -59,7 +60,7 @@ chrome.runtime.onStartup.addListener(function () {
         //! ERROR CATCH
         var error = chrome.runtime.lastError;
         if (error) {
-          bkg.console.log(error);
+          console.log(error);
         }
       });
     }
@@ -143,7 +144,7 @@ function onMidnight() {
     //! ERROR CATCH
     var error = chrome.runtime.lastError;
     if (error) {
-      bkg.console.log(error);
+      console.log(error);
     }
   });
   //Reset blockist.
@@ -221,6 +222,14 @@ chrome.storage.onChanged.addListener(function (changes) {
     if (oldArray.length == newArray.length) {
       urlList.map((element, index) => {
         for (let day = 0; day < 7; day++) {
+          console.log(blockList);
+          if(blockList.includes(`*://${urlList[index].url}/*`)) {
+            let time =
+            urlList[index].time[today].limit - urlList[index].time[today].timeUsed++;
+            if(time > 0) {
+              blockList.splice(blockList.indexOf(`*://${urlList[index].url}/*`), 1);
+            }
+          }
           element.time[day].limit = newArray[index].time[day].limit;
         }
       });
@@ -272,7 +281,7 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
 //Current active tab is updated.
 chrome.tabs.onUpdated.addListener(function (id, info, tab) {
   //Check the tab is still valid.
-  chrome.tabs.query({ active: true }, function (tabs) {
+  chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
     let timeState = getTabChangeState(tabs[0]?.url, today);
     timeActiveTab(timeState);
     changePopup(timeState);
