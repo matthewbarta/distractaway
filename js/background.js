@@ -223,11 +223,16 @@ chrome.storage.onChanged.addListener(function (changes) {
       urlList.map((element, index) => {
         for (let day = 0; day < 7; day++) {
           console.log(blockList);
+          let time =
+          urlList[index].time[today].limit - urlList[index].time[today].timeUsed++;
           if(blockList.includes(`*://${urlList[index].url}/*`)) {
-            let time =
-            urlList[index].time[today].limit - urlList[index].time[today].timeUsed++;
             if(time > 0) {
               blockList.splice(blockList.indexOf(`*://${urlList[index].url}/*`), 1);
+            }
+          }
+          else {
+            if(time <= 0) {
+              blockList.push(`*://${urlList[index].url}/*`);
             }
           }
           element.time[day].limit = newArray[index].time[day].limit;
@@ -417,7 +422,6 @@ function timeTillMidnight() {
 chrome.webRequest.onBeforeRequest.addListener(
   function () {
     if (blockList.length > 0) {
-      console.log(blockList);
       chrome.webRequest.onBeforeRequest.addListener(
         function () {
           if (blockList.length > 0) return { cancel: true };
