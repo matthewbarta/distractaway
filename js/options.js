@@ -432,7 +432,7 @@ function createWeekday(day, parentElement, id = "") {
   createButtonElement(
     `${weekday}-div-${id}`,
     "Block",
-    "btn btn-danger",
+    "btn btn-danger block-button",
     `${weekday}-blocked-${id}`,
     blockProperties
   );

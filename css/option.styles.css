@@ -154,27 +154,8 @@ body {
     margin: 2% 0%;
 }
 
-.block-checkbox {
-    display: inline-flex;
-    align-items: baseline;
-}
-
-.block-checkbox label {
-    cursor: pointer;
-    display: flex;
-}
-
-.block-checkbox input {
-    cursor: pointer;
-    opacity: 0.5;
-    position: absolute;
-}
-
-.block-checkbox label::before {
-    content: '';
-    width: 1em;
-    height: 1em;
-    border: .05em solid black;
+.block-button {
+    margin: 0% 6%;
 }
 
 .select-all-button {
