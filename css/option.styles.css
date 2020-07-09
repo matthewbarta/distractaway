@@ -175,6 +175,12 @@ body {
     display: inline-block;
 }
 
+.bi-x-square-fill:hover {
+    cursor: pointer;
+    color: grey;
+}
+
+
 /*----------  Modal Components  ----------*/
 
 .modal-dialog {
