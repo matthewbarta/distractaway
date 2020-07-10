@@ -131,6 +131,7 @@ body {
 }
 
 .site-button {
+    float: left;
     cursor: pointer;
     border: 1px solid black;
 }
@@ -173,7 +174,12 @@ body {
 }
 
 .form-anchor {
+    margin: 2% 1%;
     border: 1px solid black;
+}
+
+div+.form-anchor {
+    margin-left: 65%;
 }
 
 .remove-weekday-button {
