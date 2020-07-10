@@ -556,7 +556,7 @@ function createSite(site, id = "") {
   createAnchorElement(
     `dropdown-${id}`,
     trashPath,
-    "site-button btn",
+    "site-button btn remove-button",
     `site-remove-${id}`
   );
   createHeaderElement(`dropdown-${id}`, site.url, 6, "site-name");
