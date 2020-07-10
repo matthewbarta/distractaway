@@ -12,6 +12,10 @@
     transform: translate(-50%, -50%);
 }
 
+#time {
+    font-family: 'Orbitron';
+}
+
 .blocked-state-text {
     margin-top: 20px;
     margin-bottom: 20px;
@@ -26,3 +30,4 @@
     width: 120px;
     height: 50px;
 }
+

@@ -146,6 +146,7 @@ body {
 }
 
 .site-name {
+    font-family: 'Nunito';
     font-size: 2em;
     display: inline-block;
     vertical-align: top;
