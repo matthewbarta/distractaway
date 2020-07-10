@@ -131,6 +131,7 @@ body {
 }
 
 .site-button {
+    cursor: pointer;
     display: inline-block;
     border: 1px solid black;
 }
@@ -141,8 +142,10 @@ body {
 }
 
 .site-name {
+    font-size: 2em;
     display: inline-block;
     vertical-align: top;
+    margin: 0% 2%;
 }
 
 .dropdown-button {
@@ -152,6 +155,9 @@ body {
 .dropdown-div {
     display: block;
     margin: 2% 0%;
+    padding: 2% 2%;
+    border: 1px solid gray;
+    border-radius: 1em;
 }
 
 .block-button {
