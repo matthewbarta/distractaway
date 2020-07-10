@@ -126,6 +126,12 @@ body {
     justify-content: center;
 }
 
+.input-block {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+}
+
 .weekday-text {
     margin-top: 20px;
 }
