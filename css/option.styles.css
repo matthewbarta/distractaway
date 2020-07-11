@@ -238,18 +238,17 @@ div+.form-anchor {
 }
 
 /*Useless settings*/
-.options-label {
+.options-text {
     margin: 0% 0% 0% 2%;
 }
 
-.options-label-div {
-    width: 90%;
+.options-text-div {
+    width: 80%;
     padding: 2% 0%;
     display: inline-block;
-    border-right: 2px solid black;
 }
 
-.options-checkbox-div {
+.options-button-div {
     padding: 2% 0%;
     display: inline-block;
 }

@@ -3,6 +3,11 @@
     height: 140px;
 }
 
+.timer-window {
+    width: 240px;
+    height: 80px;
+}
+
 .button-div {
     margin: 0;
     margin-top: 10px;
@@ -10,6 +15,11 @@
     left: 50%;
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
+}
+
+.timer {
+    display: flex;
+    justify-content: center;
 }
 
 #time {
