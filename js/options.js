@@ -11,9 +11,15 @@ $(function () {
     pin = items.pin;
     //Updates the status of the pin checkbox.
     if (pin) {
-      $(`#parental-control-input`).prop("checked", true);
+      if($(`#parental-control-button`).attr("aria-pressed") == "false") {
+        $(`#parental-control-button`).button('toggle');
+        $(`#parental-control-button`).prop("aria-pressed", true);
+      }
     } else {
-      $(`#parental-control-input`).prop("checked", false);
+      if($(`#parental-control-button`).attr("aria-pressed") == "true") {
+        $(`#parental-control-button`).button('toggle');
+        $(`#parental-control-button`).prop("aria-pressed", false);
+      }
     }
     //Updates the site list page.
     updateSiteList(siteList);
