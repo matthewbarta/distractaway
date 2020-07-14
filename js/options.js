@@ -1,3 +1,7 @@
+//GLOBAL VARIABLES
+let siteList = [];
+let pin = "";
+
 // ? Stats tab time spent on each site.
 // TODO Convert old "input" checkboxes into buttons
 
@@ -9,23 +13,10 @@ $(function () {
   chrome.storage.sync.get(["urlList", "pin", "timeMinimized"], function (items) {
     siteList = items.urlList;
     pin = items.pin;
-    //Updates the status of the pin checkbox.
-    alignAriaPressed(`parental-control-button`, pin);
-    // if (pin) {
-    //   if($(`#parental-control-button`).attr("aria-pressed") == "false") {
-    //     $(`#parental-control-button`).button('toggle');
-    //     $(`#parental-control-button`).prop("aria-pressed", true);
-    //   }
-    // } else {
-    //   if($(`#parental-control-button`).attr("aria-pressed") == "true") {
-    //     $(`#parental-control-button`).button('toggle');
-    //     $(`#parental-control-button`).prop("aria-pressed", false);
-    //   }
-    // }
-
-    //Correct the minimized option state.
     const minimized = items.timeMinimized;
-    $(`#minimized-input`).prop("checked", minimized);
+    //Updates the status of the pin/minimized button.
+    alignAriaPressed(`parental-control-button`, pin);
+    alignAriaPressed(`minimized-button`, minimized);
 
     //Updates the site list page.
     updateSiteList(siteList);
@@ -425,16 +416,10 @@ function createWeekday(day, parentElement, id = "") {
   //Validates the new input divs fields.
   validateWeekdayForm(weekday, id);
 
-  //Adds checks for the blocked box.
-  if (blocked) {
-    const block = $(`#${weekday}-blocked-${id}`).attr('aria-pressed');
-    if(block == 'true') {
-      $(`#${weekday}-blocked-${id}`).button('toggle');
-      $(`#${weekday}-blocked-${id}`).prop('aria-pressed', 'false');
-    }
-    $(`#${weekday}-hr-${id}`).prop("disabled", true);
-    $(`#${weekday}-min-${id}`).prop("disabled", true);
-  }
+  //Toggles blocked button.
+  alignAriaPressed(`${weekday}-blocked-${id}`, blocked);
+  $(`#${weekday}-hr-${id}`).prop("disabled", blocked);
+  $(`#${weekday}-min-${id}`).prop("disabled", blocked);
 }
 
 //Shows all the weekday divs,
@@ -488,10 +473,7 @@ function selectAllWeekdayValues(id = "") {
             `${WEEKDAYS[day]}-blocked-${id}`
           );
           if (modifyDay && index != day) {
-            if($(`#${WEEKDAYS[day]}-blocked-${id}`).attr("aria-pressed") == isChecked.toString()) {
-              $(`#${WEEKDAYS[day]}-blocked-${id}`).button('toggle');
-            }
-            $(`#${WEEKDAYS[day]}-blocked-${id}`).prop("aria-pressed", (!isChecked).toString());
+            alignAriaPressed(`${WEEKDAYS[day]}-blocked-${id}`, !isChecked);
             $(`#${WEEKDAYS[day]}-hr-${id}`).prop("disabled", !isChecked);
             $(`#${WEEKDAYS[day]}-min-${id}`).prop("disabled", !isChecked);
           }
@@ -756,11 +738,7 @@ function resetForm(parentId, id = "") {
     $(`#${WEEKDAYS[day]}-hr-${id}`).val("");
     $(`#${WEEKDAYS[day]}-min-${id}`).val("");
     //Turn the blocked button back to normal.
-    const block = $(`#${WEEKDAYS[day]}-blocked-${id}`).attr("aria-pressed");
-    if(block == 'true') {
-      $(`#${WEEKDAYS[day]}-blocked-${id}`).button('toggle');
-      $(`#${WEEKDAYS[day]}-blocked-${id}`).prop('aria-pressed', 'false');
-    }
+    alignAriaPressed(`${WEEKDAYS[day]}-blocked-${id}`, false);
     $(`#${WEEKDAYS[day]}-hr-${id}`).prop("disabled", false);
     $(`#${WEEKDAYS[day]}-min-${id}`).prop("disabled", false);
   }
@@ -1041,6 +1019,7 @@ function createWeek(parentElement, id = "") {
   }
 }
 
+//CONSTANTS
 const WEEKDAYS = [
   "sunday",
   "monday",
@@ -1052,8 +1031,6 @@ const WEEKDAYS = [
 ];
 const DIVS = ["add-site", "site-list", "general"];
 const zeroRegex = /00+/;
-let siteList = [];
-let pin = "";
 const chevronPath = `<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-chevron-double-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 <path fill-rule="evenodd" d="M7.646 2.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 3.707 2.354 9.354a.5.5 0 1 1-.708-.708l6-6z"/>
 <path fill-rule="evenodd" d="M7.646 6.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 7.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/>
