@@ -4,6 +4,7 @@ let pin = "";
 
 // ? Stats tab time spent on each site.
 // TODO Convert old "input" checkboxes into buttons
+// TODO Make sure button size stays the same from enabled -> disabled.
 
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();
@@ -14,9 +15,9 @@ $(function () {
     siteList = items.urlList;
     pin = items.pin;
     const minimized = items.timeMinimized;
-    //Updates the status of the pin/minimized button.
-    alignAriaPressed(`parental-control-button`, pin);
-    alignAriaPressed(`minimized-button`, minimized);
+    //TODO Updates the status of the pin/minimized button.
+    alignSettingButtonState(`parental-control-button`, pin);
+    alignSettingButtonState(`minimized-button`, minimized);
 
     //Updates the site list page.
     updateSiteList(siteList);
@@ -70,7 +71,7 @@ $(function () {
   }
 
   //Minimized form options.
-  $(`#minimized-input`).click(function () {
+  $(`#minimized-button`).click(function () {
     if ($(this).is(":checked")) {
       chrome.storage.sync.set({ timeMinimized: true }, function () {
         //! ERROR CATCH
@@ -91,12 +92,11 @@ $(function () {
   });
 
   //Display the proper modal for the parental control checkbox.
-  $(`#parental-control-input`).click(function () {
-    if ($(this).is(":checked") && !pin) {
+  $(`#parental-control-button`).click(function () {
+    if (!pin) {
       $(`#add-pin`).modal("show");
     }
-    //When unchecked.
-    else if (!$(this).is(":checked") && pin) {
+    else {
       $("#remove-pin").modal("show");
     }
   });
@@ -108,7 +108,6 @@ $(function () {
 
   //Behavior when cancelling add pin modal.
   $(`#cancel-pin-button`).click(function () {
-    $(`#parental-control-input`).prop("checked", false);
     clearAddPin();
   });
 
@@ -119,7 +118,6 @@ $(function () {
 
   //Cancels changes to the remove pin.
   $(`#cancel-remove-button`).click(function () {
-    $(`#parental-control-input`).prop("checked", true);
     $(`#remove-pin-input`).val("");
   });
 
@@ -209,6 +207,7 @@ function enablePin() {
     pin = initialPin;
     chrome.storage.sync.set({ pin: pin }, function () {
       $("#add-pin").modal("hide");
+      alignSettingButtonState(`parental-control-button`, true);
       clearAddPin();
     });
   } else {
@@ -219,13 +218,21 @@ function enablePin() {
 //Function to disable the pin.
 function disablePin() {
   if (pin == $(`#remove-pin-input`).val()) {
-    chrome.storage.sync.set({ pin: "" }, function () {
+    pin = "";
+    chrome.storage.sync.set({ pin: pin }, function () {
       $("#remove-pin").modal("hide");
       $("#remove-pin-input").val("");
+      alignSettingButtonState(`parental-control-button`, false);
     });
   } else {
     bkg.console.log("EPIC FAIL");
   }
+}
+
+//Ensures the alignement of parental control settings.
+function alignSettingButtonState(selector, state) {
+  const enabledStatus = state ? "Enabled" : "Disabled";
+  $(`#${selector}`).html(enabledStatus);
 }
 
 //Returns a formatted version of the form information for the inputs regarding the block time per day.
