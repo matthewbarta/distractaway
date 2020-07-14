@@ -14,7 +14,7 @@ $(function () {
   chrome.storage.sync.get(["urlList", "pin", "timeMinimized"], function (items) {
     siteList = items.urlList;
     pin = items.pin;
-    const minimized = items.timeMinimized;
+    minimized = items.timeMinimized;
     //TODO Updates the status of the pin/minimized button.
     alignSettingButtonState(`parental-control-button`, pin);
     alignSettingButtonState(`minimized-button`, minimized);
@@ -72,23 +72,17 @@ $(function () {
 
   //Minimized form options.
   $(`#minimized-button`).click(function () {
-    if ($(this).is(":checked")) {
-      chrome.storage.sync.set({ timeMinimized: true }, function () {
+    chrome.storage.sync.get("timeMinimized", function(items) {
+      const minimized = items.timeMinimized;
+      alignSettingButtonState(`minimized-button`, !minimized);
+      chrome.storage.sync.set({ timeMinimized: !minimized }, function () {
         //! ERROR CATCH
         var error = chrome.runtime.lastError;
         if (error) {
           bkg.console.log(error);
         }
       });
-    } else {
-      chrome.storage.sync.set({ timeMinimized: false }, function () {
-        //! ERROR CATCH
-        var error = chrome.runtime.lastError;
-        if (error) {
-          bkg.console.log(error);
-        }
-      });
-    }
+    });
   });
 
   //Display the proper modal for the parental control checkbox.
