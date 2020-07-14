@@ -226,6 +226,7 @@ function disablePin() {
 //Ensures the alignement of parental control settings.
 function alignSettingButtonState(selector, state) {
   const enabledStatus = state ? "Enabled" : "Disabled";
+  state ? $(`#${selector}`).attr('class', 'btn btn-success') : $(`#${selector}`).attr('class', 'btn btn-danger');
   $(`#${selector}`).html(enabledStatus);
 }
 
