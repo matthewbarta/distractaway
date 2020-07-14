@@ -6,21 +6,27 @@ const bkg = chrome.extension.getBackgroundPage();
 
 $(function () {
   //Gets necessary global variables from storage.
-  chrome.storage.sync.get(["urlList", "pin"], function (items) {
+  chrome.storage.sync.get(["urlList", "pin", "timeMinimized"], function (items) {
     siteList = items.urlList;
     pin = items.pin;
     //Updates the status of the pin checkbox.
-    if (pin) {
-      if($(`#parental-control-button`).attr("aria-pressed") == "false") {
-        $(`#parental-control-button`).button('toggle');
-        $(`#parental-control-button`).prop("aria-pressed", true);
-      }
-    } else {
-      if($(`#parental-control-button`).attr("aria-pressed") == "true") {
-        $(`#parental-control-button`).button('toggle');
-        $(`#parental-control-button`).prop("aria-pressed", false);
-      }
-    }
+    alignAriaPressed(`parental-control-button`, pin);
+    // if (pin) {
+    //   if($(`#parental-control-button`).attr("aria-pressed") == "false") {
+    //     $(`#parental-control-button`).button('toggle');
+    //     $(`#parental-control-button`).prop("aria-pressed", true);
+    //   }
+    // } else {
+    //   if($(`#parental-control-button`).attr("aria-pressed") == "true") {
+    //     $(`#parental-control-button`).button('toggle');
+    //     $(`#parental-control-button`).prop("aria-pressed", false);
+    //   }
+    // }
+
+    //Correct the minimized option state.
+    const minimized = items.timeMinimized;
+    $(`#minimized-input`).prop("checked", minimized);
+
     //Updates the site list page.
     updateSiteList(siteList);
   });
@@ -140,12 +146,6 @@ $(function () {
     if ((keyPress < 0 || keyPress > 9) && keyPress != -40) {
       return false;
     }
-  });
-
-  //Has correct state checked for checkbox.
-  chrome.storage.sync.get("timeMinimized", function (items) {
-    const minimized = items.timeMinimized;
-    $(`#minimized-input`).prop("checked", minimized);
   });
 
   //Switches to the correct div when transitioning from a block-state popup.
@@ -514,6 +514,21 @@ function turnSelectAllOff(id = "") {
   }
 }
 
+//Aligns the press state for aria buttons.
+function alignAriaPressed(selector, state) {
+  if($(`#${selector}`).attr("aria-pressed") == (!state).toString()) {
+    $(`#${selector}`).button('toggle');
+    $(`#${selector}`).prop("aria-pressed", state);
+  }
+}
+
+//Updates the site list HTML segment.
+function updateSiteList(siteList) {
+  $("#sites").empty();
+  createSiteList(siteList);
+  createSiteButtonResponse(siteList);
+}
+
 //Creates the whole sitelist.
 function createSiteList(siteList) {
   for (let index = 0; index < siteList.length; index++) {
@@ -550,12 +565,6 @@ function createSite(site, id = "") {
   //Hides the submit/cancel button by default.
   $(`#submit-edit-${id}`).hide();
   $(`#cancel-edit-${id}`).hide();
-}
-
-function updateSiteList(siteList) {
-  $("#sites").empty();
-  createSiteList(siteList);
-  createSiteButtonResponse(siteList);
 }
 
 //Creates a div.
