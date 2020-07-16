@@ -3,7 +3,7 @@ let siteList = [];
 let pin = "";
 
 // ? Stats tab time spent on each site.
-// TODO Convert old "input" checkboxes into buttons
+// TODO Fix incorrect highlights on block buttons - perhaps make the block more obvious with CSS.
 // TODO Make sure button size stays the same from enabled -> disabled.
 
 //! FOR DEBUGGING
@@ -15,7 +15,7 @@ $(function () {
     siteList = items.urlList;
     pin = items.pin;
     minimized = items.timeMinimized;
-    //TODO Updates the status of the pin/minimized button.
+    //Updates the status of the parental control buttons.
     alignSettingButtonState(`parental-control-button`, pin);
     alignSettingButtonState(`minimized-button`, minimized);
 
