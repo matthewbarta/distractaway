@@ -5,6 +5,7 @@ let pin = "";
 // ? Stats tab time spent on each site.
 // TODO Fix incorrect highlights on block buttons - perhaps make the block more obvious with CSS.
 // TODO Make sure button size stays the same from enabled -> disabled.
+// TODO Look into display: grid.
 
 //! FOR DEBUGGING
 const bkg = chrome.extension.getBackgroundPage();

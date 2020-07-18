@@ -222,20 +222,19 @@ chrome.storage.onChanged.addListener(function (changes) {
     if (oldArray.length == newArray.length) {
       urlList.map((element, index) => {
         for (let day = 0; day < 7; day++) {
-          console.log(blockList);
+          element.time[day].limit = newArray[index].time[day].limit;
           let time =
           urlList[index].time[today].limit - urlList[index].time[today].timeUsed++;
           if(blockList.includes(`*://${urlList[index].url}/*`)) {
-            if(time > 0) {
+            if(time > 0 || urlList[index].time[today].limit == -1) {
               blockList.splice(blockList.indexOf(`*://${urlList[index].url}/*`), 1);
             }
           }
           else {
-            if(time <= 0) {
+            if(time <= 0 && urlList[index].time[today].limit != -1) {
               blockList.push(`*://${urlList[index].url}/*`);
             }
           }
-          element.time[day].limit = newArray[index].time[day].limit;
         }
       });
     }
@@ -422,6 +421,8 @@ function timeTillMidnight() {
 chrome.webRequest.onBeforeRequest.addListener(
   function () {
     if (blockList.length > 0) {
+      console.log(blockList);
+      console.log(urlList);
       chrome.webRequest.onBeforeRequest.addListener(
         function () {
           if (blockList.length > 0) return { cancel: true };
