@@ -9,6 +9,8 @@ let port;
 let today;
 let minimized = false;
 
+const EXTENSION_URL = chrome.runtime.getURL('');
+
 //TODO Unchecked runtime.lastError: This request exceeds the MAX_WRITE_OPERATIONS_PER_MINUTE quota.
 //TODO BUG WITH MULTIPLE WINDOWS BEING OPEN AT ONCE.
 
@@ -176,7 +178,7 @@ function timeExceeded(index) {
   chrome.browserAction.setPopup(
     {
       popup:
-        "chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/blocked.html",
+        `${EXTENSION_URL}html/blocked.html`,
     },
     function () {}
   );
@@ -320,7 +322,7 @@ function changePopup(state) {
     chrome.browserAction.setPopup(
       {
         popup:
-          "chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/popup.html",
+        `${EXTENSION_URL}html/popup.html`,
       },
       function () {}
     );
@@ -328,7 +330,7 @@ function changePopup(state) {
     chrome.browserAction.setPopup(
       {
         popup:
-          "chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/blocked.html",
+        `${EXTENSION_URL}html/blocked.html`,
       },
       function () {}
     );
@@ -336,7 +338,7 @@ function changePopup(state) {
     chrome.browserAction.setPopup(
       {
         popup:
-          "chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/options-popup.html",
+        `${EXTENSION_URL}html/options-popup.html`,
       },
       function () {}
     );
@@ -344,7 +346,7 @@ function changePopup(state) {
     chrome.browserAction.setPopup(
       {
         popup:
-          "chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/unrestricted.html",
+        `${EXTENSION_URL}html/unrestricted.html`,
       },
       function () {}
     );
@@ -352,7 +354,7 @@ function changePopup(state) {
     chrome.browserAction.setPopup(
       {
         popup:
-          "chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/timer.html",
+        `${EXTENSION_URL}html/timer.html`,
       },
       function () {}
     );
@@ -401,7 +403,7 @@ function getTabChangeState(url, day) {
   activeIndex = -1;
   if (
     url ==
-    "chrome-extension://kpkacecdfjfpoiddkmcikpemmadefijm/html/options.html"
+    `${EXTENSION_URL}html/options.html`
   )
     return "options";
   return "untimed";
