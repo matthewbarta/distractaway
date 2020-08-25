@@ -7,7 +7,6 @@
 =            Element Styling                  =
 =============================================*/
 
-
 html {
     height: 100%;
 }
@@ -17,19 +16,39 @@ body {
     margin: 0;
 }
 
+
 /*=============================================
-=          Navigation Bar Components          =
+=               Main Page                     =
 =============================================*/
 
+.options-page {
+    display: grid;
+    grid-template-areas:
+        "nav    content";
+    grid-template-columns: 120px auto;
+    grid-template-rows: auto auto;
+}
+
 .left-navbar {
+    grid-area: nav;
     position: fixed;
     display: flex;
     flex-direction: column;
-    float: left;
-    width: 20%;
     height: 100%;
+    padding-right: 20px;
     background-color: #e1eced;
 }
+
+.page-content {
+    grid-area: content;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+}
+
+/*=============================================
+=          Navigation Bar Components          =
+=============================================*/
 
 .nav-header, .nav-footer {
     height: 5%;
@@ -83,14 +102,7 @@ body {
 =            Page Content Components          =
 =============================================*/
 
-.page-content {
-    display: flex;
-    justify-content: center;
-    width: 80%;
-    height: 100%;
-    margin: 0;
-    float: right;
-}
+
 
 .content {
     width: 45%;
