@@ -25,7 +25,7 @@ body {
     display: grid;
     grid-template-areas:
         "nav    content";
-    grid-template-columns: 120px auto;
+    grid-template-columns: 220px auto;
     grid-template-rows: auto auto;
 }
 
@@ -44,6 +44,7 @@ body {
     display: flex;
     justify-content: center;
     margin: 0;
+    font-family: 'Archivo';
 }
 
 /*=============================================
@@ -51,7 +52,7 @@ body {
 =============================================*/
 
 .nav-header, .nav-footer {
-    height: 5%;
+    height: 2rem;
 }
 
 .left-navbar ul {
@@ -116,7 +117,7 @@ body {
 }
 
 #add-site {
-    padding-right: 8%;
+    padding: 0% 4%;
 }
 
 #site-list, #general {
